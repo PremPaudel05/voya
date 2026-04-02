@@ -2302,8 +2302,13 @@ app.get('/api/country', async (req, res) => {
   }
 });
 
-const port = process.env.PORT || 3001;
-app.listen(port, () => console.log(`Server listening on http://localhost:${port}`));
+// Only start the server when running locally (not on Vercel)
+if (!process.env.VERCEL) {
+  const port = process.env.PORT || 3001;
+  app.listen(port, () => console.log(`Server listening on http://localhost:${port}`));
+}
+
+export default app;
 
 
 
