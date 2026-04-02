@@ -7,13 +7,14 @@ interface AttractionCardProps {
     famousFor: string;
     interestingFact: string;
     imageSearchQuery?: string;
+    imageUrl?: string;
   };
   countryName: string;
 }
 
 export const AttractionCard: React.FC<AttractionCardProps> = ({ attraction, countryName }) => {
   const query = attraction.imageSearchQuery || `${attraction.name} ${attraction.city} ${countryName}`;
-  const [imageSrc, setImageSrc] = useState(`/api/image?q=${encodeURIComponent(query)}`);
+  const [imageSrc, setImageSrc] = useState(attraction.imageUrl || `/api/image?q=${encodeURIComponent(query)}`);
   const [hasError, setHasError] = useState(false);
 
   return (
