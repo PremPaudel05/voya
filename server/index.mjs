@@ -53,24 +53,43 @@ async function fetchWikiImage(searchQuery, minWidth = 300) {
   if (pages) {
     const sorted = Object.values(pages).sort((a, b) => (a.index || 0) - (b.index || 0));
     const queryLower = searchQuery.toLowerCase();
-    // Prefer pages whose title closely matches the search query
-    const titleMatch = sorted.find(page => {
+    const queryWords = queryLower.split(/\s+/);
+
+    // Score each page by how well its title matches the query
+    const validPages = sorted.filter(page => {
       const thumb = page?.thumbnail;
       if (!thumb?.source) return false;
       if (BAD_IMAGE_PATTERNS.test(thumb.source)) return false;
-      if (thumb.width < minWidth || thumb.height < 150) return false;
-      const titleLower = (page.title || '').toLowerCase();
-      return queryLower.includes(titleLower) || titleLower.includes(queryLower.split(' ').slice(0, 2).join(' '));
+      return thumb.width >= minWidth && thumb.height >= 150;
     });
-    if (titleMatch) return titleMatch.thumbnail.source;
-    for (const page of sorted) {
-      const thumb = page?.thumbnail;
-      if (!thumb?.source) continue;
-      // Filter out logos/icons/badges by URL and filename
-      if (BAD_IMAGE_PATTERNS.test(thumb.source)) continue;
-      if (thumb.width >= minWidth && thumb.height >= 150) {
-        return thumb.source;
+
+    if (validPages.length > 0) {
+      // Score: count how many query words appear in the title
+      const scored = validPages.map(page => {
+        const titleLower = (page.title || '').toLowerCase();
+        const titleWords = titleLower.split(/\s+/);
+        let score = 0;
+        for (const w of queryWords) {
+          if (titleLower.includes(w)) score++;
+        }
+        // Bonus for exact title match
+        if (titleLower === queryLower) score += 10;
+        // Bonus if title is a substring of query or vice versa
+        if (queryLower.includes(titleLower) && titleLower.length > 5) score += 2;
+        if (titleLower.includes(queryLower)) score += 3;
+        return { page, score };
+      });
+
+      // Sort by score desc, then by original search rank
+      scored.sort((a, b) => b.score - a.score);
+
+      // Only use scored match if it has a reasonable score
+      if (scored[0].score >= 2) {
+        return scored[0].page.thumbnail.source;
       }
+
+      // Fallback to first valid result by search rank
+      return validPages[0].thumbnail.source;
     }
   }
   return null;
