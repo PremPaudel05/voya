@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Search, MapPin, Compass, Globe2, Lightbulb } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Search, Compass, Globe2, Lightbulb } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface HeroProps {
@@ -25,7 +25,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
   const [factIndex, setFactIndex] = useState(0);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
     if (isLoading) {
       setFactIndex(Math.floor(Math.random() * funFacts.length));
       interval = setInterval(() => {
