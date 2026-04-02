@@ -32,6 +32,7 @@ export interface CountryData {
     famousFor: string;
     interestingFact: string;
     imageSearchQuery: string;
+    imageUrl?: string;
   }[];
   languageCode: string;
   phrases: {
