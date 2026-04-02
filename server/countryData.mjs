@@ -5,8 +5,8 @@ import { extraAttractionsData, extraPhrasesData, extraPricesData, extraBestTimeT
 
 export const knownAttractionsData = {
   nepal: [
-    { name: "Boudhanath Stupa", city: "Kathmandu", famousFor: "One of the largest spherical stupas in Nepal and a UNESCO World Heritage Site", interestingFact: "The stupa's mandala design symbolizes the Buddhist cosmos", imageSearchQuery: "Boudhanath Stupa Kathmandu" },
-    { name: "Pashupatinath Temple", city: "Kathmandu", famousFor: "Sacred Hindu temple dedicated to Lord Shiva on the bank of the Bagmati River", interestingFact: "One of the holiest Shiva temples in the world and a UNESCO site", imageSearchQuery: "Pashupatinath Temple Kathmandu" },
+    { name: "Boudhanath Stupa", city: "Kathmandu", famousFor: "One of the largest spherical stupas in Nepal and a UNESCO World Heritage Site", interestingFact: "The stupa's mandala design symbolizes the Buddhist cosmos", imageSearchQuery: "Boudhanath Stupa" },
+    { name: "Pashupatinath Temple", city: "Kathmandu", famousFor: "Sacred Hindu temple dedicated to Lord Shiva on the bank of the Bagmati River", interestingFact: "One of the holiest Shiva temples in the world and a UNESCO site", imageSearchQuery: "Pashupatinath Temple" },
     { name: "Chitwan National Park", city: "Chitwan", famousFor: "UNESCO-listed park home to one-horned rhinos, Bengal tigers, and elephants", interestingFact: "Nepal's first national park, established in 1973", imageSearchQuery: "Chitwan National Park Nepal" },
     { name: "Phewa Lake", city: "Pokhara", famousFor: "Stunning freshwater lake reflecting the Annapurna mountain range", interestingFact: "The Tal Barahi Temple sits on an island in the middle of the lake", imageSearchQuery: "Phewa Lake Pokhara Nepal" },
     { name: "Swayambhunath (Monkey Temple)", city: "Kathmandu", famousFor: "Ancient religious complex atop a hill overlooking the Kathmandu Valley", interestingFact: "The site is over 2,500 years old and sacred to both Buddhists and Hindus", imageSearchQuery: "Swayambhunath Monkey Temple Kathmandu" },
