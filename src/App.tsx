@@ -38,7 +38,6 @@ export default function App() {
     const searchStartTime = Date.now();
 
     setLastSearchQuery(trimmedCountry);
-    setIsLoading(true);
     return (
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
         <Hero onSearch={handleSearch} />
@@ -73,18 +72,6 @@ export default function App() {
         <ChatAssistant />
       </div>
     );
-      const message =
-        err instanceof Error ? err.message : 'Unknown error occurred';
-
-      if (message.toLowerCase().includes('timed out')) {
-        setError(
-          'The request took too long. Please try again in a moment.'
-        );
-      } else {
-        setError(
-          'We could not load travel insights right now. Please try again later.'
-        );
-      }
     } finally {
       setIsLoading(false);
     }
