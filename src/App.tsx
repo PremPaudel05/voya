@@ -38,40 +38,6 @@ export default function App() {
     const searchStartTime = Date.now();
 
     setLastSearchQuery(trimmedCountry);
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
-        <Hero onSearch={handleSearch} />
-        <div className="max-w-5xl mx-auto">
-          <AnimatePresence>
-            {isLoading && <LoadingAnimation key="loading" />}
-            {!isLoading && error && (
-              <motion.div
-                key="error"
-                className="bg-red-100 text-red-800 rounded-lg px-4 py-3 my-8 text-center font-semibold shadow"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.4 }}
-              >
-                {error}
-              </motion.div>
-            )}
-            {!isLoading && countryData && (
-              <CountryProfile key={countryData.overview.capital} data={countryData} />
-            )}
-          </AnimatePresence>
-        </div>
-        {showScrollTop && (
-          <button
-            className="fixed bottom-8 right-8 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-40"
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          >
-            <ArrowUp size={24} />
-          </button>
-        )}
-        <ChatAssistant />
-      </div>
-    );
     } finally {
       setIsLoading(false);
     }
