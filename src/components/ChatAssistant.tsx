@@ -6,6 +6,7 @@ export function ChatAssistant() {
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [minimized, setMinimized] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -33,9 +34,30 @@ export function ChatAssistant() {
     setLoading(false);
   }
 
+  if (minimized) {
+    return (
+      <button
+        className="fixed bottom-6 right-6 z-50 bg-blue-600 text-white px-4 py-2 rounded-full shadow-xl border border-blue-200 font-bold"
+        onClick={() => setMinimized(false)}
+        aria-label="Open chat assistant"
+      >
+        💬 Chat
+      </button>
+    );
+  }
+
   return (
     <div className="fixed bottom-6 right-6 z-50 w-80 max-w-full bg-white rounded-xl shadow-2xl border border-blue-200 flex flex-col">
-      <div className="bg-blue-600 text-white px-4 py-3 rounded-t-xl font-bold">Voya AI Assistant</div>
+      <div className="bg-blue-600 text-white px-4 py-3 rounded-t-xl font-bold flex items-center justify-between">
+        <span>Voya AI Assistant</span>
+        <button
+          className="ml-2 text-white bg-blue-700 hover:bg-blue-800 rounded-full px-2 py-0.5 text-xs font-bold"
+          onClick={() => setMinimized(true)}
+          aria-label="Minimize chat assistant"
+        >
+          –
+        </button>
+      </div>
       <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ maxHeight: 350 }}>
         {messages.map((msg, i) => (
           <div key={i} className={msg.role === "user" ? "text-right" : "text-left"}>
