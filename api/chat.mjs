@@ -12,18 +12,19 @@ export default async function handler(req, res) {
 
   // Use DeepSeek-V2 as the model (free tier)
   const HF_MODEL = 'deepseek-ai/DeepSeek-V2';
-  // Join all messages for context (simple prompt)
-  const prompt = messages.map(m => (m.role === 'user' ? `User: ${m.content}` : `Assistant: ${m.content}`)).join('\n');
 
   try {
-    const resp = await fetch(`https://router.huggingface.co/${HF_MODEL}`, {
+    const resp = await fetch('https://router.huggingface.co/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      body: JSON.stringify({ inputs: prompt })
+      body: JSON.stringify({
+        model: HF_MODEL,
+        messages
+      })
     });
     let data;
     try {
@@ -34,10 +35,8 @@ export default async function handler(req, res) {
       console.error('Hugging Face non-JSON response:', text);
       return res.status(500).json({ error: 'Hugging Face API error', details: text });
     }
-    // Hugging Face returns an array of generated texts
-    const reply = Array.isArray(data) && data[0]?.generated_text
-      ? data[0].generated_text.replace(prompt, '').trim()
-      : (data.error || 'Sorry, I could not get a response.');
+    // Hugging Face returns choices[0].message.content for chat
+    const reply = data?.choices?.[0]?.message?.content || data?.error || 'Sorry, I could not get a response.';
     res.json({ reply });
   } catch (e) {
     console.error('Hugging Face fetch error:', e);
