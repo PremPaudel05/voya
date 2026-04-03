@@ -16,7 +16,7 @@ export default async function handler(req, res) {
   const prompt = messages.map(m => (m.role === 'user' ? `User: ${m.content}` : `Assistant: ${m.content}`)).join('\n');
 
   try {
-    const resp = await fetch(`https://api-inference.huggingface.co/models/${HF_MODEL}`, {
+    const resp = await fetch(`https://router.huggingface.co/${HF_MODEL}`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
