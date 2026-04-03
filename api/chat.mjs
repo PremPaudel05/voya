@@ -10,8 +10,8 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Missing Hugging Face API token' });
   }
 
-  // Use Mistral-7B-Instruct as the model
-  const HF_MODEL = 'mistralai/Mistral-7B-Instruct-v0.2';
+  // Use DeepSeek-V2 as the model (free tier)
+  const HF_MODEL = 'deepseek-ai/DeepSeek-V2';
   // Join all messages for context (simple prompt)
   const prompt = messages.map(m => (m.role === 'user' ? `User: ${m.content}` : `Assistant: ${m.content}`)).join('\n');
 
