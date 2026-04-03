@@ -47,19 +47,18 @@ export function CountryProfile({ data }: CountryProfileProps) {
       {/* Header with gradient background */}
       <motion.div variants={itemVariants} className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 text-white py-16 px-4">
         <div className="max-w-5xl mx-auto text-center">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.5, type: "spring" }}
-            className="text-8xl mb-6 inline-block"
-          >
-            {data.overview.flagEmoji}
-          </motion.div>
+          <div className="flex flex-col items-center mb-6">
+            <span className="text-8xl inline-block" title={data.mapData.countryQuery}>
+              {data.overview.flagEmoji}
+            </span>
+          </div>
           <h1 className="text-5xl md:text-6xl font-bold mb-4">
             {data.mapData.countryQuery}
           </h1>
           <p className="text-lg text-blue-100 max-w-2xl mx-auto">
-            Your complete travel guide to discover culture, attractions, and essential local insights.
+            {Array.isArray(data.funFacts) && data.funFacts.length > 0
+              ? data.funFacts[Math.floor(Math.random() * data.funFacts.length)]
+              : 'Your complete travel guide to discover culture, attractions, and essential local insights.'}
           </p>
         </div>
       </motion.div>
