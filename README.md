@@ -17,3 +17,7 @@ Your complete travel assistant — discover countries, explore attractions, unlo
 - React + TypeScript
 - Vite
 - Vercel (deployment)
+
+## License
+
+This project is licensed under the [MIT License](LICENSE). © 2026 Prem Paudel.
