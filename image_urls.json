@@ -1,0 +1,1666 @@
+{
+  "nepal": [
+    {
+      "name": "Boudhanath Stupa",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Boudhanath_stupa_%2C_Kathmandu%2C_Nepal.jpg/960px-Boudhanath_stupa_%2C_Kathmandu%2C_Nepal.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Boudha Stupa"
+    },
+    {
+      "name": "Pashupatinath Temple",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Pashupatinath_Temple-2020.jpg/960px-Pashupatinath_Temple-2020.jpg",
+      "method": "direct-page",
+      "matchTitle": "Pashupatinath Temple"
+    },
+    {
+      "name": "Chitwan National Park",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Chitwan_swamp.jpg/960px-Chitwan_swamp.jpg",
+      "method": "direct-page",
+      "matchTitle": "Chitwan National Park"
+    },
+    {
+      "name": "Phewa Lake",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Phewa_lake%2C_Pokhara.jpg/960px-Phewa_lake%2C_Pokhara.jpg",
+      "method": "direct-page",
+      "matchTitle": "Phewa Lake"
+    },
+    {
+      "name": "Swayambhunath (Monkey Temple)",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Swayambhunath_2018.jpg/960px-Swayambhunath_2018.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Swayambhunath"
+    }
+  ],
+  "japan": [
+    {
+      "name": "Fushimi Inari Shrine",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Torii_path_with_lantern_at_Fushimi_Inari_Taisha_Shrine%2C_Kyoto%2C_Japan.jpg/960px-Torii_path_with_lantern_at_Fushimi_Inari_Taisha_Shrine%2C_Kyoto%2C_Japan.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Fushimi Inari-taisha"
+    },
+    {
+      "name": "Senso-ji Temple",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Day2-2_%2840909714314%29.jpg/960px-Day2-2_%2840909714314%29.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Asakusa"
+    },
+    {
+      "name": "Hiroshima Peace Memorial",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Genbaku_Dome04-r.JPG/960px-Genbaku_Dome04-r.JPG",
+      "method": "direct-page",
+      "matchTitle": "Hiroshima Peace Memorial"
+    },
+    {
+      "name": "Arashiyama Bamboo Grove",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/d/de/Arashiyama_013.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Arashiyama"
+    },
+    {
+      "name": "Mount Fuji",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/View_of_Mount_Fuji_from_%C5%8Cwakudani_20211202.jpg/960px-View_of_Mount_Fuji_from_%C5%8Cwakudani_20211202.jpg",
+      "method": "direct-page",
+      "matchTitle": "Mount Fuji"
+    }
+  ],
+  "france": [
+    {
+      "name": "Eiffel Tower",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg/960px-Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg",
+      "method": "direct-page",
+      "matchTitle": "Eiffel Tower"
+    },
+    {
+      "name": "Louvre Museum",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Louvre_Museum_Wikimedia_Commons.jpg/960px-Louvre_Museum_Wikimedia_Commons.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Louvre"
+    },
+    {
+      "name": "Mont Saint-Michel",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/FranceNormandieLeMontSaintMichelAbbaye.jpg/960px-FranceNormandieLeMontSaintMichelAbbaye.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Mont-Saint-Michel Abbey"
+    },
+    {
+      "name": "Palace of Versailles",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Versailles-Chateau-Jardins02.jpg/960px-Versailles-Chateau-Jardins02.jpg",
+      "method": "direct-page",
+      "matchTitle": "Palace of Versailles"
+    },
+    {
+      "name": "Côte d'Azur",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/%C3%88ze_und_Cap_Ferrat-Grande_Corniche.jpg/960px-%C3%88ze_und_Cap_Ferrat-Grande_Corniche.jpg",
+      "method": "wiki-search",
+      "matchTitle": "French Riviera"
+    }
+  ],
+  "united states": [
+    {
+      "name": "Statue of Liberty",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Front_view_of_Statue_of_Liberty_%28cropped%29.jpg/960px-Front_view_of_Statue_of_Liberty_%28cropped%29.jpg",
+      "method": "direct-page",
+      "matchTitle": "Statue of Liberty"
+    },
+    {
+      "name": "Grand Canyon",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Canyon_River_Tree_%28165872763%29.jpeg/960px-Canyon_River_Tree_%28165872763%29.jpeg",
+      "method": "direct-page",
+      "matchTitle": "Grand Canyon"
+    },
+    {
+      "name": "Golden Gate Bridge",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Golden_Gate_Bridge_as_seen_from_Battery_East.jpg/960px-Golden_Gate_Bridge_as_seen_from_Battery_East.jpg",
+      "method": "direct-page",
+      "matchTitle": "Golden Gate Bridge"
+    },
+    {
+      "name": "Times Square",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/New_york_times_square-terabass.jpg/960px-New_york_times_square-terabass.jpg",
+      "method": "direct-page",
+      "matchTitle": "Times Square"
+    },
+    {
+      "name": "Yellowstone National Park",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/73/Grand_Canyon_of_yellowstone.jpg",
+      "method": "direct-page",
+      "matchTitle": "Yellowstone National Park"
+    }
+  ],
+  "brazil": [
+    {
+      "name": "Christ the Redeemer",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Christ_the_Redeemer_-_Cristo_Redentor.jpg/960px-Christ_the_Redeemer_-_Cristo_Redentor.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Christ the Redeemer (statue)"
+    },
+    {
+      "name": "Iguazu Falls",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Iguazu_Cataratas2.jpg/960px-Iguazu_Cataratas2.jpg",
+      "method": "direct-page",
+      "matchTitle": "Iguazu Falls"
+    },
+    {
+      "name": "Sugarloaf Mountain",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/P%C3%A3o_de_A%C3%A7ucar_-_Sugarloaf_Mountain_-_Zuckerhut_-_2022.jpg/960px-P%C3%A3o_de_A%C3%A7ucar_-_Sugarloaf_Mountain_-_Zuckerhut_-_2022.jpg",
+      "method": "direct-page",
+      "matchTitle": "Sugarloaf Mountain"
+    },
+    {
+      "name": "Amazon Rainforest",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Amazon_River_ESA387332.jpg/960px-Amazon_River_ESA387332.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Amazon River"
+    },
+    {
+      "name": "Pelourinho Historic Center",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Lingelbach_Karneval_in_Rom_001.jpg/960px-Lingelbach_Karneval_in_Rom_001.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Carnival"
+    }
+  ],
+  "mexico": [
+    {
+      "name": "Chichen Itza",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Chichen_Itza_3.jpg/960px-Chichen_Itza_3.jpg",
+      "method": "direct-page",
+      "matchTitle": "Chichen Itza"
+    },
+    {
+      "name": "Teotihuacan",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Teotihuac%C3%A1n-5973.JPG/960px-Teotihuac%C3%A1n-5973.JPG",
+      "method": "direct-page",
+      "matchTitle": "Teotihuacan"
+    },
+    {
+      "name": "Cenotes of Yucatan",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Tortillas_Tradicionales_QR_2017.jpg/960px-Tortillas_Tradicionales_QR_2017.jpg",
+      "method": "commons",
+      "matchTitle": "File:Tortillas Tradicionales QR 2017.jpg"
+    },
+    {
+      "name": "Guanajuato",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Amanecer_en_los_portales_de_Uriangato.png",
+      "method": "wiki-search",
+      "matchTitle": "Uriangato"
+    },
+    {
+      "name": "Tulum Ruins",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Tulum_2.jpg/960px-Tulum_2.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Tulum"
+    }
+  ],
+  "india": [
+    {
+      "name": "Taj Mahal",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Taj_Mahal_%28Edited%29.jpeg/960px-Taj_Mahal_%28Edited%29.jpeg",
+      "method": "direct-page",
+      "matchTitle": "Taj Mahal"
+    },
+    {
+      "name": "Jaipur City Palace",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Chandra_Mahal%2C_City_Palace%2C_Jaipur%2C_20191218_0951_9043.jpg/960px-Chandra_Mahal%2C_City_Palace%2C_Jaipur%2C_20191218_0951_9043.jpg",
+      "method": "wiki-search",
+      "matchTitle": "City Palace, Jaipur"
+    },
+    {
+      "name": "Kerala Backwaters",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/House_Boat_DSW.jpg/960px-House_Boat_DSW.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Kerala backwaters"
+    },
+    {
+      "name": "Varanasi Ghats",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Varanasi%2C_India%2C_Ghats%2C_Cremation_ceremony_in_progress.jpg/960px-Varanasi%2C_India%2C_Ghats%2C_Cremation_ceremony_in_progress.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Varanasi"
+    },
+    {
+      "name": "Golden Temple",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/The_Golden_Temple_of_Amrithsar_7.jpg/960px-The_Golden_Temple_of_Amrithsar_7.jpg",
+      "method": "direct-page",
+      "matchTitle": "Golden Temple"
+    }
+  ],
+  "thailand": [
+    {
+      "name": "Grand Palace",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/0005574_-_Wat_Phra_Kaew_006.jpg/960px-0005574_-_Wat_Phra_Kaew_006.jpg",
+      "method": "direct-page",
+      "matchTitle": "Grand Palace"
+    },
+    {
+      "name": "Phi Phi Islands",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/KohPhiPhi.JPG/960px-KohPhiPhi.JPG",
+      "method": "direct-page",
+      "matchTitle": "Phi Phi Islands"
+    },
+    {
+      "name": "Wat Pho",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%9E%E0%B8%B8%E0%B8%97%E0%B8%98%E0%B9%84%E0%B8%AA%E0%B8%A2%E0%B8%B2%E0%B8%AA%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%8A%E0%B8%95%E0%B8%B8%E0%B8%9E%E0%B8%99.jpg/960px-%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%9E%E0%B8%B8%E0%B8%97%E0%B8%98%E0%B9%84%E0%B8%AA%E0%B8%A2%E0%B8%B2%E0%B8%AA%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%8A%E0%B8%95%E0%B8%B8%E0%B8%9E%E0%B8%99.jpg",
+      "method": "direct-page",
+      "matchTitle": "Wat Pho"
+    },
+    {
+      "name": "Chiang Mai Old City",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/0020-%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%AA%E0%B8%B4%E0%B8%87%E0%B8%AB%E0%B9%8C%E0%B8%A7%E0%B8%A3%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%A7%E0%B8%B4%E0%B8%AB%E0%B8%B2%E0%B8%A3.jpg/960px-0020-%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%AA%E0%B8%B4%E0%B8%87%E0%B8%AB%E0%B9%8C%E0%B8%A7%E0%B8%A3%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%A7%E0%B8%B4%E0%B8%AB%E0%B8%B2%E0%B8%A3.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Chiang Mai"
+    },
+    {
+      "name": "Railay Beach",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Railay_Beach_5.jpg/960px-Railay_Beach_5.jpg",
+      "method": "direct-page",
+      "matchTitle": "Railay Beach"
+    }
+  ],
+  "south korea": [
+    {
+      "name": "Gyeongbokgung Palace",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/%EA%B4%91%ED%99%94%EB%AC%B8_%EC%9B%94%EB%8C%80.jpg/960px-%EA%B4%91%ED%99%94%EB%AC%B8_%EC%9B%94%EB%8C%80.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Gyeongbokgung"
+    },
+    {
+      "name": "Bukchon Hanok Village",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Bukchon_Hanok_Village_01.jpg/960px-Bukchon_Hanok_Village_01.jpg",
+      "method": "direct-page",
+      "matchTitle": "Bukchon Hanok Village"
+    },
+    {
+      "name": "Jeju Island",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Jeju_Island.jpg/960px-Jeju_Island.jpg",
+      "method": "direct-page",
+      "matchTitle": "Jeju Island"
+    },
+    {
+      "name": "Lotte World Tower",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/en/thumb/2/28/Lotte_World_Tower_day_view_10.jpg/960px-Lotte_World_Tower_day_view_10.jpg",
+      "method": "direct-page",
+      "matchTitle": "Lotte World Tower"
+    },
+    {
+      "name": "N Seoul Tower",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/en/a/a6/NamsanTower_%28Cropped%29.jpeg",
+      "method": "wiki-search",
+      "matchTitle": "Namsan Seoul Tower"
+    }
+  ],
+  "korea (republic of)": [
+    {
+      "name": "Gyeongbokgung Palace",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/%EA%B4%91%ED%99%94%EB%AC%B8_%EC%9B%94%EB%8C%80.jpg/960px-%EA%B4%91%ED%99%94%EB%AC%B8_%EC%9B%94%EB%8C%80.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Gyeongbokgung"
+    },
+    {
+      "name": "Bukchon Hanok Village",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Bukchon_Hanok_Village_01.jpg/960px-Bukchon_Hanok_Village_01.jpg",
+      "method": "direct-page",
+      "matchTitle": "Bukchon Hanok Village"
+    },
+    {
+      "name": "Jeju Island",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Jeju_Island.jpg/960px-Jeju_Island.jpg",
+      "method": "direct-page",
+      "matchTitle": "Jeju Island"
+    },
+    {
+      "name": "Lotte World Tower",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/en/thumb/2/28/Lotte_World_Tower_day_view_10.jpg/960px-Lotte_World_Tower_day_view_10.jpg",
+      "method": "direct-page",
+      "matchTitle": "Lotte World Tower"
+    },
+    {
+      "name": "N Seoul Tower",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/en/a/a6/NamsanTower_%28Cropped%29.jpeg",
+      "method": "wiki-search",
+      "matchTitle": "Namsan Seoul Tower"
+    }
+  ],
+  "china": [
+    {
+      "name": "Great Wall of China",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/The_Great_Wall_of_China_at_Jinshanling-edit.jpg/960px-The_Great_Wall_of_China_at_Jinshanling-edit.jpg",
+      "method": "direct-page",
+      "matchTitle": "Great Wall of China"
+    },
+    {
+      "name": "Forbidden City",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/The_Forbidden_City_-_View_from_Coal_Hill.jpg/960px-The_Forbidden_City_-_View_from_Coal_Hill.jpg",
+      "method": "direct-page",
+      "matchTitle": "Forbidden City"
+    },
+    {
+      "name": "Terracotta Warriors",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/51714-Terracota-Army.jpg/960px-51714-Terracota-Army.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Terracotta Army"
+    },
+    {
+      "name": "Li River Cruise",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/87318-Li-River.jpg/960px-87318-Li-River.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Li River"
+    },
+    {
+      "name": "The Bund",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Bund_%28Chinese_characters%29.svg/960px-Bund_%28Chinese_characters%29.svg.png",
+      "method": "direct-page",
+      "matchTitle": "The Bund"
+    }
+  ],
+  "germany": [
+    {
+      "name": "Brandenburg Gate",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Brandenburger_Tor_abends.jpg/960px-Brandenburger_Tor_abends.jpg",
+      "method": "direct-page",
+      "matchTitle": "Brandenburg Gate"
+    },
+    {
+      "name": "Neuschwanstein Castle",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Schloss_Neuschwanstein_2013.jpg/960px-Schloss_Neuschwanstein_2013.jpg",
+      "method": "direct-page",
+      "matchTitle": "Neuschwanstein Castle"
+    },
+    {
+      "name": "Cologne Cathedral",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/K%C3%B6lner_Dom_-_Westfassade_2022_ohne_Ger%C3%BCst-0968_b.jpg/960px-K%C3%B6lner_Dom_-_Westfassade_2022_ohne_Ger%C3%BCst-0968_b.jpg",
+      "method": "direct-page",
+      "matchTitle": "Cologne Cathedral"
+    },
+    {
+      "name": "Pergamon Museum",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Pergamonmuseum_Front.jpg/960px-Pergamonmuseum_Front.jpg",
+      "method": "direct-page",
+      "matchTitle": "Pergamon Museum"
+    },
+    {
+      "name": "Black Forest",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Blick_vom_Hohfelsen.jpg/960px-Blick_vom_Hohfelsen.jpg",
+      "method": "direct-page",
+      "matchTitle": "Black Forest"
+    }
+  ],
+  "italy": [
+    {
+      "name": "Colosseum",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Colosseo_2020.jpg/960px-Colosseo_2020.jpg",
+      "method": "direct-page",
+      "matchTitle": "Colosseum"
+    },
+    {
+      "name": "Venice Canals",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Gondola_Ride.jpg/960px-Gondola_Ride.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Gondola"
+    },
+    {
+      "name": "Leaning Tower of Pisa",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Italy_-_Pisa_-_Leaning_Tower.jpg/960px-Italy_-_Pisa_-_Leaning_Tower.jpg",
+      "method": "direct-page",
+      "matchTitle": "Leaning Tower of Pisa"
+    },
+    {
+      "name": "Amalfi Coast",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Amalfi_Coast_%28Italy%2C_October_2020%29_-_75_%2850558355441%29.jpg/960px-Amalfi_Coast_%28Italy%2C_October_2020%29_-_75_%2850558355441%29.jpg",
+      "method": "direct-page",
+      "matchTitle": "Amalfi Coast"
+    },
+    {
+      "name": "Pompeii",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Theathres_of_Pompeii.jpg/960px-Theathres_of_Pompeii.jpg",
+      "method": "direct-page",
+      "matchTitle": "Pompeii"
+    }
+  ],
+  "united kingdom": [
+    {
+      "name": "Tower of London",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Tower_of_London_from_the_Shard_%288515883950%29.jpg/960px-Tower_of_London_from_the_Shard_%288515883950%29.jpg",
+      "method": "direct-page",
+      "matchTitle": "Tower of London"
+    },
+    {
+      "name": "Stonehenge",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Stonehenge2007_07_30.jpg/960px-Stonehenge2007_07_30.jpg",
+      "method": "direct-page",
+      "matchTitle": "Stonehenge"
+    },
+    {
+      "name": "Buckingham Palace",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Buckingham_Palace_London_Morning_2020_01_%28cropped%29.jpg/960px-Buckingham_Palace_London_Morning_2020_01_%28cropped%29.jpg",
+      "method": "direct-page",
+      "matchTitle": "Buckingham Palace"
+    },
+    {
+      "name": "Edinburgh Castle",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Edinburgh_Castle_-_aerial_-_2025-04-19_03.jpg/960px-Edinburgh_Castle_-_aerial_-_2025-04-19_03.jpg",
+      "method": "direct-page",
+      "matchTitle": "Edinburgh Castle"
+    },
+    {
+      "name": "Big Ben & Houses of Parliament",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Elizabeth_Tower%2C_June_2022.jpg/960px-Elizabeth_Tower%2C_June_2022.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Big Ben"
+    }
+  ],
+  "australia": [
+    {
+      "name": "Sydney Opera House",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Sydney_Australia._%2821339175489%29.jpg/960px-Sydney_Australia._%2821339175489%29.jpg",
+      "method": "direct-page",
+      "matchTitle": "Sydney Opera House"
+    },
+    {
+      "name": "Great Barrier Reef",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/ISS-45_StoryOfWater%2C_Great_Barrier_Reef%2C_Australia.jpg/960px-ISS-45_StoryOfWater%2C_Great_Barrier_Reef%2C_Australia.jpg",
+      "method": "direct-page",
+      "matchTitle": "Great Barrier Reef"
+    },
+    {
+      "name": "Uluru (Ayers Rock)",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/ULURU.jpg/960px-ULURU.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Uluru"
+    },
+    {
+      "name": "Great Ocean Road",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/2009-0825-GreatOceanRoadsign.jpg/960px-2009-0825-GreatOceanRoadsign.jpg",
+      "method": "direct-page",
+      "matchTitle": "Great Ocean Road"
+    },
+    {
+      "name": "Bondi Beach",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Bondi_from_above.jpg/960px-Bondi_from_above.jpg",
+      "method": "direct-page",
+      "matchTitle": "Bondi Beach"
+    }
+  ],
+  "spain": [
+    {
+      "name": "La Sagrada Familia",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/BCN-Metro-Sagrada_Fam%C3%ADlia.JPG/960px-BCN-Metro-Sagrada_Fam%C3%ADlia.JPG",
+      "method": "wiki-search",
+      "matchTitle": "Sagrada Família (Barcelona Metro)"
+    },
+    {
+      "name": "Alhambra",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Dawn_Charles_V_Palace_Alhambra_Granada_Andalusia_Spain.jpg/960px-Dawn_Charles_V_Palace_Alhambra_Granada_Andalusia_Spain.jpg",
+      "method": "direct-page",
+      "matchTitle": "Alhambra"
+    },
+    {
+      "name": "Park Güell",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Parc_guell_-_panoramio.jpg/960px-Parc_guell_-_panoramio.jpg",
+      "method": "direct-page",
+      "matchTitle": "Park Güell"
+    },
+    {
+      "name": "Plaza de España",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Plaza_de_Espa%C3%B1a_%28Sevilla%29_-_01.jpg/960px-Plaza_de_Espa%C3%B1a_%28Sevilla%29_-_01.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Plaza de España, Seville"
+    },
+    {
+      "name": "Prado Museum",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Museo_del_Prado_2016_%2825185969599%29.jpg/960px-Museo_del_Prado_2016_%2825185969599%29.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Museo del Prado"
+    }
+  ],
+  "egypt": [
+    {
+      "name": "Pyramids of Giza",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Sphinx_with_the_third_pyramid.jpg/960px-Sphinx_with_the_third_pyramid.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Great Sphinx of Giza"
+    },
+    {
+      "name": "Valley of the Kings",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Luxor%2C_Tal_der_K%C3%B6nige_%281995%2C_860x605%29.jpg",
+      "method": "direct-page",
+      "matchTitle": "Valley of the Kings"
+    },
+    {
+      "name": "Karnak Temple",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Temple_de_Louxor_68.jpg/960px-Temple_de_Louxor_68.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Karnak"
+    },
+    {
+      "name": "Abu Simbel",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Ramsis%2C_Aswan_Governorate%2C_Egypt_-_panoramio.jpg/960px-Ramsis%2C_Aswan_Governorate%2C_Egypt_-_panoramio.jpg",
+      "method": "direct-page",
+      "matchTitle": "Abu Simbel"
+    },
+    {
+      "name": "Egyptian Museum",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/The_Egyptian_Museum.jpg/960px-The_Egyptian_Museum.jpg",
+      "method": "direct-page",
+      "matchTitle": "Egyptian Museum"
+    }
+  ],
+  "turkey": [
+    {
+      "name": "Hagia Sophia",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Hagia_Sophia_%28228968325%29.jpeg/960px-Hagia_Sophia_%28228968325%29.jpeg",
+      "method": "direct-page",
+      "matchTitle": "Hagia Sophia"
+    },
+    {
+      "name": "Cappadocia",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Cappadocia_balloon_trip%2C_Ortahisar_Castle_%2811893715185%29.jpg/960px-Cappadocia_balloon_trip%2C_Ortahisar_Castle_%2811893715185%29.jpg",
+      "method": "direct-page",
+      "matchTitle": "Cappadocia"
+    },
+    {
+      "name": "Pamukkale",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Pamukkale_30.jpg/960px-Pamukkale_30.jpg",
+      "method": "direct-page",
+      "matchTitle": "Pamukkale"
+    },
+    {
+      "name": "Ephesus",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Ephesus_Celsus_Library_Fa%C3%A7ade.jpg/960px-Ephesus_Celsus_Library_Fa%C3%A7ade.jpg",
+      "method": "direct-page",
+      "matchTitle": "Ephesus"
+    },
+    {
+      "name": "Blue Mosque",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Istanbul_%2834223582516%29_%28cropped%29.jpg/960px-Istanbul_%2834223582516%29_%28cropped%29.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Blue Mosque, Istanbul"
+    }
+  ],
+  "vietnam": [
+    {
+      "name": "Ha Long Bay",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Habs_castle_clinton.jpg/960px-Habs_castle_clinton.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Castle Clinton"
+    },
+    {
+      "name": "Hoi An Ancient Town",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Hoi_An_%28I%29.jpg/960px-Hoi_An_%28I%29.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Hội An (city)"
+    },
+    {
+      "name": "Cu Chi Tunnels",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/C%E1%BB%A7_Chi_tunnels_entrance.JPG/960px-C%E1%BB%A7_Chi_tunnels_entrance.JPG",
+      "method": "wiki-search",
+      "matchTitle": "Củ Chi tunnels"
+    },
+    {
+      "name": "Phong Nha Caves",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/PhongNhaCave2.jpg/960px-PhongNhaCave2.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Phong Nha Cave"
+    },
+    {
+      "name": "Imperial City of Hue",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Hu%E1%BA%BF_%282024%29_-_Meridian_Gate_-_Ng%E1%BB%8D_M%C3%B4n_%28Ho%C3%A0ng_th%C3%A0nh_Hu%E1%BA%BF%29_-_img_02.jpg/960px-Hu%E1%BA%BF_%282024%29_-_Meridian_Gate_-_Ng%E1%BB%8D_M%C3%B4n_%28Ho%C3%A0ng_th%C3%A0nh_Hu%E1%BA%BF%29_-_img_02.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Imperial City of Huế"
+    }
+  ],
+  "greece": [
+    {
+      "name": "Acropolis",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/The_Acropolis_of_Athens_on_June_1%2C_2021.jpg/960px-The_Acropolis_of_Athens_on_June_1%2C_2021.jpg",
+      "method": "direct-page",
+      "matchTitle": "Acropolis"
+    },
+    {
+      "name": "Santorini",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/2011_Dimos_Thiras.png/960px-2011_Dimos_Thiras.png",
+      "method": "direct-page",
+      "matchTitle": "Santorini"
+    },
+    {
+      "name": "Meteora",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Meteora%27s_monastery_2.jpg/960px-Meteora%27s_monastery_2.jpg",
+      "method": "direct-page",
+      "matchTitle": "Meteora"
+    },
+    {
+      "name": "Delphi",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Delphi%2C_Greece_-_panoramio.jpg/960px-Delphi%2C_Greece_-_panoramio.jpg",
+      "method": "direct-page",
+      "matchTitle": "Delphi"
+    },
+    {
+      "name": "Mykonos",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/2011_Dimos_Mykonou.png/960px-2011_Dimos_Mykonou.png",
+      "method": "wiki-search",
+      "matchTitle": "Mykonos"
+    }
+  ],
+  "canada": [
+    {
+      "name": "Niagara Falls",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/3Falls_Niagara.jpg/960px-3Falls_Niagara.jpg",
+      "method": "direct-page",
+      "matchTitle": "Niagara Falls"
+    },
+    {
+      "name": "Banff National Park",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Lake_Louise_17092005.jpg/960px-Lake_Louise_17092005.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Lake Louise (Alberta)"
+    },
+    {
+      "name": "CN Tower",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Toronto_-_ON_-_CN_Tower_bei_Nacht2.jpg/960px-Toronto_-_ON_-_CN_Tower_bei_Nacht2.jpg",
+      "method": "commons",
+      "matchTitle": "File:Toronto - ON - CN Tower bei Nacht2.jpg"
+    },
+    {
+      "name": "Old Quebec",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Le_tourisme_dans_le_vieux_Qu%C3%A9bec.jpg/960px-Le_tourisme_dans_le_vieux_Qu%C3%A9bec.jpg",
+      "method": "direct-page",
+      "matchTitle": "Old Quebec"
+    },
+    {
+      "name": "Stanley Park",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Stanley_Park_Labeled_Aerial_Map.png/960px-Stanley_Park_Labeled_Aerial_Map.png",
+      "method": "wiki-search",
+      "matchTitle": "Stanley Park"
+    }
+  ],
+  "argentina": [
+    {
+      "name": "Iguazu Falls",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Iguazu_Cataratas2.jpg/960px-Iguazu_Cataratas2.jpg",
+      "method": "direct-page",
+      "matchTitle": "Iguazu Falls"
+    },
+    {
+      "name": "Perito Moreno Glacier",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Perito_Moreno_Glacier_2023.jpg/960px-Perito_Moreno_Glacier_2023.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Perito Moreno Glacier"
+    },
+    {
+      "name": "Buenos Aires La Boca",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/El_caminito2_-_Buenos_Aires_-_Argentina.jpg/960px-El_caminito2_-_Buenos_Aires_-_Argentina.jpg",
+      "method": "commons-name",
+      "matchTitle": "File:El caminito2 - Buenos Aires - Argentina.jpg"
+    },
+    {
+      "name": "Tierra del Fuego",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/NASA_Tierra_del_Fuego_image.jpg/960px-NASA_Tierra_del_Fuego_image.jpg",
+      "method": "direct-page",
+      "matchTitle": "Tierra del Fuego"
+    },
+    {
+      "name": "Quebrada de Humahuaca",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Cerro_de_los_7_colores.jpg/960px-Cerro_de_los_7_colores.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Cerro de los Siete Colores"
+    }
+  ],
+  "peru": [
+    {
+      "name": "Machu Picchu",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Machu_Picchu%2C_2023_%28012%29.jpg/960px-Machu_Picchu%2C_2023_%28012%29.jpg",
+      "method": "direct-page",
+      "matchTitle": "Machu Picchu"
+    },
+    {
+      "name": "Sacred Valley",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Urubamba_-_Valle_Sagrado_3.JPG/960px-Urubamba_-_Valle_Sagrado_3.JPG",
+      "method": "wiki-search",
+      "matchTitle": "Sacred Valley"
+    },
+    {
+      "name": "Nazca Lines",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/L%C3%ADneas_de_Nazca%2C_Nazca%2C_Per%C3%BA%2C_2015-07-29%2C_DD_52.JPG/960px-L%C3%ADneas_de_Nazca%2C_Nazca%2C_Per%C3%BA%2C_2015-07-29%2C_DD_52.JPG",
+      "method": "commons",
+      "matchTitle": "File:Líneas de Nazca, Nazca, Perú, 2015-07-29, DD 52.JPG"
+    },
+    {
+      "name": "Lake Titicaca",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Lake_Titicaca_ESA22522896.jpeg/960px-Lake_Titicaca_ESA22522896.jpeg",
+      "method": "direct-page",
+      "matchTitle": "Lake Titicaca"
+    },
+    {
+      "name": "Colca Canyon",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Colca_Canyon_Puno.jpg/960px-Colca_Canyon_Puno.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Colca Canyon"
+    }
+  ],
+  "portugal": [
+    {
+      "name": "Belém Tower",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Torre_Bel%C3%A9m_April_2009-4a.jpg/960px-Torre_Bel%C3%A9m_April_2009-4a.jpg",
+      "method": "direct-page",
+      "matchTitle": "Belém Tower"
+    },
+    {
+      "name": "Sintra Palaces",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Lisboa_-_Portugal_%2852597836992%29.jpg/960px-Lisboa_-_Portugal_%2852597836992%29.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Lisbon"
+    },
+    {
+      "name": "Douro Valley",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/River_Douro_Valley_Portugal_-_Vall%C3%A9e_de_la_rivi%C3%A8re_Douro_Portugal_-_Wine_Vin_Porto_-_Picture_Image_Photography_%2814962280582%29.jpg/960px-River_Douro_Valley_Portugal_-_Vall%C3%A9e_de_la_rivi%C3%A8re_Douro_Portugal_-_Wine_Vin_Porto_-_Picture_Image_Photography_%2814962280582%29.jpg",
+      "method": "commons",
+      "matchTitle": "File:River Douro Valley Portugal - Vallée de la rivière Douro Portugal - Wine Vin Porto - Picture Image Photography (14962280582).jpg"
+    },
+    {
+      "name": "Ribeira District",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Porto%2C_Pra%C3%A7a_da_Ribeira_%2832%29.jpg/960px-Porto%2C_Pra%C3%A7a_da_Ribeira_%2832%29.jpg",
+      "method": "commons-name",
+      "matchTitle": "File:Porto, Praça da Ribeira (32).jpg"
+    },
+    {
+      "name": "Algarve Caves",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/004_Tourist_reading_information_signs_about_rockfall_danger_and_cave_swimming_danger_in_Benagil_Beach%2C_Algarve%2C_Portugal.jpg/960px-004_Tourist_reading_information_signs_about_rockfall_danger_and_cave_swimming_danger_in_Benagil_Beach%2C_Algarve%2C_Portugal.jpg",
+      "method": "commons",
+      "matchTitle": "File:004 Tourist reading information signs about rockfall danger and cave swimming danger in Benagil Beach, Algarve, Portugal.jpg"
+    }
+  ],
+  "russia": [
+    {
+      "name": "Red Square",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Kremlin_and_Red_Square.1.jpg/960px-Kremlin_and_Red_Square.1.jpg",
+      "method": "direct-page",
+      "matchTitle": "Red Square"
+    },
+    {
+      "name": "Hermitage Museum",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/5174-3._St._Petersburg._Greater_Hermitage.jpg/960px-5174-3._St._Petersburg._Greater_Hermitage.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Hermitage Museum"
+    },
+    {
+      "name": "Lake Baikal",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Baikal.A2001296.0420.250m-NASA.jpg/960px-Baikal.A2001296.0420.250m-NASA.jpg",
+      "method": "direct-page",
+      "matchTitle": "Lake Baikal"
+    },
+    {
+      "name": "St. Basil's Cathedral",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Kremlin_and_Red_Square.1.jpg/960px-Kremlin_and_Red_Square.1.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Red Square"
+    },
+    {
+      "name": "Trans-Siberian Railway",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/VL_85-022_container_train.jpg/960px-VL_85-022_container_train.jpg",
+      "method": "direct-page",
+      "matchTitle": "Trans-Siberian Railway"
+    }
+  ],
+  "indonesia": [
+    {
+      "name": "Borobudur",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/77/Stupa_Borobudur.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Candi of Indonesia"
+    },
+    {
+      "name": "Bali Temples",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Tanah-Lot_Bali_Indonesia_Pura-Tanah-Lot-01.jpg/960px-Tanah-Lot_Bali_Indonesia_Pura-Tanah-Lot-01.jpg",
+      "method": "commons",
+      "matchTitle": "File:Tanah-Lot Bali Indonesia Pura-Tanah-Lot-01.jpg"
+    },
+    {
+      "name": "Komodo National Park",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Komodo_dragon_at_Komodo_National_Park.jpg",
+      "method": "direct-page",
+      "matchTitle": "Komodo National Park"
+    },
+    {
+      "name": "Raja Ampat Islands",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Southwest_Papua_in_Indonesia.svg/960px-Southwest_Papua_in_Indonesia.svg.png",
+      "method": "wiki-search",
+      "matchTitle": "Southwest Papua"
+    },
+    {
+      "name": "Ubud Rice Terraces",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Rice_terraces%2C_Bali.jpg/960px-Rice_terraces%2C_Bali.jpg",
+      "method": "commons-name",
+      "matchTitle": "File:Rice terraces, Bali.jpg"
+    }
+  ],
+  "malaysia": [
+    {
+      "name": "Petronas Twin Towers",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Petronas_Towers_at_Night_-_from_the_base_upwards.jpg/960px-Petronas_Towers_at_Night_-_from_the_base_upwards.jpg",
+      "method": "commons",
+      "matchTitle": "File:Petronas Towers at Night - from the base upwards.jpg"
+    },
+    {
+      "name": "George Town Heritage",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Medical_Heritage_Library_%28IA_b21476172%29.pdf/page1-500px-Medical_Heritage_Library_%28IA_b21476172%29.pdf.jpg",
+      "method": "commons",
+      "matchTitle": "File:Medical Heritage Library (IA b21476172).pdf"
+    },
+    {
+      "name": "Batu Caves",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Batu_Caves_stairs_2022-05.jpg/960px-Batu_Caves_stairs_2022-05.jpg",
+      "method": "direct-page",
+      "matchTitle": "Batu Caves"
+    },
+    {
+      "name": "Mount Kinabalu",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Kinabalu_Sabah_Borneo_Kampong_Kundasang_panorama_2.jpg/960px-Kinabalu_Sabah_Borneo_Kampong_Kundasang_panorama_2.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Mount Kinabalu"
+    },
+    {
+      "name": "Langkawi Sky Bridge",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Langkawi_sky_bridge.jpg/960px-Langkawi_sky_bridge.jpg",
+      "method": "direct-page",
+      "matchTitle": "Langkawi Sky Bridge"
+    }
+  ],
+  "saudi arabia": [
+    {
+      "name": "Masjid al-Haram",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Great_Mosque_of_Mecca1.jpg/960px-Great_Mosque_of_Mecca1.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Masjid al-Haram"
+    },
+    {
+      "name": "Al-Ula",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Al_Ula_%286748577917%29.jpg/960px-Al_Ula_%286748577917%29.jpg",
+      "method": "direct-page",
+      "matchTitle": "Al-Ula"
+    },
+    {
+      "name": "Edge of the World",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Arab_World_Green.svg/960px-Arab_World_Green.svg.png",
+      "method": "wiki-search",
+      "matchTitle": "Tourism in the Arab world"
+    },
+    {
+      "name": "Masjid an-Nabawi",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Al_nabi_mosque116.jpg/960px-Al_nabi_mosque116.jpg",
+      "method": "commons",
+      "matchTitle": "File:Al nabi mosque116.jpg"
+    },
+    {
+      "name": "Jeddah Corniche",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Jeddah_Corniche_36.jpg/960px-Jeddah_Corniche_36.jpg",
+      "method": "direct-page",
+      "matchTitle": "Jeddah Corniche"
+    }
+  ],
+  "morocco": [
+    {
+      "name": "Jemaa el-Fnaa",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Djemaa_el_Fna.jpg/960px-Djemaa_el_Fna.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Jemaa el-Fnaa"
+    },
+    {
+      "name": "Hassan II Mosque",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/en/thumb/c/ce/Hassan_II_mosque%2C_Casablanca_2.jpg/960px-Hassan_II_mosque%2C_Casablanca_2.jpg",
+      "method": "direct-page",
+      "matchTitle": "Hassan II Mosque"
+    },
+    {
+      "name": "Chefchaouen",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Chefchaouen_%2852189357475%29.jpg/960px-Chefchaouen_%2852189357475%29.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Chefchaouen"
+    },
+    {
+      "name": "Ait Benhaddou",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Camels_at_A%C3%AFt_Benhaddou%2C_Saharan_caravan_route%2C_Morocco_%28%D8%A2%D9%8A%D8%AA_%D8%A8%D9%86_%D8%AD%D8%AF%D9%91%D9%88%2C_%E2%B4%B0%E2%B5%A2%E2%B5%9C_%E2%B5%83%E2%B4%B0%E2%B4%B7%E2%B4%B7%E2%B5%93%29.jpg/960px-Camels_at_A%C3%AFt_Benhaddou%2C_Saharan_caravan_route%2C_Morocco_%28%D8%A2%D9%8A%D8%AA_%D8%A8%D9%86_%D8%AD%D8%AF%D9%91%D9%88%2C_%E2%B4%B0%E2%B5%A2%E2%B5%9C_%E2%B5%83%E2%B4%B0%E2%B4%B7%E2%B4%B7%E2%B5%93%29.jpg",
+      "method": "commons",
+      "matchTitle": "File:Camels at Aït Benhaddou, Saharan caravan route, Morocco (آيت بن حدّو, ⴰⵢⵜ ⵃⴰⴷⴷⵓ).jpg"
+    },
+    {
+      "name": "Sahara Desert Erg Chebbi",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vacations_-_Camel_ride_in_Sahara_Desert_%28Morroco%29.jpg/960px-Vacations_-_Camel_ride_in_Sahara_Desert_%28Morroco%29.jpg",
+      "method": "commons",
+      "matchTitle": "File:Vacations - Camel ride in Sahara Desert (Morroco).jpg"
+    }
+  ],
+  "colombia": [
+    {
+      "name": "Cartagena Old Town",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/A_list_of_United_States_war_information_films_..._%28IA_listofunitedstat00unit_1%29.pdf/page1-960px-A_list_of_United_States_war_information_films_..._%28IA_listofunitedstat00unit_1%29.pdf.jpg",
+      "method": "commons",
+      "matchTitle": "File:A list of United States war information films ... (IA listofunitedstat00unit 1).pdf"
+    },
+    {
+      "name": "Cocora Valley",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Valle_del_cocora_-_general_view.jpg/960px-Valle_del_cocora_-_general_view.jpg",
+      "method": "direct-page",
+      "matchTitle": "Cocora Valley"
+    },
+    {
+      "name": "Caño Cristales",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Ca%C3%B1o_Cristales_01.jpg/960px-Ca%C3%B1o_Cristales_01.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Caño Cristales"
+    },
+    {
+      "name": "Ciudad Perdida",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/CIUDAD_PERDIDA_2.jpg/960px-CIUDAD_PERDIDA_2.jpg",
+      "method": "direct-page",
+      "matchTitle": "Ciudad Perdida"
+    },
+    {
+      "name": "Salt Cathedral of Zipaquirá",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/The_creation_of_man_-_Zipaquira.JPG/960px-The_creation_of_man_-_Zipaquira.JPG",
+      "method": "wiki-search",
+      "matchTitle": "Salt Cathedral of Zipaquirá"
+    }
+  ],
+  "south africa": [
+    {
+      "name": "Table Mountain",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Table_Mountain_DanieVDM.jpg/960px-Table_Mountain_DanieVDM.jpg",
+      "method": "direct-page",
+      "matchTitle": "Table Mountain"
+    },
+    {
+      "name": "Kruger National Park",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Kruger_Zebra.JPG/960px-Kruger_Zebra.JPG",
+      "method": "wiki-search",
+      "matchTitle": "Kruger National Park"
+    },
+    {
+      "name": "Cape of Good Hope",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Playa_Dias%2C_Cape_Point%2C_Sud%C3%A1frica%2C_2018-07-23%2C_DD_103.jpg/960px-Playa_Dias%2C_Cape_Point%2C_Sud%C3%A1frica%2C_2018-07-23%2C_DD_103.jpg",
+      "method": "direct-page",
+      "matchTitle": "Cape of Good Hope"
+    },
+    {
+      "name": "Blyde River Canyon",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/20131119_162543b.jpg/960px-20131119_162543b.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Blyde River Canyon"
+    },
+    {
+      "name": "Robben Island",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Robben_Island_-_Cape_Town%2C_South_Africa_%283883849594%29.jpg/960px-Robben_Island_-_Cape_Town%2C_South_Africa_%283883849594%29.jpg",
+      "method": "direct-page",
+      "matchTitle": "Robben Island"
+    }
+  ],
+  "singapore": [
+    {
+      "name": "Marina Bay Sands",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Marina_Bay_Sands_%28I%29.jpg/960px-Marina_Bay_Sands_%28I%29.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Marina Bay Sands"
+    },
+    {
+      "name": "Gardens by the Bay",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Supertree_Grove%2C_Gardens_by_the_Bay%2C_Singapore_-_20120712-02.jpg/960px-Supertree_Grove%2C_Gardens_by_the_Bay%2C_Singapore_-_20120712-02.jpg",
+      "method": "direct-page",
+      "matchTitle": "Gardens by the Bay"
+    },
+    {
+      "name": "Sentosa Island",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/1_sentosa_aerial_2016.jpg/960px-1_sentosa_aerial_2016.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Sentosa"
+    },
+    {
+      "name": "Chinatown Heritage Centre",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Chinatown_Heritage_Centre.JPG/960px-Chinatown_Heritage_Centre.JPG",
+      "method": "commons-name",
+      "matchTitle": "File:Chinatown Heritage Centre.JPG"
+    },
+    {
+      "name": "Merlion Park",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Singapore_Merlion_BCT.jpg/960px-Singapore_Merlion_BCT.jpg",
+      "method": "direct-page",
+      "matchTitle": "Merlion Park"
+    }
+  ],
+  "philippines": [
+    {
+      "name": "Chocolate Hills",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Chocolate_Hills_Bohol.JPG/960px-Chocolate_Hills_Bohol.JPG",
+      "method": "wiki-search",
+      "matchTitle": "Chocolate Hills"
+    },
+    {
+      "name": "El Nido",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/The_Entry_to_a_Paradise.jpg/960px-The_Entry_to_a_Paradise.jpg",
+      "method": "commons",
+      "matchTitle": "File:The Entry to a Paradise.jpg"
+    },
+    {
+      "name": "Mayon Volcano",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mayon_Volcano_eruption_at_Daraga_Church.jpg/960px-Mayon_Volcano_eruption_at_Daraga_Church.jpg",
+      "method": "commons",
+      "matchTitle": "File:Mayon Volcano eruption at Daraga Church.jpg"
+    },
+    {
+      "name": "Tubbataha Reef",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Tubbataha_Shark.jpg",
+      "method": "direct-page",
+      "matchTitle": "Tubbataha Reef"
+    },
+    {
+      "name": "Rice Terraces of the Philippine Cordilleras",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/KITLV_40091_-_Kassian_C%C3%A9phas_-_Relief_of_the_hidden_base_of_Borobudur_-_1890-1891.jpg/960px-KITLV_40091_-_Kassian_C%C3%A9phas_-_Relief_of_the_hidden_base_of_Borobudur_-_1890-1891.jpg",
+      "method": "wiki-search",
+      "matchTitle": "History of rice cultivation"
+    }
+  ],
+  "new zealand": [
+    {
+      "name": "Milford Sound",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Milford_Sound_%28New_Zealand%29.JPG/960px-Milford_Sound_%28New_Zealand%29.JPG",
+      "method": "direct-page",
+      "matchTitle": "Milford Sound"
+    },
+    {
+      "name": "Hobbiton Movie Set",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Waterhouse_Lake_Front.jpg/960px-Waterhouse_Lake_Front.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Hobbiton Movie Set"
+    },
+    {
+      "name": "Tongariro Alpine Crossing",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Tongariro_Alpine_Crossing_%28Emerald_Lake%29_-_NZ.jpg",
+      "method": "commons",
+      "matchTitle": "File:Tongariro Alpine Crossing (Emerald Lake) - NZ.jpg"
+    },
+    {
+      "name": "Waitomo Glowworm Caves",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/NZL-waitomo-cave-exit.jpg/960px-NZL-waitomo-cave-exit.jpg",
+      "method": "commons-name",
+      "matchTitle": "File:NZL-waitomo-cave-exit.jpg"
+    },
+    {
+      "name": "Queenstown",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Picturesque_New_Zealand%2C_1913.djvu/page1-960px-Picturesque_New_Zealand%2C_1913.djvu.jpg",
+      "method": "commons",
+      "matchTitle": "File:Picturesque New Zealand, 1913.djvu"
+    }
+  ],
+  "ireland": [
+    {
+      "name": "Cliffs of Moher",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Cliffs-Of-Moher-OBriens-From-South.JPG/960px-Cliffs-Of-Moher-OBriens-From-South.JPG",
+      "method": "direct-page",
+      "matchTitle": "Cliffs of Moher"
+    },
+    {
+      "name": "Ring of Kerry",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/66/Sheep%27s_Head%2C_Ireland.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Sheep's Head"
+    },
+    {
+      "name": "Trinity College Library",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Long_Room_Interior%2C_Trinity_College_Dublin%2C_Ireland_-_Diliff.jpg/960px-Long_Room_Interior%2C_Trinity_College_Dublin%2C_Ireland_-_Diliff.jpg",
+      "method": "commons",
+      "matchTitle": "File:Long Room Interior, Trinity College Dublin, Ireland - Diliff.jpg"
+    },
+    {
+      "name": "Giant's Causeway",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Causeway-code_poet-4.jpg/960px-Causeway-code_poet-4.jpg",
+      "method": "direct-page",
+      "matchTitle": "Giant's Causeway"
+    },
+    {
+      "name": "Newgrange",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Irelands_history.jpg/960px-Irelands_history.jpg",
+      "method": "direct-page",
+      "matchTitle": "Newgrange"
+    }
+  ],
+  "netherlands": [
+    {
+      "name": "Anne Frank House",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Amsterdam_%28NL%29%2C_Anne-Frank-Huis_--_2015_--_7185.jpg/960px-Amsterdam_%28NL%29%2C_Anne-Frank-Huis_--_2015_--_7185.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Anne Frank House"
+    },
+    {
+      "name": "Keukenhof Gardens",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Keukenhof_2018_DSC_0508.jpg/960px-Keukenhof_2018_DSC_0508.jpg",
+      "method": "commons-name",
+      "matchTitle": "File:Keukenhof 2018 DSC 0508.jpg"
+    },
+    {
+      "name": "Rijksmuseum",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/South_facade_of_the_Rijksmuseum_Amsterdam_%28DSCF0528%29.jpg/960px-South_facade_of_the_Rijksmuseum_Amsterdam_%28DSCF0528%29.jpg",
+      "method": "direct-page",
+      "matchTitle": "Rijksmuseum"
+    },
+    {
+      "name": "Kinderdijk Windmills",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/KinderdijkWindmills.jpg/960px-KinderdijkWindmills.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Kinderdijk windmills"
+    },
+    {
+      "name": "Vondelpark",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Amsterdam%2C_Vondelpark%2C_at_the_pond-2.jpg/960px-Amsterdam%2C_Vondelpark%2C_at_the_pond-2.jpg",
+      "method": "direct-page",
+      "matchTitle": "Vondelpark"
+    }
+  ],
+  "switzerland": [
+    {
+      "name": "Matterhorn",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Matterhorn_and_Gornergratbahn.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Tourism in Switzerland"
+    },
+    {
+      "name": "Lake Geneva",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Lake_Geneva_by_Sentinel-2.jpg/960px-Lake_Geneva_by_Sentinel-2.jpg",
+      "method": "direct-page",
+      "matchTitle": "Lake Geneva"
+    },
+    {
+      "name": "Jungfraujoch",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Sphinx_et_Jungfrau_-_img_06980.jpg/960px-Sphinx_et_Jungfrau_-_img_06980.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Jungfraujoch"
+    },
+    {
+      "name": "Chapel Bridge",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Lucerne%2C_Switzerland%2C_5-2013.jpeg/960px-Lucerne%2C_Switzerland%2C_5-2013.jpeg",
+      "method": "commons",
+      "matchTitle": "File:Lucerne, Switzerland, 5-2013.jpeg"
+    },
+    {
+      "name": "Rhine Falls",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/SBB_RABe_514_DTZ_Rheinfall.jpg/960px-SBB_RABe_514_DTZ_Rheinfall.jpg",
+      "method": "direct-page",
+      "matchTitle": "Rhine Falls"
+    }
+  ],
+  "austria": [
+    {
+      "name": "Schönbrunn Palace",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Wien_-_Schloss_Sch%C3%B6nbrunn.JPG/960px-Wien_-_Schloss_Sch%C3%B6nbrunn.JPG",
+      "method": "wiki-search",
+      "matchTitle": "Schönbrunn Palace"
+    },
+    {
+      "name": "Hallstatt",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Hallstatt_-_Zentrum_.JPG/960px-Hallstatt_-_Zentrum_.JPG",
+      "method": "direct-page",
+      "matchTitle": "Hallstatt"
+    },
+    {
+      "name": "St. Stephen's Cathedral",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Wien_-_Stephansdom_%281%29.JPG/960px-Wien_-_Stephansdom_%281%29.JPG",
+      "method": "wiki-search",
+      "matchTitle": "St. Stephen's Cathedral, Vienna"
+    },
+    {
+      "name": "Salzburg Old Town",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Salzburg_-_Panorama_%28nachts%29_-_CN.jpg/960px-Salzburg_-_Panorama_%28nachts%29_-_CN.jpg",
+      "method": "commons",
+      "matchTitle": "File:Salzburg - Panorama (nachts) - CN.jpg"
+    },
+    {
+      "name": "Grossglockner High Alpine Road",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Grossglockner_road.jpg/960px-Grossglockner_road.jpg",
+      "method": "direct-page",
+      "matchTitle": "Grossglockner High Alpine Road"
+    }
+  ],
+  "sweden": [
+    {
+      "name": "Vasa Museum",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Stockholm_Vasa_Museum_and_Nordic_Museum_09.jpg/960px-Stockholm_Vasa_Museum_and_Nordic_Museum_09.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Vasa Museum"
+    },
+    {
+      "name": "Gamla Stan",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Gamla_stan_September_2014_01.jpg/960px-Gamla_stan_September_2014_01.jpg",
+      "method": "direct-page",
+      "matchTitle": "Gamla Stan"
+    },
+    {
+      "name": "ICEHOTEL",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Ice_sculpture_in_Quebec_city_downtown.jpg/960px-Ice_sculpture_in_Quebec_city_downtown.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Ice sculpture"
+    },
+    {
+      "name": "Abisko National Park",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Lapporten_2.jpg/960px-Lapporten_2.jpg",
+      "method": "direct-page",
+      "matchTitle": "Abisko National Park"
+    },
+    {
+      "name": "Stockholm Archipelago",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Stockholms_sk%C3%A4rg%C3%A5rd.png/960px-Stockholms_sk%C3%A4rg%C3%A5rd.png",
+      "method": "wiki-search",
+      "matchTitle": "Stockholm Archipelago"
+    }
+  ],
+  "norway": [
+    {
+      "name": "Geirangerfjord",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Geirangerfjord_.jpg/960px-Geirangerfjord_.jpg",
+      "method": "direct-page",
+      "matchTitle": "Geirangerfjord"
+    },
+    {
+      "name": "Trolltunga",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Trolltunga_2017.jpg/960px-Trolltunga_2017.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Trolltunga"
+    },
+    {
+      "name": "Northern Lights in Tromsø",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Northern_Lights_-_Aurora_Borealis_Ringvass%C3%B8ya_Troms%C3%B8_Norway.jpg/960px-Northern_Lights_-_Aurora_Borealis_Ringvass%C3%B8ya_Troms%C3%B8_Norway.jpg",
+      "method": "commons",
+      "matchTitle": "File:Northern Lights - Aurora Borealis Ringvassøya Tromsø Norway.jpg"
+    },
+    {
+      "name": "Preikestolen (Pulpit Rock)",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/00_0345_Norway_-_Preikestolen.jpg/960px-00_0345_Norway_-_Preikestolen.jpg",
+      "method": "commons",
+      "matchTitle": "File:00 0345 Norway - Preikestolen.jpg"
+    },
+    {
+      "name": "Lofoten Islands",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Reine_2013_06_12_2937.jpg/960px-Reine_2013_06_12_2937.jpg",
+      "method": "commons",
+      "matchTitle": "File:Reine 2013 06 12 2937.jpg"
+    }
+  ],
+  "denmark": [
+    {
+      "name": "Tivoli Gardens",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Tivoli_Gardens_4.jpg/960px-Tivoli_Gardens_4.jpg",
+      "method": "direct-page",
+      "matchTitle": "Tivoli Gardens"
+    },
+    {
+      "name": "Nyhavn",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Nyhavn_Copenhagen_2.jpg/960px-Nyhavn_Copenhagen_2.jpg",
+      "method": "direct-page",
+      "matchTitle": "Nyhavn"
+    },
+    {
+      "name": "The Little Mermaid",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/en/thumb/7/7a/Copenhagen_-_the_little_mermaid_statue_-_2013.jpg/960px-Copenhagen_-_the_little_mermaid_statue_-_2013.jpg",
+      "method": "wiki-search",
+      "matchTitle": "The Little Mermaid (statue)"
+    },
+    {
+      "name": "Kronborg Castle",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Kronborg_Castle-20140723-RM-150820.jpg/960px-Kronborg_Castle-20140723-RM-150820.jpg",
+      "method": "commons",
+      "matchTitle": "File:Kronborg Castle-20140723-RM-150820.jpg"
+    },
+    {
+      "name": "Legoland Billund",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Legoland_Billund%2C_1977_%2809%29.jpg/960px-Legoland_Billund%2C_1977_%2809%29.jpg",
+      "method": "commons",
+      "matchTitle": "File:Legoland Billund, 1977 (09).jpg"
+    }
+  ],
+  "czech republic": [
+    {
+      "name": "Charles Bridge",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Prague_07-2016_view_from_Lesser_Town_Tower_of_Charles_Bridge_img3.jpg/960px-Prague_07-2016_view_from_Lesser_Town_Tower_of_Charles_Bridge_img3.jpg",
+      "method": "direct-page",
+      "matchTitle": "Charles Bridge"
+    },
+    {
+      "name": "Prague Castle",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Wappen_Erzbistum_Prag.png",
+      "method": "wiki-search",
+      "matchTitle": "Archdiocese of Prague"
+    },
+    {
+      "name": "Old Town Square",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Prague_07-2016_View_from_Old_Town_Hall_Tower_img3.jpg/960px-Prague_07-2016_View_from_Old_Town_Hall_Tower_img3.jpg",
+      "method": "direct-page",
+      "matchTitle": "Old Town Square"
+    },
+    {
+      "name": "Český Krumlov",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Historic_Centre_of_%C4%8Cesk%C3%BD_Krumlov-111747.jpg/960px-Historic_Centre_of_%C4%8Cesk%C3%BD_Krumlov-111747.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Český Krumlov"
+    },
+    {
+      "name": "Kutná Hora Bone Church",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Ossuary_in_Sedlec.JPG/960px-Ossuary_in_Sedlec.JPG",
+      "method": "commons",
+      "matchTitle": "File:Ossuary in Sedlec.JPG"
+    }
+  ],
+  "czechia": [
+    {
+      "name": "Charles Bridge",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Prague_07-2016_view_from_Lesser_Town_Tower_of_Charles_Bridge_img3.jpg/960px-Prague_07-2016_view_from_Lesser_Town_Tower_of_Charles_Bridge_img3.jpg",
+      "method": "direct-page",
+      "matchTitle": "Charles Bridge"
+    },
+    {
+      "name": "Prague Castle",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Wappen_Erzbistum_Prag.png",
+      "method": "wiki-search",
+      "matchTitle": "Archdiocese of Prague"
+    },
+    {
+      "name": "Old Town Square",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Prague_07-2016_View_from_Old_Town_Hall_Tower_img3.jpg/960px-Prague_07-2016_View_from_Old_Town_Hall_Tower_img3.jpg",
+      "method": "direct-page",
+      "matchTitle": "Old Town Square"
+    },
+    {
+      "name": "Český Krumlov",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Historic_Centre_of_%C4%8Cesk%C3%BD_Krumlov-111747.jpg/960px-Historic_Centre_of_%C4%8Cesk%C3%BD_Krumlov-111747.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Český Krumlov"
+    },
+    {
+      "name": "Kutná Hora Bone Church",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Ossuary_in_Sedlec.JPG/960px-Ossuary_in_Sedlec.JPG",
+      "method": "commons",
+      "matchTitle": "File:Ossuary in Sedlec.JPG"
+    }
+  ],
+  "poland": [
+    {
+      "name": "Wawel Castle",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Wawel_%284%29.jpg/960px-Wawel_%284%29.jpg",
+      "method": "direct-page",
+      "matchTitle": "Wawel Castle"
+    },
+    {
+      "name": "Auschwitz-Birkenau",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e5/Brama_Arbeit_Macht_frei.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Auschwitz-Birkenau State Museum"
+    },
+    {
+      "name": "Wieliczka Salt Mine",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/%CE%91%CE%BB%CE%B1%CF%84%CF%89%CF%81%CF%85%CF%87%CE%B5%CE%AF%CE%B1_%CE%92%CE%B9%CE%B5%CE%BB%CE%AF%CF%84%CF%83%CE%BA%CE%B1_5021.jpg/960px-%CE%91%CE%BB%CE%B1%CF%84%CF%89%CF%81%CF%85%CF%87%CE%B5%CE%AF%CE%B1_%CE%92%CE%B9%CE%B5%CE%BB%CE%AF%CF%84%CF%83%CE%BA%CE%B1_5021.jpg",
+      "method": "direct-page",
+      "matchTitle": "Wieliczka Salt Mine"
+    },
+    {
+      "name": "Old Town Market Square",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Sukiennice_and_Main_Market_Square_Krakow_Poland.JPG/960px-Sukiennice_and_Main_Market_Square_Krakow_Poland.JPG",
+      "method": "wiki-search",
+      "matchTitle": "Main Square, Kraków"
+    },
+    {
+      "name": "Białowieża Forest",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Bialowieza_National_Park_in_Poland0029.JPG/960px-Bialowieza_National_Park_in_Poland0029.JPG",
+      "method": "direct-page",
+      "matchTitle": "Białowieża Forest"
+    }
+  ],
+  "hungary": [
+    {
+      "name": "Hungarian Parliament Building",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Budapest_Orsz%C3%A1gh%C3%A1z_%2831355012995%29.jpg/960px-Budapest_Orsz%C3%A1gh%C3%A1z_%2831355012995%29.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Hungarian Parliament Building"
+    },
+    {
+      "name": "Széchenyi Thermal Bath",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Sz%C3%A9chenyi_thermal_bath%2C_pool%2C_Budapest_12_55_44_917000.jpg/960px-Sz%C3%A9chenyi_thermal_bath%2C_pool%2C_Budapest_12_55_44_917000.jpg",
+      "method": "commons",
+      "matchTitle": "File:Széchenyi thermal bath, pool, Budapest 12 55 44 917000.jpg"
+    },
+    {
+      "name": "Fisherman's Bastion",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Hal%C3%A1szb%C3%A1stya_2017.jpg/960px-Hal%C3%A1szb%C3%A1stya_2017.jpg",
+      "method": "direct-page",
+      "matchTitle": "Fisherman's Bastion"
+    },
+    {
+      "name": "Buda Castle",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/20190502_Zamek_w_Budapeszcie_0647_1862_DxO.jpg/960px-20190502_Zamek_w_Budapeszcie_0647_1862_DxO.jpg",
+      "method": "commons-name",
+      "matchTitle": "File:20190502 Zamek w Budapeszcie 0647 1862 DxO.jpg"
+    },
+    {
+      "name": "Lake Balaton",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Balaton_Hungary_Landscape.jpg/960px-Balaton_Hungary_Landscape.jpg",
+      "method": "direct-page",
+      "matchTitle": "Lake Balaton"
+    }
+  ],
+  "croatia": [
+    {
+      "name": "Dubrovnik Old Town",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/The_walls_of_the_fortress_and_View_of_the_old_city._panorama.jpg/960px-The_walls_of_the_fortress_and_View_of_the_old_city._panorama.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Dubrovnik"
+    },
+    {
+      "name": "Plitvice Lakes National Park",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/View_in_Plitvice_Lakes_National_Park.jpg/960px-View_in_Plitvice_Lakes_National_Park.jpg",
+      "method": "direct-page",
+      "matchTitle": "Plitvice Lakes National Park"
+    },
+    {
+      "name": "Diocletian's Palace",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Croatia-01239_-_The_Peristil_%289551533404%29.jpg/960px-Croatia-01239_-_The_Peristil_%289551533404%29.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Diocletian's Palace"
+    },
+    {
+      "name": "Hvar Island",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Aerial_image_of_Hvar_%28view_from_the_south%29.jpg/960px-Aerial_image_of_Hvar_%28view_from_the_south%29.jpg",
+      "method": "commons-name",
+      "matchTitle": "File:Aerial image of Hvar (view from the south).jpg"
+    },
+    {
+      "name": "Krka National Park",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Krkawatervallen.jpg/960px-Krkawatervallen.jpg",
+      "method": "direct-page",
+      "matchTitle": "Krka National Park"
+    }
+  ],
+  "united arab emirates": [
+    {
+      "name": "Burj Khalifa",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Burj_Khalifa_%28worlds_tallest_building%29_and_the_Dubai_skyline_%2825781049892%29.jpg/960px-Burj_Khalifa_%28worlds_tallest_building%29_and_the_Dubai_skyline_%2825781049892%29.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Burj Khalifa"
+    },
+    {
+      "name": "Sheikh Zayed Grand Mosque",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/en/7/7d/Sheikh_Zayed_Mosque_view.jpg",
+      "method": "direct-page",
+      "matchTitle": "Sheikh Zayed Grand Mosque"
+    },
+    {
+      "name": "Palm Jumeirah",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Artificial_Archipelagos%2C_Dubai%2C_United_Arab_Emirates_ISS022-E-024940_lrg_%28cropped%29.jpg/960px-Artificial_Archipelagos%2C_Dubai%2C_United_Arab_Emirates_ISS022-E-024940_lrg_%28cropped%29.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Palm Jumeirah"
+    },
+    {
+      "name": "Dubai Frame",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e6/The_Dubai_Frame.jpg/960px-The_Dubai_Frame.jpg",
+      "method": "direct-page",
+      "matchTitle": "Dubai Frame"
+    },
+    {
+      "name": "Louvre Abu Dhabi",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/en/thumb/5/55/LouvreAD_exterior.jpg/960px-LouvreAD_exterior.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Louvre Abu Dhabi"
+    }
+  ],
+  "israel": [
+    {
+      "name": "Western Wall",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Westernwall2.jpg/960px-Westernwall2.jpg",
+      "method": "direct-page",
+      "matchTitle": "Western Wall"
+    },
+    {
+      "name": "Dead Sea",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Iss016e019375.jpg/960px-Iss016e019375.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Suez Canal"
+    },
+    {
+      "name": "Masada Fortress",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Israel-2013-Aerial_21-Masada.jpg/960px-Israel-2013-Aerial_21-Masada.jpg",
+      "method": "commons",
+      "matchTitle": "File:Israel-2013-Aerial 21-Masada.jpg"
+    },
+    {
+      "name": "Old City of Jerusalem",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/2014-06_East_Jerusalem_090_%2814936890061%29.jpg/960px-2014-06_East_Jerusalem_090_%2814936890061%29.jpg",
+      "method": "direct-page",
+      "matchTitle": "Old City of Jerusalem"
+    },
+    {
+      "name": "Bahá'í Gardens",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Caiobadner_-_mount_carmel.JPG/960px-Caiobadner_-_mount_carmel.JPG",
+      "method": "wiki-search",
+      "matchTitle": "Mount Carmel"
+    }
+  ],
+  "jordan": [
+    {
+      "name": "Petra",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Al_Deir_Petra.JPG/960px-Al_Deir_Petra.JPG",
+      "method": "direct-page",
+      "matchTitle": "Petra"
+    },
+    {
+      "name": "Wadi Rum",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Mountain_in_Wadi_Rum%2C_Jordan.jpg/960px-Mountain_in_Wadi_Rum%2C_Jordan.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Wadi Rum"
+    },
+    {
+      "name": "Dead Sea (Jordan)",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Salt_Lake_City%2C_with_a_sketch_of_the_route_of_the_Union_and_Central_Pacific_Railroads%2C_from_Omaha_to_Salt_Lake_City%2C_and_from_Ogden_to_San_Francisco_%28IA_saltlakecitywith00sava%29.pdf/page1-960px-thumbnail.pdf.jpg",
+      "method": "commons",
+      "matchTitle": "File:Salt Lake City, with a sketch of the route of the Union and Central Pacific Railroads, from Omaha to Salt Lake City, and from Ogden to San Francisco (IA saltlakecitywith00sava).pdf"
+    },
+    {
+      "name": "Jerash Ruins",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Ancient_Roman_City_-_Columns_Area.jpg/960px-Ancient_Roman_City_-_Columns_Area.jpg",
+      "method": "commons",
+      "matchTitle": "File:Ancient Roman City - Columns Area.jpg"
+    },
+    {
+      "name": "Aqaba Coral Reef",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/ISS-36_Strait_of_Tiran%2C_Red_Sea_and_Gulf_of_Aqaba.jpg/960px-ISS-36_Strait_of_Tiran%2C_Red_Sea_and_Gulf_of_Aqaba.jpg",
+      "method": "commons",
+      "matchTitle": "File:ISS-36 Strait of Tiran, Red Sea and Gulf of Aqaba.jpg"
+    }
+  ],
+  "sri lanka": [
+    {
+      "name": "Sigiriya Rock Fortress",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/43/Sigiriya%2CUNESCO_world_heritage.jpg",
+      "method": "commons",
+      "matchTitle": "File:Sigiriya,UNESCO world heritage.jpg"
+    },
+    {
+      "name": "Temple of the Tooth",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/SL_Kandy_asv2020-01_img33_Sacred_Tooth_Temple.jpg/960px-SL_Kandy_asv2020-01_img33_Sacred_Tooth_Temple.jpg",
+      "method": "direct-page",
+      "matchTitle": "Temple of the Tooth"
+    },
+    {
+      "name": "Galle Fort",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Galle_Fort.jpg/960px-Galle_Fort.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Galle Fort"
+    },
+    {
+      "name": "Ella Nine Arch Bridge",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/SL_Demodara_near_Ella_asv2020-01_img02.jpg/960px-SL_Demodara_near_Ella_asv2020-01_img02.jpg",
+      "method": "commons-name",
+      "matchTitle": "File:SL Demodara near Ella asv2020-01 img02.jpg"
+    },
+    {
+      "name": "Yala National Park",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Yala_Beach.jpg/960px-Yala_Beach.jpg",
+      "method": "direct-page",
+      "matchTitle": "Yala National Park"
+    }
+  ],
+  "cambodia": [
+    {
+      "name": "Angkor Wat",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Buddhist_monks_in_front_of_the_Angkor_Wat.jpg/960px-Buddhist_monks_in_front_of_the_Angkor_Wat.jpg",
+      "method": "wiki-search",
+      "matchTitle": "Angkor Wat"
+    },
+    {
+      "name": "Bayon Temple",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/20171127_Bayon_Temple_Angkor_Thom_4754_DxO.jpg/960px-20171127_Bayon_Temple_Angkor_Thom_4754_DxO.jpg",
+      "method": "commons",
+      "matchTitle": "File:20171127 Bayon Temple Angkor Thom 4754 DxO.jpg"
+    },
+    {
+      "name": "Ta Prohm Temple",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Angelina_Jolie_Tree_at_TaProhm.jpg/960px-Angelina_Jolie_Tree_at_TaProhm.jpg",
+      "method": "commons",
+      "matchTitle": "File:Angelina Jolie Tree at TaProhm.jpg"
+    },
+    {
+      "name": "Royal Palace",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/2016_Phnom_Penh%2C_Pa%C5%82ac_Kr%C3%B3lewski%2C_Srebrna_Pagoda_%2802%29.jpg/960px-2016_Phnom_Penh%2C_Pa%C5%82ac_Kr%C3%B3lewski%2C_Srebrna_Pagoda_%2802%29.jpg",
+      "method": "commons",
+      "matchTitle": "File:2016 Phnom Penh, Pałac Królewski, Srebrna Pagoda (02).jpg"
+    },
+    {
+      "name": "Tonle Sap Lake",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/The_floating_village-Tonle_Sap_lake.jpg/960px-The_floating_village-Tonle_Sap_lake.jpg",
+      "method": "commons",
+      "matchTitle": "File:The floating village-Tonle Sap lake.jpg"
+    }
+  ],
+  "cuba": [
+    {
+      "name": "Old Havana",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Havana_Map_-_Habana_Vieja.png/960px-Havana_Map_-_Habana_Vieja.png",
+      "method": "direct-page",
+      "matchTitle": "Old Havana"
+    },
+    {
+      "name": "Viñales Valley",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Vinales4.jpg/960px-Vinales4.jpg",
+      "method": "commons-name",
+      "matchTitle": "File:Vinales4.jpg"
+    },
+    {
+      "name": "Trinidad",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8a/Td-map.png",
+      "method": "direct-page",
+      "matchTitle": "Trinidad"
+    },
+    {
+      "name": "El Malecón",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/AvMalecon-LaHabanaCuba-04735.jpg/960px-AvMalecon-LaHabanaCuba-04735.jpg",
+      "method": "commons-name",
+      "matchTitle": "File:AvMalecon-LaHabanaCuba-04735.jpg"
+    },
+    {
+      "name": "Varadero Beach",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Varadero_Beach_-_Views.jpg/960px-Varadero_Beach_-_Views.jpg",
+      "method": "commons-name",
+      "matchTitle": "File:Varadero Beach - Views.jpg"
+    }
+  ]
+}

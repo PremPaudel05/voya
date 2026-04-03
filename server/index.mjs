@@ -1,6 +1,8 @@
 ﻿import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import { getCode } from 'country-list';
 import {
   knownAttractionsData,
@@ -32,8 +34,40 @@ if (fs.existsSync(envFile)) {
 }
 
 const app = express();
-app.use(cors());
-app.use(bodyParser.json());
+
+// Security headers
+app.use(helmet({
+  contentSecurityPolicy: false, // Allow inline scripts for Vite dev
+  crossOriginEmbedderPolicy: false,
+}));
+
+// Rate limiting: 100 requests per minute per IP
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later.' },
+});
+app.use('/api/', apiLimiter);
+
+// CORS - restrict in production
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:3001'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, etc) in dev
+    if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+}));
+
+app.use(bodyParser.json({ limit: '1mb' }));
 
 // Health check endpoint for deployment diagnostics
 app.get('/api/health', (_req, res) => {
@@ -96,8 +130,9 @@ async function fetchWikiImage(searchQuery, minWidth = 300) {
 }
 
 app.get('/api/image', async (req, res) => {
-  const query = req.query.q;
+  const query = String(req.query.q || '').trim().replace(/[<>{}]/g, '');
   if (!query) return res.status(400).send('Missing q parameter');
+  if (query.length > 200) return res.status(400).send('Invalid query');
 
   if (imageCache.has(query)) {
     return res.redirect(imageCache.get(query));
@@ -1377,7 +1412,21 @@ function getCultureData(countryName) {
 function getAttractionsData(countryName, capital) {
   const normalizedName = normalizeCountryName(countryName);
   const keyedName = countryAliases[normalizedName] || normalizedName;
-  return knownAttractionsData[keyedName] || [
+  if (knownAttractionsData[keyedName]) return knownAttractionsData[keyedName];
+
+  // Use geography natural landmarks as better fallback
+  const geo = knownGeographyData[keyedName] || knownGeographyData[normalizedName];
+  if (geo && geo.naturalLandmarks && geo.naturalLandmarks.length > 0) {
+    return geo.naturalLandmarks.slice(0, 5).map((landmark, i) => ({
+      name: landmark,
+      city: (geo.majorCities && geo.majorCities[Math.min(i, geo.majorCities.length - 1)]) || capital,
+      famousFor: `One of ${countryName}'s most celebrated landmarks and destinations`,
+      interestingFact: `A must-visit attraction when traveling through ${countryName}`,
+      imageSearchQuery: `${landmark} ${countryName}`,
+    }));
+  }
+
+  return [
     { name: `${countryName} National Museum`, city: capital, famousFor: "Cultural and historical exhibits", interestingFact: "A must-visit for understanding local heritage", imageSearchQuery: `${countryName} national museum` },
     { name: `${countryName} Historic Center`, city: capital, famousFor: "Architecture and historical landmarks", interestingFact: "The heart of the country's cultural identity", imageSearchQuery: `${countryName} historic center ${capital}` },
     { name: `${countryName} Nature Reserve`, city: capital, famousFor: "Natural beauty and biodiversity", interestingFact: "Home to unique flora and fauna", imageSearchQuery: `${countryName} nature reserve landscape` },
@@ -1386,10 +1435,379 @@ function getAttractionsData(countryName, capital) {
   ];
 }
 
+// Language phrase sets mapped by language group
+const languagePhraseSets = {
+  arabic: [
+    { english: "Hello", local: "السلام عليكم (As-salamu alaykum)", pronunciation: "ahs-sah-lah-moo ah-lay-koom" },
+    { english: "Thank you", local: "شكرا (Shukran)", pronunciation: "shoo-krahn" },
+    { english: "Please", local: "من فضلك (Min fadlak)", pronunciation: "min fahd-lahk" },
+    { english: "Excuse me", local: "لو سمحت (Law samaht)", pronunciation: "law sah-maht" },
+    { english: "Goodbye", local: "مع السلامة (Ma'a salama)", pronunciation: "mah-ah sah-lah-mah" },
+    { english: "How much?", local: "بكم؟ (Bikam?)", pronunciation: "bee-kahm" },
+    { english: "Yes", local: "نعم (Na'am)", pronunciation: "nah-ahm" },
+    { english: "No", local: "لا (La)", pronunciation: "lah" },
+    { english: "Help", local: "مساعدة! (Musa'da!)", pronunciation: "moo-sah-dah" },
+    { english: "Where is...?", local: "أين...؟ (Ayna...?)", pronunciation: "ay-nah" },
+  ],
+  french: [
+    { english: "Hello", local: "Bonjour", pronunciation: "bohn-zhoor" },
+    { english: "Thank you", local: "Merci", pronunciation: "mehr-see" },
+    { english: "Please", local: "S'il vous plaît", pronunciation: "seel voo pleh" },
+    { english: "Excuse me", local: "Excusez-moi", pronunciation: "ex-koo-zay mwah" },
+    { english: "Goodbye", local: "Au revoir", pronunciation: "oh reh-vwahr" },
+    { english: "How much?", local: "Combien?", pronunciation: "kohm-bee-ehn" },
+    { english: "Yes", local: "Oui", pronunciation: "wee" },
+    { english: "No", local: "Non", pronunciation: "nohn" },
+    { english: "Help", local: "Au secours!", pronunciation: "oh suh-koor" },
+    { english: "Where is...?", local: "Où est...?", pronunciation: "oo eh" },
+  ],
+  spanish: [
+    { english: "Hello", local: "Hola", pronunciation: "oh-lah" },
+    { english: "Thank you", local: "Gracias", pronunciation: "grah-see-ahs" },
+    { english: "Please", local: "Por favor", pronunciation: "pohr fah-vohr" },
+    { english: "Excuse me", local: "Disculpe", pronunciation: "dees-kool-peh" },
+    { english: "Goodbye", local: "Adiós", pronunciation: "ah-dee-ohs" },
+    { english: "How much?", local: "¿Cuánto cuesta?", pronunciation: "kwahn-toh kwes-tah" },
+    { english: "Yes", local: "Sí", pronunciation: "see" },
+    { english: "No", local: "No", pronunciation: "noh" },
+    { english: "Help", local: "¡Ayuda!", pronunciation: "ah-yoo-dah" },
+    { english: "Where is...?", local: "¿Dónde está...?", pronunciation: "dohn-deh es-tah" },
+  ],
+  portuguese: [
+    { english: "Hello", local: "Olá", pronunciation: "oh-lah" },
+    { english: "Thank you", local: "Obrigado/Obrigada", pronunciation: "oh-bree-gah-doo / oh-bree-gah-dah" },
+    { english: "Please", local: "Por favor", pronunciation: "pohr fah-vohr" },
+    { english: "Excuse me", local: "Com licença", pronunciation: "kohm lee-sen-sah" },
+    { english: "Goodbye", local: "Adeus", pronunciation: "ah-day-oosh" },
+    { english: "How much?", local: "Quanto custa?", pronunciation: "kwahn-too koos-tah" },
+    { english: "Yes", local: "Sim", pronunciation: "seem" },
+    { english: "No", local: "Não", pronunciation: "now" },
+    { english: "Help", local: "Socorro!", pronunciation: "soh-koh-hoo" },
+    { english: "Where is...?", local: "Onde fica...?", pronunciation: "ohn-jee fee-kah" },
+  ],
+  swahili: [
+    { english: "Hello", local: "Habari / Jambo", pronunciation: "hah-bah-ree / jahm-boh" },
+    { english: "Thank you", local: "Asante", pronunciation: "ah-sahn-teh" },
+    { english: "Please", local: "Tafadhali", pronunciation: "tah-fah-dah-lee" },
+    { english: "Excuse me", local: "Samahani", pronunciation: "sah-mah-hah-nee" },
+    { english: "Goodbye", local: "Kwaheri", pronunciation: "kwah-heh-ree" },
+    { english: "How much?", local: "Bei gani?", pronunciation: "bay gah-nee" },
+    { english: "Yes", local: "Ndiyo", pronunciation: "nn-dee-yoh" },
+    { english: "No", local: "Hapana", pronunciation: "hah-pah-nah" },
+    { english: "Help", local: "Msaada!", pronunciation: "mm-sah-dah" },
+    { english: "Where is...?", local: "...iko wapi?", pronunciation: "ee-koh wah-pee" },
+  ],
+  amharic: [
+    { english: "Hello", local: "ሰላም (Selam)", pronunciation: "seh-lahm" },
+    { english: "Thank you", local: "አመሰግናለሁ (Ameseginalehu)", pronunciation: "ah-meh-seg-nah-leh-hoo" },
+    { english: "Please", local: "እባክህ (Ebakeh)", pronunciation: "eh-bah-keh" },
+    { english: "Excuse me", local: "ይቅርታ (Yikirta)", pronunciation: "yih-kir-tah" },
+    { english: "Goodbye", local: "ደህና ሁን (Dehna hun)", pronunciation: "deh-nah hoon" },
+    { english: "How much?", local: "ስንት ነው? (Sint new?)", pronunciation: "sinnt neh-oo" },
+    { english: "Yes", local: "አዎ (Awo)", pronunciation: "ah-woh" },
+    { english: "No", local: "አይ (Ay)", pronunciation: "eye" },
+    { english: "Help", local: "እርዳታ! (Irdata!)", pronunciation: "ir-dah-tah" },
+    { english: "Where is...?", local: "...የት ነው? (Yet new?)", pronunciation: "yeht neh-oo" },
+  ],
+  bengali: [
+    { english: "Hello", local: "নমস্কার (Nomoshkar)", pronunciation: "noh-mosh-kar" },
+    { english: "Thank you", local: "ধন্যবাদ (Dhonnobad)", pronunciation: "dhon-noh-bahd" },
+    { english: "Please", local: "দয়া করে (Doya kore)", pronunciation: "doy-ah koh-reh" },
+    { english: "Excuse me", local: "মাফ করবেন (Maph korben)", pronunciation: "mahf kor-ben" },
+    { english: "Goodbye", local: "বিদায় (Biday)", pronunciation: "bee-die" },
+    { english: "How much?", local: "কত? (Koto?)", pronunciation: "koh-toh" },
+    { english: "Yes", local: "হ্যাঁ (Hyan)", pronunciation: "hyah" },
+    { english: "No", local: "না (Na)", pronunciation: "nah" },
+    { english: "Help", local: "সাহায্য! (Sahajjo!)", pronunciation: "shah-haj-joh" },
+    { english: "Where is...?", local: "...কোথায়? (Kothay?)", pronunciation: "koh-thay" },
+  ],
+  urdu: [
+    { english: "Hello", local: "السلام علیکم (Assalamu Alaikum)", pronunciation: "ahs-sah-lah-moo ah-lay-koom" },
+    { english: "Thank you", local: "شکریہ (Shukriya)", pronunciation: "shoo-kree-yah" },
+    { english: "Please", local: "براہ کرم (Barah-e-karam)", pronunciation: "bah-rah-eh kah-rahm" },
+    { english: "Excuse me", local: "معاف کیجیے (Maaf kijiye)", pronunciation: "maaf kee-jee-yay" },
+    { english: "Goodbye", local: "خدا حافظ (Khuda Hafiz)", pronunciation: "khoo-dah hah-fiz" },
+    { english: "How much?", local: "کتنا ہے؟ (Kitna hai?)", pronunciation: "kit-nah hai" },
+    { english: "Yes", local: "جی ہاں (Ji haan)", pronunciation: "jee haan" },
+    { english: "No", local: "نہیں (Nahin)", pronunciation: "nah-heen" },
+    { english: "Help", local: "!مدد (Madad!)", pronunciation: "muh-dud" },
+    { english: "Where is...?", local: "...کہاں ہے؟ (Kahan hai?)", pronunciation: "kah-haan hai" },
+  ],
+  persian: [
+    { english: "Hello", local: "سلام (Salaam)", pronunciation: "sah-lahm" },
+    { english: "Thank you", local: "ممنون (Mamnoon)", pronunciation: "mahm-noon" },
+    { english: "Please", local: "لطفاً (Lotfan)", pronunciation: "lot-fahn" },
+    { english: "Excuse me", local: "ببخشید (Bebakhshid)", pronunciation: "beh-bakh-sheed" },
+    { english: "Goodbye", local: "خداحافظ (Khodahafez)", pronunciation: "khoh-dah-hah-fez" },
+    { english: "How much?", local: "چند؟ (Chand?)", pronunciation: "chahnd" },
+    { english: "Yes", local: "بله (Baleh)", pronunciation: "bah-leh" },
+    { english: "No", local: "نه (Na)", pronunciation: "nah" },
+    { english: "Help", local: "!کمک (Komak!)", pronunciation: "koh-mahk" },
+    { english: "Where is...?", local: "...کجاست؟ (Kojast?)", pronunciation: "koh-jahst" },
+  ],
+  romanian: [
+    { english: "Hello", local: "Bună ziua", pronunciation: "boo-nah zee-wah" },
+    { english: "Thank you", local: "Mulțumesc", pronunciation: "moolt-soo-mesk" },
+    { english: "Please", local: "Vă rog", pronunciation: "vah rohg" },
+    { english: "Excuse me", local: "Scuzați-mă", pronunciation: "skoo-zaht-see mah" },
+    { english: "Goodbye", local: "La revedere", pronunciation: "lah reh-veh-deh-reh" },
+    { english: "How much?", local: "Cât costă?", pronunciation: "kuht koh-stah" },
+    { english: "Yes", local: "Da", pronunciation: "dah" },
+    { english: "No", local: "Nu", pronunciation: "noo" },
+    { english: "Help", local: "Ajutor!", pronunciation: "ah-zhoo-tohr" },
+    { english: "Where is...?", local: "Unde este...?", pronunciation: "oon-deh yes-teh" },
+  ],
+  ukrainian: [
+    { english: "Hello", local: "Привіт (Pryvit)", pronunciation: "prih-veet" },
+    { english: "Thank you", local: "Дякую (Dyakuyu)", pronunciation: "dyah-koo-yoo" },
+    { english: "Please", local: "Будь ласка (Bud laska)", pronunciation: "bood lahs-kah" },
+    { english: "Excuse me", local: "Вибачте (Vybachte)", pronunciation: "vih-bahch-teh" },
+    { english: "Goodbye", local: "До побачення (Do pobachennya)", pronunciation: "doh poh-bah-chen-nyah" },
+    { english: "How much?", local: "Скільки коштує? (Skilky koshtuye?)", pronunciation: "skeel-kih kosh-too-yeh" },
+    { english: "Yes", local: "Так (Tak)", pronunciation: "tahk" },
+    { english: "No", local: "Ні (Ni)", pronunciation: "nee" },
+    { english: "Help", local: "Допоможіть! (Dopomozhit!)", pronunciation: "doh-poh-moh-zheet" },
+    { english: "Where is...?", local: "Де...? (De...?)", pronunciation: "deh" },
+  ],
+  finnish: [
+    { english: "Hello", local: "Hei / Moi", pronunciation: "hey / moy" },
+    { english: "Thank you", local: "Kiitos", pronunciation: "kee-tohs" },
+    { english: "Please", local: "Ole hyvä", pronunciation: "oh-leh hoo-vah" },
+    { english: "Excuse me", local: "Anteeksi", pronunciation: "ahn-teek-see" },
+    { english: "Goodbye", local: "Näkemiin", pronunciation: "nah-keh-meen" },
+    { english: "How much?", local: "Paljonko maksaa?", pronunciation: "pahl-yohn-koh mahk-sah" },
+    { english: "Yes", local: "Kyllä", pronunciation: "kuul-lah" },
+    { english: "No", local: "Ei", pronunciation: "ay" },
+    { english: "Help", local: "Apua!", pronunciation: "ah-poo-ah" },
+    { english: "Where is...?", local: "Missä on...?", pronunciation: "mis-sah on" },
+  ],
+  icelandic: [
+    { english: "Hello", local: "Halló / Góðan daginn", pronunciation: "hah-loh / go-than die-in" },
+    { english: "Thank you", local: "Takk", pronunciation: "tahk" },
+    { english: "Please", local: "Gjörðu svo vel", pronunciation: "gyur-thoo svoh vel" },
+    { english: "Excuse me", local: "Afsakið", pronunciation: "ahf-sah-kith" },
+    { english: "Goodbye", local: "Bless", pronunciation: "bless" },
+    { english: "How much?", local: "Hvað kostar?", pronunciation: "kvath koh-star" },
+    { english: "Yes", local: "Já", pronunciation: "yow" },
+    { english: "No", local: "Nei", pronunciation: "nay" },
+    { english: "Help", local: "Hjálp!", pronunciation: "hyowlp" },
+    { english: "Where is...?", local: "Hvar er...?", pronunciation: "kvahr air" },
+  ],
+  albanian: [
+    { english: "Hello", local: "Përshëndetje", pronunciation: "puhr-shuhn-det-yeh" },
+    { english: "Thank you", local: "Faleminderit", pronunciation: "fah-leh-min-deh-reet" },
+    { english: "Please", local: "Ju lutem", pronunciation: "yoo loo-tem" },
+    { english: "Excuse me", local: "Më falni", pronunciation: "muh fahl-nee" },
+    { english: "Goodbye", local: "Mirupafshim", pronunciation: "meer-oo-paf-sheem" },
+    { english: "How much?", local: "Sa kushton?", pronunciation: "sah koosh-ton" },
+    { english: "Yes", local: "Po", pronunciation: "poh" },
+    { english: "No", local: "Jo", pronunciation: "yoh" },
+    { english: "Help", local: "Ndihmë!", pronunciation: "ndee-muh" },
+    { english: "Where is...?", local: "Ku është...?", pronunciation: "koo uhsh-tuh" },
+  ],
+  georgian: [
+    { english: "Hello", local: "გამარჯობა (Gamarjoba)", pronunciation: "gah-mahr-joh-bah" },
+    { english: "Thank you", local: "მადლობა (Madloba)", pronunciation: "mahd-loh-bah" },
+    { english: "Please", local: "თუ შეიძლება (Tu sheizleba)", pronunciation: "too shay-iz-leh-bah" },
+    { english: "Excuse me", local: "უკაცრავად (Ukatsravad)", pronunciation: "oo-kahts-rah-vahd" },
+    { english: "Goodbye", local: "ნახვამდის (Nakhvamdis)", pronunciation: "nahkh-vahm-dees" },
+    { english: "How much?", local: "რა ღირს? (Ra ghirs?)", pronunciation: "rah gheers" },
+    { english: "Yes", local: "კი (Ki)", pronunciation: "kee" },
+    { english: "No", local: "არა (Ara)", pronunciation: "ah-rah" },
+    { english: "Help", local: "დახმარება! (Dakhmareba!)", pronunciation: "dahkh-mah-reh-bah" },
+    { english: "Where is...?", local: "სად არის...? (Sad aris...?)", pronunciation: "sahd ah-rees" },
+  ],
+  serbian: [
+    { english: "Hello", local: "Здраво (Zdravo)", pronunciation: "zdrah-voh" },
+    { english: "Thank you", local: "Хвала (Hvala)", pronunciation: "hvah-lah" },
+    { english: "Please", local: "Молим (Molim)", pronunciation: "moh-leem" },
+    { english: "Excuse me", local: "Извините (Izvinite)", pronunciation: "eez-vee-nee-teh" },
+    { english: "Goodbye", local: "Довиђења (Doviđenja)", pronunciation: "doh-vee-jen-yah" },
+    { english: "How much?", local: "Колико кошта? (Koliko košta?)", pronunciation: "koh-lee-koh koh-shtah" },
+    { english: "Yes", local: "Да (Da)", pronunciation: "dah" },
+    { english: "No", local: "Не (Ne)", pronunciation: "neh" },
+    { english: "Help", local: "Помоћ! (Pomoć!)", pronunciation: "poh-mohch" },
+    { english: "Where is...?", local: "Где је...? (Gde je...?)", pronunciation: "gdeh yeh" },
+  ],
+  bulgarian: [
+    { english: "Hello", local: "Здравейте (Zdraveyte)", pronunciation: "zdrah-vey-teh" },
+    { english: "Thank you", local: "Благодаря (Blagodarya)", pronunciation: "blah-goh-dah-ryah" },
+    { english: "Please", local: "Моля (Molya)", pronunciation: "moh-lyah" },
+    { english: "Excuse me", local: "Извинете (Izvinete)", pronunciation: "eez-vee-neh-teh" },
+    { english: "Goodbye", local: "Довиждане (Dovizhdane)", pronunciation: "doh-veezh-dah-neh" },
+    { english: "How much?", local: "Колко струва? (Kolko struva?)", pronunciation: "kohl-koh stroo-vah" },
+    { english: "Yes", local: "Да (Da)", pronunciation: "dah" },
+    { english: "No", local: "Не (Ne)", pronunciation: "neh" },
+    { english: "Help", local: "Помощ! (Pomosht!)", pronunciation: "poh-mosht" },
+    { english: "Where is...?", local: "Къде е...? (Kude e...?)", pronunciation: "kuh-deh eh" },
+  ],
+  mongolian: [
+    { english: "Hello", local: "Сайн байна уу (Sain baina uu)", pronunciation: "sine buy-nah oo" },
+    { english: "Thank you", local: "Баярлалаа (Bayarlalaa)", pronunciation: "buy-ar-lah-lah" },
+    { english: "Please", local: "Гуйя (Guiya)", pronunciation: "goo-yah" },
+    { english: "Excuse me", local: "Уучлаарай (Uuchlaarai)", pronunciation: "ooch-lah-rye" },
+    { english: "Goodbye", local: "Баяртай (Bayartai)", pronunciation: "buy-ar-tie" },
+    { english: "How much?", local: "Хэд вэ? (Hed ve?)", pronunciation: "hed veh" },
+    { english: "Yes", local: "Тийм (Tiim)", pronunciation: "teem" },
+    { english: "No", local: "Үгүй (Ugui)", pronunciation: "oo-goo-ee" },
+    { english: "Help", local: "Тусламж! (Tuslamj!)", pronunciation: "toos-lahmj" },
+    { english: "Where is...?", local: "...хаана байна? (Khaana baina?)", pronunciation: "hah-nah buy-nah" },
+  ],
+  lao: [
+    { english: "Hello", local: "ສະບາຍດີ (Sabaidi)", pronunciation: "sah-bye-dee" },
+    { english: "Thank you", local: "ຂອບໃຈ (Khob chai)", pronunciation: "kohp jai" },
+    { english: "Please", local: "ກະລຸນາ (Kaluna)", pronunciation: "gah-loo-nah" },
+    { english: "Excuse me", local: "ຂໍໂທດ (Kho thot)", pronunciation: "kaw toht" },
+    { english: "Goodbye", local: "ລາກ່ອນ (La kon)", pronunciation: "lah gohn" },
+    { english: "How much?", local: "ເທົ່າໃດ? (Thao dai?)", pronunciation: "tao dai" },
+    { english: "Yes", local: "ແມ່ນ (Maen)", pronunciation: "mehn" },
+    { english: "No", local: "ບໍ່ (Bo)", pronunciation: "baw" },
+    { english: "Help", local: "ຊ່ວຍແດ່! (Suay dae!)", pronunciation: "soo-ay deh" },
+    { english: "Where is...?", local: "...ຢູ່ໃສ? (Yu sai?)", pronunciation: "yoo sai" },
+  ],
+  burmese: [
+    { english: "Hello", local: "မင်္ဂလာပါ (Mingalaba)", pronunciation: "min-gah-lah-bah" },
+    { english: "Thank you", local: "ကျေးဇူးတင်ပါတယ် (Kyei zu tin ba de)", pronunciation: "chay-zoo tin bah deh" },
+    { english: "Please", local: "ကျေးဇူးပြု၍ (Kyei zu pyu.)", pronunciation: "chay-zoo pyoo" },
+    { english: "Excuse me", local: "ခွင့်ပြုပါ (Khwint pyu ba)", pronunciation: "khwin pyoo bah" },
+    { english: "Goodbye", local: "သွားတော့မယ် (Thwa daw meh)", pronunciation: "thwah daw meh" },
+    { english: "How much?", local: "ဘယ်လောက်လဲ (Beh lout leh?)", pronunciation: "beh lout leh" },
+    { english: "Yes", local: "ဟုတ်ကဲ့ (Hoke keh)", pronunciation: "hohk keh" },
+    { english: "No", local: "မဟုတ်ဘူး (Ma hoke bu)", pronunciation: "mah hohk boo" },
+    { english: "Help", local: "ကူညီပါ! (Ku nyi ba!)", pronunciation: "koo nyee bah" },
+    { english: "Where is...?", local: "...ဘယ်မှာလဲ (Beh hma leh?)", pronunciation: "beh hmah leh" },
+  ],
+  malay: [
+    { english: "Hello", local: "Selamat / Hai", pronunciation: "seh-lah-maht / hai" },
+    { english: "Thank you", local: "Terima kasih", pronunciation: "teh-ree-mah kah-see" },
+    { english: "Please", local: "Tolong / Sila", pronunciation: "toh-long / see-lah" },
+    { english: "Excuse me", local: "Maafkan saya", pronunciation: "mah-ahf-kahn sah-yah" },
+    { english: "Goodbye", local: "Selamat tinggal", pronunciation: "seh-lah-maht ting-gahl" },
+    { english: "How much?", local: "Berapa?", pronunciation: "beh-rah-pah" },
+    { english: "Yes", local: "Ya", pronunciation: "yah" },
+    { english: "No", local: "Tidak", pronunciation: "tee-dahk" },
+    { english: "Help", local: "Tolong!", pronunciation: "toh-long" },
+    { english: "Where is...?", local: "Di mana...?", pronunciation: "dee mah-nah" },
+  ],
+};
+
+// Map countries to their primary language group for phrase fallback
+const countryLanguageGroup = {
+  // Arabic-speaking
+  algeria: 'arabic', bahrain: 'arabic', chad: 'arabic', comoros: 'arabic', djibouti: 'arabic',
+  iraq: 'arabic', kuwait: 'arabic', lebanon: 'arabic', libya: 'arabic', mauritania: 'arabic',
+  oman: 'arabic', qatar: 'arabic', somalia: 'arabic', sudan: 'arabic', 'south sudan': 'arabic',
+  tunisia: 'arabic', yemen: 'arabic',
+  // French-speaking
+  belgium: 'french', benin: 'french', 'burkina faso': 'french', burundi: 'french',
+  cameroon: 'french', 'central african republic': 'french', 'congo': 'french',
+  'congo (brazzaville)': 'french', 'congo (kinshasa)': 'french',
+  'democratic republic of the congo': 'french', "cote d'ivoire": 'french',
+  'equatorial guinea': 'french', gabon: 'french', guinea: 'french', haiti: 'french',
+  luxembourg: 'french', madagascar: 'french', mali: 'french', monaco: 'french',
+  niger: 'french', rwanda: 'french', senegal: 'french', seychelles: 'french', togo: 'french',
+  // Spanish-speaking
+  bolivia: 'spanish', chile: 'spanish', 'costa rica': 'spanish',
+  'dominican republic': 'spanish', ecuador: 'spanish', 'el salvador': 'spanish',
+  guatemala: 'spanish', honduras: 'spanish', nicaragua: 'spanish', panama: 'spanish',
+  paraguay: 'spanish', uruguay: 'spanish', venezuela: 'spanish',
+  // Portuguese-speaking
+  angola: 'portuguese', 'cape verde': 'portuguese', 'guinea-bissau': 'portuguese',
+  mozambique: 'portuguese', 'sao tome and principe': 'portuguese', 'timor-leste': 'portuguese',
+  // Swahili-speaking
+  kenya: 'swahili', tanzania: 'swahili', uganda: 'swahili',
+  // Other languages
+  ethiopia: 'amharic', bangladesh: 'bengali', pakistan: 'urdu',
+  iran: 'persian', afghanistan: 'persian',
+  romania: 'romanian', moldova: 'romanian',
+  ukraine: 'ukrainian', finland: 'finnish', iceland: 'icelandic',
+  albania: 'albanian', kosovo: 'albanian',
+  georgia: 'georgian',
+  serbia: 'serbian', 'bosnia and herzegovina': 'serbian',
+  bulgaria: 'bulgarian', 'north macedonia': 'bulgarian',
+  mongolia: 'mongolian', laos: 'lao', myanmar: 'burmese', brunei: 'malay',
+};
+
+// Income-tier pricing for countries without specific price data
+const incomeTierPricing = {
+  low: { hotel: "$10-40 per night", meal: "$1-5", streetFood: "$0.50-2", coffee: "$0.50-1.50", transport: "$0.25-1", taxi: "$0.50-2 per km" },
+  lowerMiddle: { hotel: "$20-70 per night", meal: "$3-10", streetFood: "$1-3", coffee: "$1-2", transport: "$0.50-2", taxi: "$1-3 per km" },
+  upperMiddle: { hotel: "$40-150 per night", meal: "$5-20", streetFood: "$2-6", coffee: "$2-4", transport: "$1-3", taxi: "$2-4 per km" },
+  high: { hotel: "$80-300 per night", meal: "$15-40", streetFood: "$5-12", coffee: "$3-6", transport: "$2-5", taxi: "$3-6 per km" },
+};
+
+const countryIncomeTier = {
+  // Low income
+  afghanistan: 'low', benin: 'low', 'burkina faso': 'low', burundi: 'low',
+  'central african republic': 'low', chad: 'low', comoros: 'low', congo: 'low',
+  'congo (brazzaville)': 'low', 'congo (kinshasa)': 'low',
+  'democratic republic of the congo': 'low', eritrea: 'low', ethiopia: 'low',
+  gambia: 'low', guinea: 'low', 'guinea-bissau': 'low', haiti: 'low',
+  lesotho: 'low', liberia: 'low', madagascar: 'low', malawi: 'low', mali: 'low',
+  mauritania: 'low', mozambique: 'low', myanmar: 'low', nepal: 'low', niger: 'low',
+  rwanda: 'low', 'sao tome and principe': 'low', senegal: 'low',
+  'sierra leone': 'low', somalia: 'low', 'south sudan': 'low', sudan: 'low',
+  tajikistan: 'low', togo: 'low', uganda: 'low', yemen: 'low', zimbabwe: 'low',
+  // Lower middle income
+  algeria: 'lowerMiddle', angola: 'lowerMiddle', bangladesh: 'lowerMiddle',
+  belize: 'lowerMiddle', bhutan: 'lowerMiddle', bolivia: 'lowerMiddle',
+  cambodia: 'lowerMiddle', cameroon: 'lowerMiddle', 'cape verde': 'lowerMiddle',
+  "cote d'ivoire": 'lowerMiddle', djibouti: 'lowerMiddle',
+  'dominican republic': 'lowerMiddle', ecuador: 'lowerMiddle', egypt: 'lowerMiddle',
+  'el salvador': 'lowerMiddle', eswatini: 'lowerMiddle', fiji: 'lowerMiddle',
+  gabon: 'lowerMiddle', ghana: 'lowerMiddle', guatemala: 'lowerMiddle',
+  guyana: 'lowerMiddle', honduras: 'lowerMiddle', india: 'lowerMiddle',
+  indonesia: 'lowerMiddle', iran: 'lowerMiddle', iraq: 'lowerMiddle',
+  jamaica: 'lowerMiddle', jordan: 'lowerMiddle', kenya: 'lowerMiddle',
+  kyrgyzstan: 'lowerMiddle', laos: 'lowerMiddle', lebanon: 'lowerMiddle',
+  libya: 'lowerMiddle', mongolia: 'lowerMiddle', morocco: 'lowerMiddle',
+  namibia: 'lowerMiddle', nicaragua: 'lowerMiddle', nigeria: 'lowerMiddle',
+  pakistan: 'lowerMiddle', 'papua new guinea': 'lowerMiddle', paraguay: 'lowerMiddle',
+  philippines: 'lowerMiddle', 'solomon islands': 'lowerMiddle',
+  'sri lanka': 'lowerMiddle', suriname: 'lowerMiddle', tanzania: 'lowerMiddle',
+  'timor-leste': 'lowerMiddle', tunisia: 'lowerMiddle', uzbekistan: 'lowerMiddle',
+  vanuatu: 'lowerMiddle', vietnam: 'lowerMiddle', zambia: 'lowerMiddle',
+  // Upper middle income
+  albania: 'upperMiddle', argentina: 'upperMiddle', armenia: 'upperMiddle',
+  azerbaijan: 'upperMiddle', barbados: 'upperMiddle', belarus: 'upperMiddle',
+  'bosnia and herzegovina': 'upperMiddle', botswana: 'upperMiddle',
+  brazil: 'upperMiddle', bulgaria: 'upperMiddle', chile: 'upperMiddle',
+  china: 'upperMiddle', colombia: 'upperMiddle', 'costa rica': 'upperMiddle',
+  croatia: 'upperMiddle', cuba: 'upperMiddle', 'dominican republic': 'upperMiddle',
+  'equatorial guinea': 'upperMiddle', georgia: 'upperMiddle', grenada: 'upperMiddle',
+  hungary: 'upperMiddle', kazakhstan: 'upperMiddle', malaysia: 'upperMiddle',
+  maldives: 'upperMiddle', mauritius: 'upperMiddle', mexico: 'upperMiddle',
+  moldova: 'upperMiddle', montenegro: 'upperMiddle', 'north macedonia': 'upperMiddle',
+  panama: 'upperMiddle', peru: 'upperMiddle', romania: 'upperMiddle',
+  russia: 'upperMiddle', serbia: 'upperMiddle', 'south africa': 'upperMiddle',
+  thailand: 'upperMiddle', turkey: 'upperMiddle', turkmenistan: 'upperMiddle',
+  ukraine: 'upperMiddle', uruguay: 'upperMiddle', venezuela: 'upperMiddle',
+  // High income
+  andorra: 'high', australia: 'high', austria: 'high', bahamas: 'high',
+  bahrain: 'high', belgium: 'high', brunei: 'high', canada: 'high',
+  cyprus: 'high', 'czech republic': 'high', czechia: 'high', denmark: 'high',
+  estonia: 'high', finland: 'high', france: 'high', germany: 'high',
+  greece: 'high', iceland: 'high', ireland: 'high', israel: 'high',
+  italy: 'high', japan: 'high', 'south korea': 'high', 'korea (republic of)': 'high',
+  kuwait: 'high', latvia: 'high', liechtenstein: 'high', lithuania: 'high',
+  luxembourg: 'high', malta: 'high', monaco: 'high', netherlands: 'high',
+  'new zealand': 'high', norway: 'high', oman: 'high', poland: 'high',
+  portugal: 'high', qatar: 'high', 'saudi arabia': 'high', seychelles: 'high',
+  singapore: 'high', slovakia: 'high', slovenia: 'high', spain: 'high',
+  sweden: 'high', switzerland: 'high', 'trinidad and tobago': 'high',
+  'united arab emirates': 'high', 'united kingdom': 'high', 'united states': 'high',
+};
+
 function getPhrasesData(countryName) {
   const normalizedName = normalizeCountryName(countryName);
   const keyedName = countryAliases[normalizedName] || normalizedName;
-  return knownPhrasesData[keyedName] || [
+  if (knownPhrasesData[keyedName]) return knownPhrasesData[keyedName];
+
+  // Try language group fallback
+  const langGroup = countryLanguageGroup[keyedName] || countryLanguageGroup[normalizedName];
+  if (langGroup && languagePhraseSets[langGroup]) return languagePhraseSets[langGroup];
+
+  return [
     { english: "Hello", local: "Hello", pronunciation: "Regional greeting" },
     { english: "Thank you", local: "Thank you", pronunciation: "Regional phrase" },
     { english: "Please", local: "Please", pronunciation: "Regional phrase" },
@@ -1406,25 +1824,69 @@ function getPhrasesData(countryName) {
 function getPricesData(countryName) {
   const normalizedName = normalizeCountryName(countryName);
   const keyedName = countryAliases[normalizedName] || normalizedName;
-  return knownPricesData[keyedName] || { hotel: "$30-100 per night", meal: "$5-25", streetFood: "$1-5", coffee: "$1-3", transport: "$0.50-3", taxi: "$1-5 per km" };
+  if (knownPricesData[keyedName]) return knownPricesData[keyedName];
+
+  // Use income tier pricing
+  const tier = countryIncomeTier[keyedName] || countryIncomeTier[normalizedName];
+  if (tier && incomeTierPricing[tier]) return incomeTierPricing[tier];
+
+  return { hotel: "$30-100 per night", meal: "$5-25", streetFood: "$1-5", coffee: "$1-3", transport: "$0.50-3", taxi: "$1-5 per km" };
 }
 
 function getBestTimeToVisitData(countryName) {
   const normalizedName = normalizeCountryName(countryName);
   const keyedName = countryAliases[normalizedName] || normalizedName;
-  return knownBestTimeToVisitData[keyedName] || { bestMonths: "Spring and Autumn", rainySeason: "Varies by region", cheapestSeason: "Off-peak months", majorFestivals: ["Local cultural festivals", "National holidays"] };
+  if (knownBestTimeToVisitData[keyedName]) return knownBestTimeToVisitData[keyedName];
+
+  // Generate from climate data
+  const geo = knownGeographyData[keyedName] || knownGeographyData[normalizedName];
+  if (geo && geo.climate) {
+    const cl = geo.climate.toLowerCase();
+    if (cl.includes('tropical') || cl.includes('monsoon')) {
+      return { bestMonths: "November to March (dry season, cooler temperatures ideal for travel).", rainySeason: "May to October (monsoon/wet season with heavy rainfall).", cheapestSeason: "May to September (wet season means fewer tourists and lower prices).", majorFestivals: ["Local cultural festivals", "National independence celebrations", "Religious holidays"] };
+    }
+    if (cl.includes('desert') || cl.includes('arid')) {
+      return { bestMonths: "October to April (cooler temperatures, comfortable for outdoor exploration).", rainySeason: "Minimal rainfall year-round in most desert regions.", cheapestSeason: "May to September (extreme heat deters visitors, lower prices).", majorFestivals: ["Local cultural festivals", "Religious occasions", "National celebrations"] };
+    }
+    if (cl.includes('mediterranean')) {
+      return { bestMonths: "April to June and September to October (warm weather, fewer crowds).", rainySeason: "November to March (cooler, wetter months).", cheapestSeason: "November to March (off-season with lower prices and fewer tourists).", majorFestivals: ["National holidays", "Local cultural events", "Summer festivals"] };
+    }
+    if (cl.includes('continental') || cl.includes('temperate')) {
+      return { bestMonths: "May to September (warm summer months with long daylight hours).", rainySeason: "Year-round moderate rainfall, heavier in spring and autumn.", cheapestSeason: "November to March (cold winter months offer lower prices).", majorFestivals: ["National celebrations", "Cultural festivals", "Seasonal events"] };
+    }
+    if (cl.includes('arctic') || cl.includes('subarctic') || cl.includes('cold')) {
+      return { bestMonths: "June to August (midnight sun, warmest temperatures for sightseeing).", rainySeason: "September to November (wettest period in most subarctic regions).", cheapestSeason: "October to April (dark, cold winter — except Christmas/New Year holidays).", majorFestivals: ["Northern Lights season (winter)", "Midsummer celebrations", "National holidays"] };
+    }
+  }
+
+  return { bestMonths: "Spring and Autumn offer the most comfortable weather for travel.", rainySeason: "Varies by region — check local conditions before traveling.", cheapestSeason: "Off-peak months typically offer the best deals on accommodation.", majorFestivals: ["Local cultural festivals", "National holidays"] };
 }
 
 function getFunFactsData(countryName) {
   const normalizedName = normalizeCountryName(countryName);
   const keyedName = countryAliases[normalizedName] || normalizedName;
-  return knownFunFactsData[keyedName] || [
-    `${countryName} has a rich history spanning many centuries`,
-    `${countryName} is known for its unique cultural traditions`,
-    `${countryName} offers diverse landscapes and natural beauty`,
-    `${countryName} has a distinctive culinary tradition`,
-    `${countryName} is home to several UNESCO World Heritage Sites`,
-  ];
+  if (knownFunFactsData[keyedName]) return knownFunFactsData[keyedName];
+
+  // Generate facts from geography data
+  const geo = knownGeographyData[keyedName] || knownGeographyData[normalizedName];
+  const facts = [];
+  if (geo) {
+    if (geo.majorCities) facts.push(`${countryName}'s major cities include ${geo.majorCities.slice(0, 3).join(', ')}`);
+    if (geo.climate) facts.push(`${countryName} has a ${geo.climate.split('.')[0].toLowerCase().replace(/^\w/, c => c.toUpperCase())} climate`);
+    if (geo.landscape) facts.push(`The landscape of ${countryName} features ${geo.landscape.split('.')[0].toLowerCase()}`);
+    if (geo.naturalLandmarks) facts.push(`Notable landmarks include ${geo.naturalLandmarks.slice(0, 3).join(', ')}`);
+  }
+  while (facts.length < 5) {
+    const extras = [
+      `${countryName} has a rich history and cultural heritage`,
+      `${countryName} is known for its unique traditions and customs`,
+      `${countryName} offers diverse landscapes and natural beauty`,
+      `${countryName} has a distinctive culinary tradition worth experiencing`,
+      `${countryName} is home to notable historical and cultural sites`,
+    ];
+    facts.push(extras[facts.length] || `${countryName} welcomes visitors with its unique character`);
+  }
+  return facts.slice(0, 5);
 }
 
 const knownMapCategoryData = {
@@ -2199,8 +2661,9 @@ function matchCountryFromResults(results, query) {
 
 app.get('/api/country', async (req, res) => {
   try {
-    const name = String(req.query.name || '').trim();
+    const name = String(req.query.name || '').trim().replace(/[<>{}]/g, '');
     if (!name) return res.status(400).json({ error: 'Missing name parameter' });
+    if (name.length > 100) return res.status(400).json({ error: 'Invalid country name' });
 
     // 1) Fetch REST Countries data
     const rc = await fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(name)}?fullText=true`);
