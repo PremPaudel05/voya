@@ -28,16 +28,40 @@ export default function App() {
 
   const handleSearch = async (country: string) => {
     const trimmedCountry = country.trim();
-
     if (!trimmedCountry) {
       setError('Please enter a country name.');
       setCountryData(null);
       return;
     }
-
-    const searchStartTime = Date.now();
-
+    setIsLoading(true);
+    setError(null);
+    setCountryData(null);
     setLastSearchQuery(trimmedCountry);
+    try {
+      const timeoutPromise = new Promise<CountryData>((_, reject) => {
+        setTimeout(() => {
+          reject(new Error('Request timed out'));
+        }, SEARCH_TIMEOUT_MS);
+      });
+      const data = await Promise.race([
+        generateCountryProfile(trimmedCountry),
+        timeoutPromise,
+      ]);
+      if (!data.isValidCountry) {
+        setError('Destination not found. Please enter a valid country.');
+      } else {
+        setCountryData(data);
+        setTimeout(() => {
+          window.scrollTo({ top: window.innerHeight * 0.6, behavior: 'smooth' });
+        }, 100);
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown error occurred';
+      if (message.toLowerCase().includes('timed out')) {
+        setError('The request took too long. Please try again in a moment.');
+      } else {
+        setError('We could not load travel insights right now. Please try again later.');
+      }
     } finally {
       setIsLoading(false);
     }
