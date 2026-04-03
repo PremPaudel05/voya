@@ -10,8 +10,8 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Missing Hugging Face API token' });
   }
 
-  // Use DeepSeek-V2 as the model (free tier)
-  const HF_MODEL = 'deepseek-ai/DeepSeek-V2';
+  // Use Meta-Llama-3-8B-Instruct as the model (recommended)
+  const HF_MODEL = 'meta-llama/Meta-Llama-3-8B-Instruct';
 
   try {
     const resp = await fetch('https://router.huggingface.co/v1/chat/completions', {
