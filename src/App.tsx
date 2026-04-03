@@ -6,6 +6,7 @@ import { generateCountryProfile } from './services/countryService';
 import type { CountryData } from './types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUp } from 'lucide-react';
+import { ChatAssistant } from './components/ChatAssistant';
 
 const SEARCH_TIMEOUT_MS = 15000;
 
@@ -38,39 +39,40 @@ export default function App() {
 
     setLastSearchQuery(trimmedCountry);
     setIsLoading(true);
-    setError(null);
-    setCountryData(null);
-
-    try {
-      const timeoutPromise = new Promise<CountryData>((_, reject) => {
-        setTimeout(() => {
-          reject(new Error('Request timed out'));
-        }, SEARCH_TIMEOUT_MS);
-      });
-
-      const data = await Promise.race([
-        generateCountryProfile(trimmedCountry),
-        timeoutPromise,
-      ]);
-
-      // enforce minimum perceptible loading time so it feels deliberate and reliable
-      const minLoadingMs = 1200;
-      const elapsed = Date.now() - searchStartTime;
-      if (elapsed < minLoadingMs) {
-        await new Promise((resolve) => setTimeout(resolve, minLoadingMs - elapsed));
-      }
-
-      if (!data.isValidCountry) {
-        setError('Destination not found. Please enter a valid country.');
-      } else {
-        setCountryData(data);
-        setTimeout(() => {
-          window.scrollTo({ top: window.innerHeight * 0.6, behavior: 'smooth' });
-        }, 100);
-      }
-    } catch (err) {
-      console.error(err);
-
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+        <Hero onSearch={handleSearch} />
+        <div className="max-w-5xl mx-auto">
+          <AnimatePresence>
+            {isLoading && <LoadingAnimation key="loading" />}
+            {!isLoading && error && (
+              <motion.div
+                key="error"
+                className="bg-red-100 text-red-800 rounded-lg px-4 py-3 my-8 text-center font-semibold shadow"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.4 }}
+              >
+                {error}
+              </motion.div>
+            )}
+            {!isLoading && countryData && (
+              <CountryProfile key={countryData.overview.capital} data={countryData} />
+            )}
+          </AnimatePresence>
+        </div>
+        {showScrollTop && (
+          <button
+            className="fixed bottom-8 right-8 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-40"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          >
+            <ArrowUp size={24} />
+          </button>
+        )}
+        <ChatAssistant />
+      </div>
+    );
       const message =
         err instanceof Error ? err.message : 'Unknown error occurred';
 
