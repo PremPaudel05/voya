@@ -143,6 +143,7 @@ export default function App() {
       <footer className="bg-slate-900 text-slate-400 py-8 text-center border-t border-slate-800 mt-auto">
         <p className="text-sm font-medium tracking-wide">Powered by Voya AI</p>
       </footer>
+      <ChatAssistant />
     </div>
   );
 }
