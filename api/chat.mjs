@@ -1,4 +1,4 @@
-// /api/chat endpoint for OpenAI/Gemini chat
+// /api/chat endpoint for Hugging Face chat
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   const { messages } = req.body;
@@ -25,7 +25,15 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({ inputs: prompt })
     });
-    const data = await resp.json();
+    let data;
+    try {
+      data = await resp.json();
+    } catch (jsonErr) {
+      // If not JSON (e.g. 404 Not Found), return error
+      const text = await resp.text();
+      console.error('Hugging Face non-JSON response:', text);
+      return res.status(500).json({ error: 'Hugging Face API error', details: text });
+    }
     // Hugging Face returns an array of generated texts
     const reply = Array.isArray(data) && data[0]?.generated_text
       ? data[0].generated_text.replace(prompt, '').trim()

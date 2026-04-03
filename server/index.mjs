@@ -15,23 +15,6 @@ import fs from 'fs';
 import path from 'path';
 import { extraCultureProfiles, extraFoodData, extraMapCategoryData } from './indexExtra.mjs';
 
-const envFile = path.resolve(process.cwd(), '.env');
-if (fs.existsSync(envFile)) {
-  const content = fs.readFileSync(envFile, 'utf-8');
-  content.split(/\r?\n/).forEach((line) => {
-    const m = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)\s*$/);
-    if (m) {
-      const [, key, raw] = m;
-      if (!process.env[key]) {
-        let value = raw;
-        if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-          value = value.slice(1, -1);
-        }
-        process.env[key] = value;
-      }
-    }
-  });
-}
 
 const app = express();
 
