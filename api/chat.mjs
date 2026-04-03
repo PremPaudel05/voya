@@ -4,36 +4,35 @@ export default async function handler(req, res) {
   const { messages } = req.body;
   if (!Array.isArray(messages)) return res.status(400).json({ error: 'Invalid messages' });
 
-  // Log environment and input for debugging
-  console.log('OPENAI_API_KEY present:', !!process.env.OPENAI_API_KEY);
-  console.log('messages:', messages);
-
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.HF_API_TOKEN;
   if (!apiKey) {
-    console.error('Missing OpenAI API key');
-    return res.status(500).json({ error: 'Missing OpenAI API key' });
+    console.error('Missing Hugging Face API token');
+    return res.status(500).json({ error: 'Missing Hugging Face API token' });
   }
 
+  // Use Mistral-7B-Instruct as the model
+  const HF_MODEL = 'mistralai/Mistral-7B-Instruct-v0.2';
+  // Join all messages for context (simple prompt)
+  const prompt = messages.map(m => (m.role === 'user' ? `User: ${m.content}` : `Assistant: ${m.content}`)).join('\n');
+
   try {
-    const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+    const resp = await fetch(`https://api-inference.huggingface.co/models/${HF_MODEL}`, {
       method: 'POST',
       headers: {
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
+        'Accept': 'application/json',
       },
-      body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: messages.map(m => ({ role: m.role, content: m.content })),
-        max_tokens: 256,
-        temperature: 0.7
-      })
+      body: JSON.stringify({ inputs: prompt })
     });
     const data = await resp.json();
-    console.log('OpenAI API response:', data);
-    const reply = data.choices?.[0]?.message?.content || 'Sorry, I could not get a response.';
+    // Hugging Face returns an array of generated texts
+    const reply = Array.isArray(data) && data[0]?.generated_text
+      ? data[0].generated_text.replace(prompt, '').trim()
+      : (data.error || 'Sorry, I could not get a response.');
     res.json({ reply });
   } catch (e) {
-    console.error('OpenAI fetch error:', e);
-    res.status(500).json({ error: 'Failed to contact OpenAI', details: e.message });
+    console.error('Hugging Face fetch error:', e);
+    res.status(500).json({ error: 'Failed to contact Hugging Face', details: e.message });
   }
 }
