@@ -76,7 +76,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
             <span className="text-blue-400">Voya</span>
           </h1>
           <p className="text-lg sm:text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
-            Your complete travel assistant: Discover countries, explore attractions, unlock local etiquette, and plan your entire trip in one place.
+            Discover countries, explore attractions, unlock local etiquette, and plan your entire trip in one place.
           </p>
         </motion.div>
 

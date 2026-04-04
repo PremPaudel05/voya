@@ -6,7 +6,7 @@ import { generateCountryProfile } from './services/countryService';
 import type { CountryData } from './types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUp } from 'lucide-react';
-import { ChatAssistant } from './components/ChatAssistant';
+
 
 const SEARCH_TIMEOUT_MS = 15000;
 
@@ -141,9 +141,9 @@ export default function App() {
       </AnimatePresence>
 
       <footer className="bg-slate-900 text-slate-400 py-8 text-center border-t border-slate-800 mt-auto">
-        <p className="text-sm font-medium tracking-wide">Powered by Voya AI</p>
+
       </footer>
-      <ChatAssistant />
+
     </div>
   );
 }
