@@ -140,7 +140,7 @@ export default function CountryPage() {
       <footer className="bg-slate-950 text-slate-500 border-t border-white/5 mt-4">
         <div className="border-b border-white/5 py-3 px-6 text-center">
           <p className="text-xs max-w-2xl mx-auto">
-            <span className="text-slate-400 font-medium">Heads up:</span> Voya uses AI to generate travel insights — always verify critical details before travel.
+            <span className="text-slate-400 font-medium">Heads up:</span> Voya compiles travel insights from curated data sources — always verify critical details before you travel.
           </p>
         </div>
         <div className="max-w-5xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">

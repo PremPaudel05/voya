@@ -70,7 +70,7 @@ const features = [
 
 const stats = [
   { value: "195+", label: "Countries covered" },
-  { value: "100%", label: "AI-powered" },
+  { value: "100%", label: "Free to use" },
   { value: "8", label: "Insight categories" },
   { value: "Free", label: "No account needed" },
 ];
@@ -116,7 +116,7 @@ export function LandingFeatures() {
             </span>
           </h2>
           <p className="text-slate-400 max-w-xl mx-auto text-lg">
-            Type a country name and get instant, AI-curated insights across every dimension of travel.
+            Type a country name and get instant, curated insights across every dimension of travel — all in one place.
           </p>
         </motion.div>
 
@@ -158,7 +158,7 @@ export function LandingFeatures() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
               {[
                 { step: "01", title: "Type a country", desc: "Enter any country name in the search bar above." },
-                { step: "02", title: "Get instant insights", desc: "AI generates a full country profile in seconds." },
+                { step: "02", title: "Get instant insights", desc: "Voya pulls together a full country profile in seconds." },
                 { step: "03", title: "Plan your trip", desc: "Generate a personalized itinerary and pack your bags." },
               ].map((item) => (
                 <div key={item.step} className="flex flex-col items-center">
