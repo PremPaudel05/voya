@@ -78,12 +78,10 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
   };
 
   return (
-    <div className="relative overflow-hidden bg-slate-950 text-white min-h-screen flex flex-col">
-      {/* Aurora shader background */}
+    <div className="relative overflow-hidden text-white min-h-screen flex flex-col">
+      {/* Aurora background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <AnimatedShaderBackground />
-        {/* Dark overlay so text stays crisp */}
-        <div className="absolute inset-0 bg-slate-900/60" />
       </div>
 
       {/* Main hero content */}

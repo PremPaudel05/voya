@@ -94,6 +94,10 @@ export function Globe({
     const canvas = canvasRef.current
     if (!canvas) return
 
+    // Pre-check WebGL availability
+    const testCtx = canvas.getContext('webgl2') ?? canvas.getContext('webgl')
+    if (!testCtx) return
+
     let globe: ReturnType<typeof createGlobe> | null = null
     let animationId: number
     let phi = 0
