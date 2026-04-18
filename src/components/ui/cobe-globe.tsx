@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useCallback, type MutableRefObject } from "react"
+import React, { useEffect, useRef, useCallback, useMemo, type MutableRefObject } from "react"
 import createGlobe from "cobe"
 
 interface Marker {
@@ -113,6 +113,17 @@ export function Globe({
     }
   }, [handlePointerMove, handlePointerUp])
 
+  const cobeMarkers = useMemo(
+    () => markers.map((m) => ({ location: m.location, size: markerSize, id: m.id })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [JSON.stringify(markers), markerSize]
+  )
+  const cobeArcs = useMemo(
+    () => arcs.map((a) => ({ from: a.from, to: a.to, id: a.id })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [JSON.stringify(arcs)]
+  )
+
   useEffect(() => {
     if (!canvasRef.current) return
     const canvas = canvasRef.current
@@ -139,8 +150,8 @@ export function Globe({
         markerColor,
         glowColor,
         markerElevation,
-        markers: markers.map((m) => ({ location: m.location, size: markerSize, id: m.id })),
-        arcs: arcs.map((a) => ({ from: a.from, to: a.to, id: a.id })),
+        markers: cobeMarkers,
+        arcs: cobeArcs,
         arcColor,
         arcWidth,
         arcHeight,
@@ -175,8 +186,8 @@ export function Globe({
           baseColor,
           arcColor,
           markerElevation,
-          markers: markers.map((m) => ({ location: m.location, size: markerSize, id: m.id })),
-          arcs: arcs.map((a) => ({ from: a.from, to: a.to, id: a.id })),
+          markers: cobeMarkers,
+          arcs: cobeArcs,
         })
         animationId = requestAnimationFrame(animate)
       }
@@ -200,7 +211,7 @@ export function Globe({
       if (globe) globe.destroy()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [markers, arcs, markerColor, baseColor, arcColor, glowColor, dark, mapBrightness, markerSize, markerElevation, arcWidth, arcHeight, speed, theta, diffuse, mapSamples])
+  }, [cobeMarkers, cobeArcs, markerColor, baseColor, arcColor, glowColor, dark, mapBrightness, markerSize, markerElevation, arcWidth, arcHeight, speed, theta, diffuse, mapSamples])
 
   return (
     <div className={`relative aspect-square select-none ${className}`}>
@@ -217,8 +228,7 @@ export function Globe({
       {markers.map((m) => (
         <div key={m.id} style={{
           position: "absolute",
-          // @ts-expect-error CSS Anchor Positioning API
-          positionAnchor: `--cobe-${m.id}`,
+          ...({ positionAnchor: `--cobe-${m.id}` } as React.CSSProperties),
           bottom: "anchor(top)", left: "anchor(center)",
           translate: "-50% 0", marginBottom: 8,
           padding: "2px 8px",
