@@ -115,8 +115,6 @@ export function GlobePins({ phiRef, thetaRef, elevation = 0.82 }: GlobePinsProps
       {pins.map((pin, i) => {
         if (!pin.visible) return null
         const isActive = i === activeIdx
-        const dwell = dwellRef.current / DWELL
-        // Smooth opacity for non-active: subtle so they don't clutter
         const opacity = isActive ? 1 : 0.55
 
         return (
