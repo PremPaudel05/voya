@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Hero } from './components/Hero';
 import { CountryProfile } from './components/CountryProfile';
 import { LoadingAnimation } from './components/LoadingAnimation';
+import { LandingFeatures } from './components/LandingFeatures';
 import { generateCountryProfile } from './services/countryService';
 import type { CountryData } from './types';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -72,10 +73,10 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
+    <div className="min-h-screen bg-slate-950 font-sans text-slate-900">
       <Hero onSearch={handleSearch} isLoading={isLoading} />
 
-      <main className="relative min-h-[50vh]">
+      <main className="relative">
         <AnimatePresence mode="wait">
           {isLoading && (
             <motion.div
@@ -83,7 +84,7 @@ export default function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 z-10 bg-slate-50/80 backdrop-blur-sm flex items-start justify-center pt-20"
+              className="flex items-start justify-center pt-20 pb-20 bg-slate-950"
             >
               <LoadingAnimation />
             </motion.div>
@@ -94,21 +95,23 @@ export default function App() {
               key="error"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="max-w-3xl mx-auto mt-20 p-6 bg-amber-50 border border-amber-200 rounded-2xl text-center shadow-sm"
+              className="bg-slate-950 px-4 py-20"
             >
-              <div className="text-4xl mb-4">🌍</div>
-              <h2 className="text-xl font-semibold text-slate-900 mb-2">
-                Travel insights are temporarily unavailable
-              </h2>
-              <p className="text-slate-600 leading-7">{error}</p>
-              {lastSearchQuery && (
-                <button
-                  onClick={() => handleSearch(lastSearchQuery)}
-                  className="mt-4 px-6 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium cursor-pointer"
-                >
-                  Try Again
-                </button>
-              )}
+              <div className="max-w-3xl mx-auto p-6 bg-slate-900 border border-amber-500/30 rounded-2xl text-center shadow-sm">
+                <div className="text-4xl mb-4">🌍</div>
+                <h2 className="text-xl font-semibold text-white mb-2">
+                  Travel insights are temporarily unavailable
+                </h2>
+                <p className="text-slate-400 leading-7">{error}</p>
+                {lastSearchQuery && (
+                  <button
+                    onClick={() => handleSearch(lastSearchQuery)}
+                    className="mt-4 px-6 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium cursor-pointer"
+                  >
+                    Try Again
+                  </button>
+                )}
+              </div>
             </motion.div>
           )}
 
@@ -120,6 +123,12 @@ export default function App() {
               transition={{ duration: 0.5 }}
             >
               <CountryProfile data={countryData} />
+            </motion.div>
+          )}
+
+          {!countryData && !isLoading && !error && (
+            <motion.div key="features" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <LandingFeatures />
             </motion.div>
           )}
         </AnimatePresence>
@@ -140,8 +149,21 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      <footer className="bg-slate-900 text-slate-400 py-8 text-center border-t border-slate-800 mt-auto">
-
+      <footer className="bg-slate-950 text-slate-500 border-t border-white/5">
+        {/* AI disclaimer */}
+        <div className="border-b border-white/5 py-3 px-6 text-center">
+          <p className="text-xs text-slate-500 max-w-2xl mx-auto">
+            <span className="text-slate-400 font-medium">Heads up:</span> Voya uses AI to generate travel insights. Information may occasionally be inaccurate or outdated — always verify critical details before travel.
+          </p>
+        </div>
+        <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2 font-semibold text-white">
+            <span className="text-blue-400">Voya</span>
+            <span className="text-slate-600">·</span>
+            <span className="text-sm font-normal text-slate-500">Your AI travel companion</span>
+          </div>
+          <p className="text-sm">© {new Date().getFullYear()} Voya. Built to make travel planning joyful.</p>
+        </div>
       </footer>
 
     </div>
