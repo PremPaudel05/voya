@@ -65,6 +65,8 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
   const [factIndex, setFactIndex] = useState(0);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const globePhiRef = useRef(0);
+  const globeThetaRef = useRef(0.18);
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
@@ -263,6 +265,8 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                   arcHeight={0.3}
                   markers={globeMarkers}
                   arcs={globeArcs}
+                  phiRef={globePhiRef}
+                  thetaRef={globeThetaRef}
                 />
               </div>
             </GlobeErrorBoundary>
