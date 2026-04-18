@@ -5,8 +5,6 @@ import React from 'react';
 
 type PresetType = 'blur' | 'shake' | 'scale' | 'fade' | 'slide';
 
-type VariantDef = Record<string, Record<string, unknown>>;
-
 type TextEffectProps = {
   children: string;
   per?: 'word' | 'char' | 'line';
@@ -26,19 +24,19 @@ const defaultStaggerTimes: Record<'char' | 'word' | 'line', number> = {
   line: 0.1,
 };
 
-const defaultContainer: VariantDef = {
+const defaultContainer: Variants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.05 } } as Record<string, unknown>,
-  exit: { transition: { staggerChildren: 0.05, staggerDirection: -1 } } as Record<string, unknown>,
+  visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
+  exit: { transition: { staggerChildren: 0.05, staggerDirection: -1 } },
 };
 
-const defaultItem: VariantDef = {
+const defaultItem: Variants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1 },
   exit: { opacity: 0 },
 };
 
-const presetVariants: Record<PresetType, { container: VariantDef; item: VariantDef }> = {
+const presetVariants: Record<PresetType, { container: Variants; item: Variants }> = {
   blur: {
     container: defaultContainer,
     item: {
@@ -51,7 +49,7 @@ const presetVariants: Record<PresetType, { container: VariantDef; item: VariantD
     container: defaultContainer,
     item: {
       hidden: { x: 0 },
-      visible: { x: [-5, 5, -5, 5, 0], transition: { duration: 0.5 } } as Record<string, unknown>,
+      visible: { x: [-5, 5, -5, 5, 0], transition: { duration: 0.5 } },
       exit: { x: 0 },
     },
   },
@@ -83,7 +81,7 @@ const presetVariants: Record<PresetType, { container: VariantDef; item: VariantD
 
 const AnimationComponent: React.FC<{
   segment: string;
-  variants: VariantDef;
+  variants: Variants;
   per: 'line' | 'word' | 'char';
   segmentWrapperClassName?: string;
 }> = React.memo(({ segment, variants, per, segmentWrapperClassName }) => {
@@ -137,15 +135,20 @@ export function TextEffect({
 
   const MotionTag = motion[as as keyof typeof motion] as typeof motion.div;
   const selected = preset ? presetVariants[preset] : { container: defaultContainer, item: defaultItem };
-  const containerBase = (variants?.container ?? selected.container) as VariantDef;
-  const itemVariants = (variants?.item ?? selected.item) as VariantDef;
+  const containerBase = variants?.container ?? selected.container;
+  const itemVariants = variants?.item ?? selected.item;
   const stagger = defaultStaggerTimes[per];
 
-  const visibleTransition = (containerBase.visible as { transition?: Record<string, unknown> })?.transition ?? {};
-  const delayedContainer: VariantDef = {
+  const visibleVariant = containerBase.visible;
+  const visibleTransition =
+    visibleVariant && typeof visibleVariant === 'object' && 'transition' in visibleVariant
+      ? (visibleVariant as { transition?: Record<string, unknown> }).transition ?? {}
+      : {};
+
+  const delayedContainer: Variants = {
     hidden: containerBase.hidden,
     visible: {
-      ...(containerBase.visible as Record<string, unknown>),
+      ...(typeof containerBase.visible === 'object' ? containerBase.visible : {}),
       transition: {
         ...visibleTransition,
         staggerChildren: (visibleTransition.staggerChildren as number | undefined) ?? stagger,
