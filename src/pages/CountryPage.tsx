@@ -144,7 +144,7 @@ export default function CountryPage() {
           </p>
         </div>
         <div className="max-w-5xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span className="text-blue-400 font-bold">Voya <span className="text-slate-600 font-normal">· Your AI travel companion</span></span>
+          <span className="text-blue-400 font-bold">Voya <span className="text-slate-600 font-normal">· Your smart travel guide</span></span>
           <p className="text-xs">© {new Date().getFullYear()} Voya. Built to make travel planning joyful.</p>
         </div>
       </footer>

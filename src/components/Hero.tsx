@@ -99,7 +99,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
           >
             <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-400/20 rounded-full px-4 py-1.5 mb-6 text-sm text-blue-300 font-medium">
               <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-              Your AI-powered travel companion
+              Instant travel insights, worldwide
             </div>
 
             <h1 className="text-5xl sm:text-6xl xl:text-7xl font-bold tracking-tight mb-5 leading-[1.05]">
