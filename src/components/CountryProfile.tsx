@@ -13,27 +13,25 @@ import {
 interface CountryProfileProps { data: CountryData }
 
 const TABS = [
-  { id: 'overview',     label: 'Overview',     icon: Globe },
-  { id: 'geography',    label: 'Geography',    icon: Mountain },
-  { id: 'culture',      label: 'Culture',      icon: Users },
-  { id: 'food',         label: 'Food',         icon: Utensils },
-  { id: 'attractions',  label: 'Attractions',  icon: Camera },
-  { id: 'map',          label: 'Map',          icon: Map },
-  { id: 'phrases',      label: 'Phrases',      icon: MessageCircle },
-  { id: 'budget',       label: 'Budget',       icon: CreditCard },
+  { id: 'overview',    label: 'Overview',    icon: Globe },
+  { id: 'geography',   label: 'Geography',   icon: Mountain },
+  { id: 'culture',     label: 'Culture',     icon: Users },
+  { id: 'food',        label: 'Food',        icon: Utensils },
+  { id: 'attractions', label: 'Attractions', icon: Camera },
+  { id: 'map',         label: 'Map',         icon: Map },
+  { id: 'phrases',     label: 'Phrases',     icon: MessageCircle },
+  { id: 'budget',      label: 'Budget',      icon: CreditCard },
 ];
 
 export function CountryProfile({ data }: CountryProfileProps) {
   const [activeTab, setActiveTab] = useState('overview');
   const [usdAmount, setUsdAmount] = useState<number | string>(100);
   const [factIdx, setFactIdx] = useState(0);
-  const tabBarRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // Cycle fun facts
   useEffect(() => {
     if (!data.funFacts?.length) return;
-    const t = setInterval(() => setFactIdx(i => (i + 1) % data.funFacts.length), 4000);
+    const t = setInterval(() => setFactIdx(i => (i + 1) % data.funFacts.length), 4500);
     return () => clearInterval(t);
   }, [data.funFacts]);
 
@@ -41,13 +39,11 @@ export function CountryProfile({ data }: CountryProfileProps) {
     setActiveTab(id);
     const el = sectionRefs.current[id];
     if (el) {
-      const offset = 120;
-      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      const top = el.getBoundingClientRect().top + window.scrollY - 110;
       window.scrollTo({ top, behavior: 'smooth' });
     }
   };
 
-  // Intersection observer to highlight active tab while scrolling
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
     TABS.forEach(({ id }) => {
@@ -55,7 +51,7 @@ export function CountryProfile({ data }: CountryProfileProps) {
       if (!el) return;
       const obs = new IntersectionObserver(
         ([entry]) => { if (entry.isIntersecting) setActiveTab(id); },
-        { rootMargin: '-30% 0px -60% 0px' }
+        { rootMargin: '-25% 0px -65% 0px' }
       );
       obs.observe(el);
       observers.push(obs);
@@ -68,49 +64,81 @@ export function CountryProfile({ data }: CountryProfileProps) {
     : '0';
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white font-sans">
+    <div className="min-h-screen bg-[#f8f7f4] font-sans">
 
-      {/* ── Hero Banner ─────────────────────────────────── */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-slate-900 to-slate-950 border-b border-white/5">
-        {/* subtle grid */}
-        <div className="absolute inset-0 opacity-[0.03]"
-          style={{ backgroundImage: 'linear-gradient(white 1px,transparent 1px),linear-gradient(90deg,white 1px,transparent 1px)', backgroundSize: '40px 40px' }} />
+      {/* ── Hero Banner ───────────────────────────────────────── */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+        {/* Subtle noise texture overlay */}
+        <div className="absolute inset-0 opacity-[0.04]"
+          style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")' }} />
 
-        <div className="relative max-w-5xl mx-auto px-6 py-14 flex flex-col md:flex-row items-center gap-8">
-          {/* Flag + name */}
-          <motion.div initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 200 }}
-            className="text-[100px] leading-none select-none drop-shadow-2xl">
-            {data.overview.flagEmoji}
+        <div className="relative max-w-5xl mx-auto px-6 py-16 flex flex-col md:flex-row items-center gap-10">
+          {/* Big flag */}
+          <motion.div
+            initial={{ scale: 0.5, opacity: 0, rotate: -10 }}
+            animate={{ scale: 1, opacity: 1, rotate: 0 }}
+            transition={{ type: 'spring', stiffness: 180, damping: 16 }}
+            className="shrink-0"
+          >
+            <div className="w-36 h-36 md:w-44 md:h-44 rounded-3xl flex items-center justify-center text-8xl md:text-9xl shadow-2xl bg-white/10 backdrop-blur border border-white/15 select-none">
+              {data.overview.flagEmoji}
+            </div>
           </motion.div>
+
           <div className="flex-1 text-center md:text-left">
-            <motion.h1 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-              className="text-4xl md:text-5xl font-extrabold tracking-tight mb-2">
+            <motion.p
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-blue-400 text-sm font-semibold uppercase tracking-widest mb-2"
+            >
+              Travel Guide
+            </motion.p>
+            <motion.h1
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.08 }}
+              className="text-5xl md:text-6xl font-black tracking-tight text-white mb-4 leading-none"
+            >
               {data.mapData.countryQuery}
             </motion.h1>
 
-            {/* Quick stats row */}
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-              className="flex flex-wrap gap-3 justify-center md:justify-start mt-3 mb-5">
+            {/* Quick-stat pills */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.16 }}
+              className="flex flex-wrap gap-2 justify-center md:justify-start mb-5"
+            >
               {[
-                { icon: Map,         label: data.overview.capital,     color: 'bg-blue-500/15 text-blue-300 border-blue-500/20' },
-                { icon: Users,       label: data.overview.population,  color: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/20' },
-                { icon: Coins,       label: data.overview.currencyCode, color: 'bg-amber-500/15 text-amber-300 border-amber-500/20' },
-                { icon: Clock,       label: data.overview.timeZone,    color: 'bg-purple-500/15 text-purple-300 border-purple-500/20' },
-              ].map(({ icon: Icon, label, color }) => (
+                { Icon: Map,   label: data.overview.capital,      color: 'bg-blue-500/20 text-blue-200 border-blue-400/25' },
+                { Icon: Users, label: data.overview.population,   color: 'bg-emerald-500/20 text-emerald-200 border-emerald-400/25' },
+                { Icon: Coins, label: data.overview.currencyCode, color: 'bg-amber-500/20 text-amber-200 border-amber-400/25' },
+                { Icon: Clock, label: data.overview.timeZone,     color: 'bg-violet-500/20 text-violet-200 border-violet-400/25' },
+              ].map(({ Icon, label, color }) => (
                 <span key={label} className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border ${color}`}>
-                  <Icon size={12} /> {label}
+                  <Icon size={11} /> {label}
                 </span>
               ))}
             </motion.div>
 
-            {/* Fun fact ticker */}
+            {/* Fun-fact ticker */}
             {data.funFacts?.length > 0 && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
-                className="flex items-start gap-2 bg-white/5 border border-white/10 rounded-xl px-4 py-3 max-w-lg">
-                <Sparkles size={14} className="text-yellow-400 mt-0.5 shrink-0" />
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.24 }}
+                className="inline-flex items-start gap-2.5 bg-white/8 border border-white/12 rounded-2xl px-4 py-3 max-w-lg"
+              >
+                <Sparkles size={13} className="text-yellow-400 mt-0.5 shrink-0" />
                 <AnimatePresence mode="wait">
-                  <motion.p key={factIdx} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
-                    transition={{ duration: 0.35 }} className="text-sm text-slate-300 leading-snug">
+                  <motion.p
+                    key={factIdx}
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -5 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-sm text-slate-300 leading-snug"
+                  >
                     {data.funFacts[factIdx]}
                   </motion.p>
                 </AnimatePresence>
@@ -120,56 +148,60 @@ export function CountryProfile({ data }: CountryProfileProps) {
         </div>
       </div>
 
-      {/* ── Sticky Tab Bar ──────────────────────────────── */}
-      <div ref={tabBarRef} className="sticky top-[49px] z-40 bg-slate-950/90 backdrop-blur border-b border-white/5">
-        <div className="max-w-5xl mx-auto px-4 flex gap-1 overflow-x-auto scrollbar-none py-2">
+      {/* ── Sticky Tab Bar ─────────────────────────────────────── */}
+      <div className="sticky top-[49px] z-40 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
+        <div className="max-w-5xl mx-auto px-4 flex gap-0.5 overflow-x-auto scrollbar-none py-2">
           {TABS.map(({ id, label, icon: Icon }) => (
             <button key={id} onClick={() => scrollToTab(id)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all
                 ${activeTab === id
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>
-              <Icon size={13} />
+                  ? 'bg-slate-900 text-white shadow-sm'
+                  : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'}`}
+            >
+              <Icon size={12} />
               {label}
             </button>
           ))}
         </div>
       </div>
 
-      {/* ── Content ─────────────────────────────────────── */}
-      <div className="max-w-5xl mx-auto px-4 py-10 space-y-14">
+      {/* ── Content ────────────────────────────────────────────── */}
+      <div className="max-w-5xl mx-auto px-4 py-12 space-y-16">
 
         {/* OVERVIEW */}
-        <Section id="overview" refs={sectionRefs} title="Overview" icon={<Globe size={18} />}>
-          <div className="grid md:grid-cols-2 gap-6">
+        <Section id="overview" refs={sectionRefs} title="Overview" icon={<Globe size={17} />}>
+          <div className="grid md:grid-cols-2 gap-5">
 
             {/* Currency Converter */}
-            {data.overview.exchangeRateToUSD && (
-              <div className="bg-gradient-to-br from-blue-600/20 to-indigo-600/10 border border-blue-500/20 rounded-2xl p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="p-2 bg-blue-500/20 rounded-lg"><ArrowRightLeft size={16} className="text-blue-400" /></div>
-                  <h3 className="font-bold text-white">Currency Converter</h3>
-                </div>
-                <p className="text-xs text-slate-400 mb-4">1 USD = <span className="text-blue-300 font-semibold">{data.overview.exchangeRateToUSD.toFixed(2)} {data.overview.currencyCode}</span></p>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center bg-white/10 rounded-xl overflow-hidden flex-1">
-                    <span className="px-3 text-slate-400 font-semibold text-sm">$</span>
-                    <input type="number" value={usdAmount} onChange={e => setUsdAmount(e.target.value)} min="0"
-                      className="flex-1 px-2 py-3 bg-transparent text-white font-semibold focus:outline-none text-sm" />
+            {data.overview.exchangeRateToUSD > 0 && (
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                <div className="flex items-center gap-2.5 mb-4">
+                  <div className="p-2 bg-blue-50 rounded-xl"><ArrowRightLeft size={16} className="text-blue-600" /></div>
+                  <div>
+                    <h3 className="font-bold text-slate-900 text-sm">Currency Converter</h3>
+                    <p className="text-xs text-slate-500">1 USD = <span className="font-semibold text-blue-600">{data.overview.exchangeRateToUSD.toFixed(2)} {data.overview.currencyCode}</span></p>
                   </div>
-                  <ChevronRight size={16} className="text-slate-500 shrink-0" />
-                  <div className="bg-white/10 px-4 py-3 rounded-xl font-bold text-blue-300 flex-1 text-sm">
-                    {converted} <span className="text-slate-400 font-normal">{data.overview.currencyCode}</span>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl overflow-hidden flex-1">
+                    <span className="px-3 text-slate-400 font-bold text-sm border-r border-slate-200 py-3">$</span>
+                    <input type="number" value={usdAmount} onChange={e => setUsdAmount(e.target.value)} min="0"
+                      className="flex-1 px-3 py-3 bg-transparent text-slate-900 font-semibold focus:outline-none text-sm" />
+                  </div>
+                  <ChevronRight size={16} className="text-slate-300 shrink-0" />
+                  <div className="bg-blue-50 border border-blue-100 px-4 py-3 rounded-xl flex-1 text-sm">
+                    <span className="font-bold text-blue-700">{converted}</span>
+                    <span className="text-blue-400 ml-1 font-medium">{data.overview.currencyCode}</span>
                   </div>
                 </div>
               </div>
             )}
 
             {/* Best time to visit */}
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="p-2 bg-emerald-500/20 rounded-lg"><Calendar size={16} className="text-emerald-400" /></div>
-                <h3 className="font-bold text-white">Best Time to Visit</h3>
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="p-2 bg-emerald-50 rounded-xl"><Calendar size={16} className="text-emerald-600" /></div>
+                <h3 className="font-bold text-slate-900 text-sm">Best Time to Visit</h3>
               </div>
               <div className="space-y-3">
                 <InfoRow icon="☀️" label="Best Months" value={data.bestTimeToVisit.bestMonths} />
@@ -178,16 +210,16 @@ export function CountryProfile({ data }: CountryProfileProps) {
               </div>
             </div>
 
-            {/* Major festivals */}
+            {/* Festivals */}
             {data.bestTimeToVisit.majorFestivals?.length > 0 && (
-              <div className="md:col-span-2 bg-white/5 border border-white/10 rounded-2xl p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <Star size={16} className="text-yellow-400" />
-                  <h3 className="font-bold text-white">Major Festivals & Events</h3>
+              <div className="md:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                <div className="flex items-center gap-2.5 mb-4">
+                  <Star size={16} className="text-amber-500" />
+                  <h3 className="font-bold text-slate-900 text-sm">Major Festivals & Events</h3>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {data.bestTimeToVisit.majorFestivals.map((f, i) => (
-                    <span key={i} className="px-3 py-1.5 bg-yellow-500/10 border border-yellow-500/20 text-yellow-300 rounded-full text-xs font-medium">
+                    <span key={i} className="px-3 py-1.5 bg-amber-50 border border-amber-200 text-amber-800 rounded-full text-xs font-semibold">
                       🎉 {f}
                     </span>
                   ))}
@@ -198,149 +230,149 @@ export function CountryProfile({ data }: CountryProfileProps) {
         </Section>
 
         {/* GEOGRAPHY */}
-        <Section id="geography" refs={sectionRefs} title="Geography & Climate" icon={<Mountain size={18} />}>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <div className="flex items-center gap-2 mb-3">
-                <Thermometer size={15} className="text-blue-400" />
-                <h3 className="font-semibold text-white text-sm uppercase tracking-wide">Climate</h3>
-              </div>
-              <p className="text-slate-300 text-sm leading-relaxed">{data.geography.climate}</p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <div className="flex items-center gap-2 mb-3">
-                <Mountain size={15} className="text-emerald-400" />
-                <h3 className="font-semibold text-white text-sm uppercase tracking-wide">Landscape</h3>
-              </div>
-              <p className="text-slate-300 text-sm leading-relaxed">{data.geography.landscape}</p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 className="font-semibold text-white text-sm uppercase tracking-wide mb-3">🏙️ Major Cities</h3>
+        <Section id="geography" refs={sectionRefs} title="Geography & Climate" icon={<Mountain size={17} />}>
+          <div className="grid md:grid-cols-2 gap-5">
+            <Card>
+              <CardLabel icon={<Thermometer size={14} className="text-sky-500" />} label="Climate" />
+              <p className="text-slate-700 text-sm leading-relaxed">{data.geography.climate}</p>
+            </Card>
+            <Card>
+              <CardLabel icon={<Mountain size={14} className="text-emerald-600" />} label="Landscape" />
+              <p className="text-slate-700 text-sm leading-relaxed">{data.geography.landscape}</p>
+            </Card>
+            <Card>
+              <CardLabel icon={<span className="text-base">🏙️</span>} label="Major Cities" />
               <div className="space-y-2">
                 {data.geography.majorCities.map((c, i) => (
-                  <div key={i} className="flex items-center gap-2 text-slate-300 text-sm">
+                  <div key={i} className="flex items-center gap-2 text-slate-700 text-sm">
                     <div className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" /> {c}
                   </div>
                 ))}
               </div>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 className="font-semibold text-white text-sm uppercase tracking-wide mb-3">⛰️ Natural Landmarks</h3>
+            </Card>
+            <Card>
+              <CardLabel icon={<span className="text-base">⛰️</span>} label="Natural Landmarks" />
               <div className="space-y-2">
                 {data.geography.naturalLandmarks.map((l, i) => (
-                  <div key={i} className="flex items-center gap-2 text-slate-300 text-sm">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" /> {l}
+                  <div key={i} className="flex items-center gap-2 text-slate-700 text-sm">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" /> {l}
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
           </div>
         </Section>
 
         {/* CULTURE */}
-        <Section id="culture" refs={sectionRefs} title="Culture & Etiquette" icon={<Users size={18} />}>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 className="font-semibold text-white text-sm uppercase tracking-wide mb-4">🎭 Traditions</h3>
+        <Section id="culture" refs={sectionRefs} title="Culture & Etiquette" icon={<Users size={17} />}>
+          <div className="grid md:grid-cols-3 gap-5">
+            <Card>
+              <CardLabel icon={<span className="text-base">🎭</span>} label="Traditions" />
               <ul className="space-y-3">
                 {data.culture.traditions.map((t, i) => (
-                  <li key={i} className="flex items-start gap-2 text-slate-300 text-sm">
-                    <span className="text-blue-400 font-bold mt-0.5 shrink-0">✓</span> {t}
+                  <li key={i} className="flex items-start gap-2 text-slate-700 text-sm">
+                    <span className="text-blue-500 font-bold mt-0.5 shrink-0">✓</span> {t}
                   </li>
                 ))}
               </ul>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 className="font-semibold text-white text-sm uppercase tracking-wide mb-4">🤝 Social Norms</h3>
+            </Card>
+            <Card>
+              <CardLabel icon={<span className="text-base">🤝</span>} label="Social Norms" />
               <ul className="space-y-3">
                 {data.culture.socialNorms.map((n, i) => (
-                  <li key={i} className="flex items-start gap-2 text-slate-300 text-sm">
-                    <span className="text-purple-400 mt-0.5 shrink-0">•</span> {n}
+                  <li key={i} className="flex items-start gap-2 text-slate-700 text-sm">
+                    <span className="text-violet-400 mt-0.5 shrink-0 font-bold">•</span> {n}
                   </li>
                 ))}
               </ul>
-            </div>
+            </Card>
             <div className="space-y-4">
-              <div className="bg-blue-600/10 border border-blue-500/20 rounded-2xl p-6">
-                <h3 className="font-semibold text-white text-sm uppercase tracking-wide mb-4">📍 Tourist Tips</h3>
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+                <CardLabel icon={<span className="text-base">📍</span>} label="Tourist Tips" />
                 <ol className="space-y-3">
                   {data.culture.etiquetteTips.map((tip, i) => (
-                    <li key={i} className="flex items-start gap-3 text-slate-300 text-sm">
-                      <span className="bg-blue-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shrink-0">{i + 1}</span>
+                    <li key={i} className="flex items-start gap-3 text-slate-700 text-sm">
+                      <span className="bg-slate-900 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">{i + 1}</span>
                       {tip}
                     </li>
                   ))}
                 </ol>
               </div>
-              <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4">
-                <h3 className="font-semibold text-amber-300 text-xs uppercase tracking-wide mb-2">🙏 Religion</h3>
-                <p className="text-slate-300 text-sm leading-relaxed">{data.culture.religionOverview}</p>
+              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
+                <CardLabel icon={<span className="text-base">🙏</span>} label="Religion" />
+                <p className="text-amber-900 text-sm leading-relaxed">{data.culture.religionOverview}</p>
               </div>
             </div>
           </div>
         </Section>
 
         {/* FOOD */}
-        <Section id="food" refs={sectionRefs} title="Popular Foods" icon={<Utensils size={18} />}>
+        <Section id="food" refs={sectionRefs} title="Popular Foods" icon={<Utensils size={17} />}>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
             {data.foods.map((food, i) => (
-              <motion.div key={i} whileHover={{ y: -4, scale: 1.02 }} transition={{ type: 'spring', stiffness: 300 }}
-                className="bg-white/5 border border-white/10 hover:border-orange-500/30 rounded-2xl p-5 transition-colors group cursor-default">
-                <div className="text-2xl mb-3">
+              <motion.div key={i} whileHover={{ y: -4 }} transition={{ type: 'spring', stiffness: 300 }}
+                className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 hover:shadow-md hover:border-orange-200 transition-all cursor-default">
+                <div className="text-3xl mb-3">
                   {['🍜','🥘','🍛','🥗','🍲','🫕','🥩','🍱','🌮','🥙'][i % 10]}
                 </div>
-                <h3 className="font-bold text-white mb-2 text-sm">{food.name}</h3>
-                <p className="text-slate-400 text-xs leading-relaxed mb-3">{food.description}</p>
-                <span className="text-orange-400 text-xs font-semibold">✨ {food.famousFor}</span>
+                <h3 className="font-bold text-slate-900 mb-1.5 text-sm">{food.name}</h3>
+                <p className="text-slate-500 text-xs leading-relaxed mb-3">{food.description}</p>
+                <span className="inline-block text-orange-600 text-xs font-semibold bg-orange-50 border border-orange-100 px-2.5 py-1 rounded-full">
+                  ✨ {food.famousFor}
+                </span>
               </motion.div>
             ))}
           </div>
         </Section>
 
         {/* ATTRACTIONS */}
-        <Section id="attractions" refs={sectionRefs} title="Top Attractions" icon={<Camera size={18} />}>
+        <Section id="attractions" refs={sectionRefs} title="Top Attractions" icon={<Camera size={17} />}>
           {data.attractions?.length > 0 ? (
             <div className="grid md:grid-cols-2 gap-5">
               {data.attractions.map((a, i) => (
-                <motion.div key={i} whileHover={{ scale: 1.02 }}>
+                <motion.div key={i} whileHover={{ y: -3 }} transition={{ type: 'spring', stiffness: 300 }}>
                   <AttractionCard attraction={a} countryName={data.mapData.countryQuery} />
                 </motion.div>
               ))}
             </div>
           ) : (
-            <p className="text-slate-500 italic text-sm">No attraction data available.</p>
+            <p className="text-slate-400 italic text-sm">No attraction data available.</p>
           )}
         </Section>
 
         {/* MAP */}
-        <Section id="map" refs={sectionRefs} title="Interactive Map" icon={<Map size={18} />}>
-          <MapSection mapData={data.mapData} bestTimeToVisit={data.bestTimeToVisit} />
+        <Section id="map" refs={sectionRefs} title="Interactive Map" icon={<Map size={17} />}>
+          <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+            <MapSection mapData={data.mapData} bestTimeToVisit={data.bestTimeToVisit} />
+          </div>
         </Section>
 
         {/* PHRASES */}
-        <Section id="phrases" refs={sectionRefs} title="Essential Travel Phrases" icon={<MessageCircle size={18} />}>
-          {data.phrases?.length > 0
-            ? <PhraseTable phrases={data.phrases} languageCode={data.languageCode} />
-            : <p className="text-slate-500 italic text-sm">No phrase data available.</p>}
+        <Section id="phrases" refs={sectionRefs} title="Essential Travel Phrases" icon={<MessageCircle size={17} />}>
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            {data.phrases?.length > 0
+              ? <PhraseTable phrases={data.phrases} languageCode={data.languageCode} />
+              : <p className="text-slate-400 italic text-sm p-6">No phrase data available.</p>}
+          </div>
         </Section>
 
         {/* BUDGET */}
-        <Section id="budget" refs={sectionRefs} title="Average Travel Budget (USD)" icon={<CreditCard size={18} />}>
+        <Section id="budget" refs={sectionRefs} title="Average Travel Budget" icon={<CreditCard size={17} />}>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {[
-              { label: 'Mid-range Hotel', price: data.prices.hotel,      icon: '🏨', accent: 'blue' },
-              { label: 'Restaurant Meal', price: data.prices.meal,       icon: '🍽️', accent: 'orange' },
-              { label: 'Street Food',     price: data.prices.streetFood, icon: '🌮', accent: 'red' },
-              { label: 'Coffee',          price: data.prices.coffee,     icon: '☕', accent: 'amber' },
-              { label: 'Public Transit',  price: data.prices.transport,  icon: '🚌', accent: 'green' },
-              { label: 'Taxi / km',       price: data.prices.taxi,       icon: '🚕', accent: 'yellow' },
-            ].map(({ label, price, icon, accent }) => (
+              { label: 'Mid-range Hotel', price: data.prices.hotel,      icon: '🏨', bg: 'bg-blue-50',   border: 'border-blue-100',   label_c: 'text-blue-700' },
+              { label: 'Restaurant Meal', price: data.prices.meal,       icon: '🍽️', bg: 'bg-orange-50', border: 'border-orange-100', label_c: 'text-orange-700' },
+              { label: 'Street Food',     price: data.prices.streetFood, icon: '🌮', bg: 'bg-red-50',    border: 'border-red-100',    label_c: 'text-red-700' },
+              { label: 'Coffee',          price: data.prices.coffee,     icon: '☕', bg: 'bg-amber-50',  border: 'border-amber-100',  label_c: 'text-amber-700' },
+              { label: 'Public Transit',  price: data.prices.transport,  icon: '🚌', bg: 'bg-emerald-50',border: 'border-emerald-100',label_c: 'text-emerald-700' },
+              { label: 'Taxi / km',       price: data.prices.taxi,       icon: '🚕', bg: 'bg-yellow-50', border: 'border-yellow-100', label_c: 'text-yellow-700' },
+            ].map(({ label, price, icon, bg, border, label_c }) => (
               <motion.div key={label} whileHover={{ y: -4 }} transition={{ type: 'spring', stiffness: 300 }}
-                className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center gap-4 hover:border-white/20 transition-colors">
+                className={`${bg} ${border} border rounded-2xl p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-all`}>
                 <div className="text-3xl shrink-0">{icon}</div>
                 <div>
-                  <div className={`text-[10px] font-bold uppercase tracking-wider mb-1 text-${accent}-400`}>{label}</div>
-                  <div className="font-bold text-white">{price}</div>
+                  <div className={`text-[10px] font-bold uppercase tracking-wider mb-0.5 ${label_c}`}>{label}</div>
+                  <div className="font-extrabold text-slate-900 text-base">{price}</div>
                 </div>
               </motion.div>
             ))}
@@ -352,7 +384,7 @@ export function CountryProfile({ data }: CountryProfileProps) {
   );
 }
 
-/* ── Helpers ─────────────────────────────────────────────── */
+/* ── Helpers ───────────────────────────────────────────── */
 
 function Section({ id, refs, title, icon, children }: {
   id: string;
@@ -364,28 +396,45 @@ function Section({ id, refs, title, icon, children }: {
   return (
     <motion.div
       ref={el => { refs.current[id] = el; }}
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.5 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
     >
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-blue-600/20 rounded-lg text-blue-400">{icon}</div>
-        <h2 className="text-xl font-bold text-white">{title}</h2>
-        <div className="flex-1 h-px bg-white/5" />
+        <div className="p-2 bg-slate-900 rounded-xl text-white">{icon}</div>
+        <h2 className="text-xl font-black text-slate-900 tracking-tight">{title}</h2>
+        <div className="flex-1 h-px bg-slate-200" />
       </div>
       {children}
     </motion.div>
   );
 }
 
+function Card({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+      {children}
+    </div>
+  );
+}
+
+function CardLabel({ icon, label }: { icon: React.ReactNode; label: string }) {
+  return (
+    <div className="flex items-center gap-2 mb-3">
+      {icon}
+      <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{label}</span>
+    </div>
+  );
+}
+
 function InfoRow({ icon, label, value }: { icon: string; label: string; value: string }) {
   return (
-    <div className="flex items-start gap-2">
-      <span className="text-base shrink-0">{icon}</span>
+    <div className="flex items-start gap-2.5">
+      <span className="text-base mt-0.5 shrink-0">{icon}</span>
       <div>
-        <span className="text-slate-500 text-xs font-semibold uppercase tracking-wide">{label}</span>
-        <p className="text-slate-300 text-sm">{value}</p>
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{label}</p>
+        <p className="text-slate-800 text-sm font-medium">{value}</p>
       </div>
     </div>
   );

@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { Search, Compass, Lightbulb } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Globe } from './ui/cobe-globe';
-import { GlobePins } from './ui/globe-pins';
 import AnimatedShaderBackground from './ui/animated-shader-background';
 import { GlobeErrorBoundary } from './ui/globe-fallback';
 
@@ -43,6 +42,23 @@ const placeholderCountries = [
   "Iceland", "Australia",
 ];
 
+const globeMarkers = [
+  { id: "paris",    location: [48.8566,   2.3522] as [number, number], label: "Paris" },
+  { id: "tokyo",    location: [35.6762, 139.6503] as [number, number], label: "Tokyo" },
+  { id: "nyc",      location: [40.7128,  -74.006] as [number, number], label: "New York" },
+  { id: "dubai",    location: [25.2048,  55.2708] as [number, number], label: "Dubai" },
+  { id: "sydney",   location: [-33.8688, 151.2093] as [number, number], label: "Sydney" },
+  { id: "london",   location: [51.5074,  -0.1278] as [number, number], label: "London" },
+  { id: "bangkok",  location: [13.7563, 100.5018] as [number, number], label: "Bangkok" },
+  { id: "rio",      location: [-22.9068, -43.1729] as [number, number], label: "Rio" },
+];
+
+const globeArcs = [
+  { id: "nyc-london", from: [40.7128, -74.006] as [number, number], to: [51.5074, -0.1278] as [number, number] },
+  { id: "paris-dubai", from: [48.8566, 2.3522] as [number, number], to: [25.2048, 55.2708] as [number, number] },
+  { id: "tokyo-sydney", from: [35.6762, 139.6503] as [number, number], to: [-33.8688, 151.2093] as [number, number] },
+  { id: "dubai-bangkok", from: [25.2048, 55.2708] as [number, number], to: [13.7563, 100.5018] as [number, number] },
+];
 
 export function Hero({ onSearch, isLoading }: HeroProps) {
   const [query, setQuery] = useState('');
@@ -236,21 +252,24 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                 <Globe
                   className="w-full drop-shadow-2xl"
                   dark={1}
-                  mapBrightness={7}
-                  baseColor={[0.06, 0.10, 0.26]}
-                  glowColor={[0.18, 0.38, 0.88]}
-                  speed={0.004}
-                  theta={0.18}
-                  diffuse={1.3}
+                  mapBrightness={6}
+                  baseColor={[0.05, 0.09, 0.22]}
+                  glowColor={[0.15, 0.35, 0.85]}
+                  markerColor={[0.4, 0.65, 1.0]}
+                  arcColor={[0.3, 0.6, 1.0]}
+                  speed={0.003}
+                  theta={0.2}
+                  diffuse={1.5}
+                  markerSize={0.03}
+                  arcWidth={0.8}
+                  arcHeight={0.3}
+                  markers={globeMarkers}
+                  arcs={globeArcs}
                   phiRef={globePhiRef}
                   thetaRef={globeThetaRef}
                 />
-                <GlobePins phiRef={globePhiRef} thetaRef={globeThetaRef} elevation={0.82} />
               </div>
             </GlobeErrorBoundary>
-            <p className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-xs text-slate-500 whitespace-nowrap">
-              Drag to rotate
-            </p>
           </motion.div>
 
         </div>
