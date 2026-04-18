@@ -1,161 +1,123 @@
-import { useEffect, useRef } from 'react';
-import * as THREE from 'three';
-
 const AnimatedShaderBackground = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    // Use canvas 2D fallback detection before attempting WebGL
-    let renderer: THREE.WebGLRenderer;
-    try {
-      renderer = new THREE.WebGLRenderer({
-        antialias: false,
-        powerPreference: 'low-power',
-        failIfMajorPerformanceCaveat: false,
-      });
-    } catch {
-      return; // WebGL unavailable — silently skip, no aurora
-    }
-
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    container.appendChild(renderer.domElement);
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-
-    const material = new THREE.ShaderMaterial({
-      uniforms: {
-        iTime:       { value: 0 },
-        iResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-      },
-      vertexShader: `
-        void main() {
-          gl_Position = vec4(position, 1.0);
-        }
-      `,
-      fragmentShader: `
-        uniform float iTime;
-        uniform vec2  iResolution;
-
-        #define NUM_OCTAVES 3
-
-        float rand(vec2 n) {
-          return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
-        }
-
-        float noise(vec2 p) {
-          vec2 ip = floor(p);
-          vec2 u  = fract(p);
-          u = u * u * (3.0 - 2.0 * u);
-          return mix(
-            mix(rand(ip), rand(ip + vec2(1.0, 0.0)), u.x),
-            mix(rand(ip + vec2(0.0, 1.0)), rand(ip + vec2(1.0, 1.0)), u.x),
-            u.y
-          );
-        }
-
-        float fbm(vec2 x) {
-          float v = 0.0, a = 0.3;
-          vec2  shift = vec2(100.0);
-          mat2  rot   = mat2(cos(0.5), sin(0.5), -sin(0.5), cos(0.5));
-          for (int i = 0; i < NUM_OCTAVES; ++i) {
-            v += a * noise(x);
-            x  = rot * x * 2.0 + shift;
-            a *= 0.4;
-          }
-          return v;
-        }
-
-        float starBrightness(vec2 uv, float scale, float threshold) {
-          vec2  cell    = floor(uv * scale);
-          vec2  jitter  = vec2(rand(cell), rand(cell + vec2(7.3, 2.1)));
-          vec2  starPos = (cell + 0.2 + jitter * 0.6) / scale;
-          float dist    = length(uv - starPos) * scale;
-          float bright  = smoothstep(0.08, 0.0, dist);
-          float keep    = step(threshold, rand(cell + vec2(13.1, 5.7)));
-          return bright * keep;
-        }
-
-        void main() {
-          vec2 uv = gl_FragCoord.xy / iResolution.xy;
-          vec2 shake = vec2(sin(iTime * 1.2) * 0.005, cos(iTime * 2.1) * 0.005);
-
-          vec2 p = ((gl_FragCoord.xy + shake * iResolution.xy) - iResolution.xy * 0.5)
-                   / iResolution.y * mat2(6.0, -4.0, 4.0, 6.0);
-          vec2 v;
-          vec4 aurora = vec4(0.0);
-
-          float f = 2.0 + fbm(p + vec2(iTime * 5.0, 0.0)) * 0.5;
-
-          for (float i = 0.0; i < 24.0; i++) {
-            v = p + cos(i * i + (iTime + p.x * 0.08) * 0.025 + i * vec2(13.0, 11.0)) * 3.5
-              + vec2(sin(iTime * 3.0 + i) * 0.003, cos(iTime * 3.5 - i) * 0.003);
-            float tailNoise = fbm(v + vec2(iTime * 0.5, i)) * 0.3 * (1.0 - i / 24.0);
-            vec4 auroraColors = vec4(
-              0.1 + 0.3 * sin(i * 0.2 + iTime * 0.4),
-              0.3 + 0.5 * cos(i * 0.3 + iTime * 0.5),
-              0.7 + 0.3 * sin(i * 0.4 + iTime * 0.3),
-              1.0
-            );
-            vec4 contrib = auroraColors
-              * exp(sin(i * i + iTime * 0.8))
-              / length(max(v, vec2(v.x * f * 0.015, v.y * 1.5)));
-            float thin = smoothstep(0.0, 1.0, i / 24.0) * 0.6;
-            aurora += contrib * (1.0 + tailNoise * 0.8) * thin;
-          }
-          aurora = tanh(pow(aurora / 100.0, vec4(1.6))) * 1.5;
-
-          float stars  = starBrightness(uv, 80.0,  0.985) * 0.90;
-          stars       += starBrightness(uv, 140.0, 0.978) * 0.70;
-          stars       += starBrightness(uv, 220.0, 0.970) * 0.55;
-          vec3 starColor = vec3(0.90, 0.95, 1.0) * stars;
-
-          vec3 col = aurora.rgb + starColor;
-          gl_FragColor = vec4(col, 1.0);
-        }
-      `,
-    });
-
-    const geometry = new THREE.PlaneGeometry(2, 2);
-    const mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
-
-    let frameId: number;
-    let destroyed = false;
-
-    const animate = () => {
-      if (destroyed) return;
-      material.uniforms.iTime.value += 0.016;
-      renderer.render(scene, camera);
-      frameId = requestAnimationFrame(animate);
-    };
-    animate();
-
-    const handleResize = () => {
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      material.uniforms.iResolution.value.set(window.innerWidth, window.innerHeight);
-    };
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      destroyed = true;
-      cancelAnimationFrame(frameId);
-      window.removeEventListener('resize', handleResize);
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-      geometry.dispose();
-      material.dispose();
-      renderer.dispose();
-    };
-  }, []);
-
   return (
-    <div ref={containerRef} className="absolute inset-0 w-full h-full overflow-hidden" />
+    <div className="absolute inset-0 w-full h-full overflow-hidden">
+      {/* Deep space base */}
+      <div className="absolute inset-0 bg-[#020617]" />
+
+      {/* Aurora layer 1 — teal/green */}
+      <div
+        className="absolute"
+        style={{
+          top: '-20%', left: '-10%', width: '70%', height: '60%',
+          background: 'radial-gradient(ellipse at center, rgba(16,185,129,0.18) 0%, rgba(6,182,212,0.10) 40%, transparent 70%)',
+          filter: 'blur(60px)',
+          animation: 'aurora1 14s ease-in-out infinite alternate',
+        }}
+      />
+
+      {/* Aurora layer 2 — blue/indigo */}
+      <div
+        className="absolute"
+        style={{
+          top: '-10%', right: '-15%', width: '65%', height: '55%',
+          background: 'radial-gradient(ellipse at center, rgba(99,102,241,0.20) 0%, rgba(59,130,246,0.12) 40%, transparent 70%)',
+          filter: 'blur(70px)',
+          animation: 'aurora2 18s ease-in-out infinite alternate',
+        }}
+      />
+
+      {/* Aurora layer 3 — purple accent */}
+      <div
+        className="absolute"
+        style={{
+          top: '10%', left: '25%', width: '55%', height: '45%',
+          background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.13) 0%, rgba(99,102,241,0.07) 50%, transparent 70%)',
+          filter: 'blur(80px)',
+          animation: 'aurora3 22s ease-in-out infinite alternate',
+        }}
+      />
+
+      {/* Shooting star 1 */}
+      <div
+        className="absolute"
+        style={{
+          top: '12%', left: '15%', width: '120px', height: '1.5px',
+          background: 'linear-gradient(90deg, transparent, rgba(99,210,255,0.9), transparent)',
+          transform: 'rotate(-35deg)',
+          animation: 'shoot1 8s ease-in-out infinite',
+          borderRadius: '999px',
+        }}
+      />
+
+      {/* Shooting star 2 */}
+      <div
+        className="absolute"
+        style={{
+          top: '7%', left: '55%', width: '80px', height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(180,140,255,0.85), transparent)',
+          transform: 'rotate(-30deg)',
+          animation: 'shoot2 12s ease-in-out infinite',
+          borderRadius: '999px',
+        }}
+      />
+
+      {/* Star field — small static dots */}
+      <div className="absolute inset-0" style={{ backgroundImage: `
+        radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 22% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 35% 8%,  rgba(255,255,255,0.7) 0%, transparent 100%),
+        radial-gradient(1px 1px at 48% 55%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 20%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 72% 70%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 85% 12%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 92% 45%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 5%  80%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 18% 65%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 30% 85%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 44% 30%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 57% 90%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 68% 5%,  rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 78% 38%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 88% 75%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 14% 28%, rgba(255,255,255,0.7) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 40% 72%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 65% 50%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 90% 22%, rgba(255,255,255,0.7) 0%, transparent 100%)
+      `}} />
+
+      <style>{`
+        @keyframes aurora1 {
+          0%   { transform: translate(0%, 0%)   scale(1);    opacity: 0.7; }
+          33%  { transform: translate(8%, 12%)  scale(1.1);  opacity: 1;   }
+          66%  { transform: translate(-5%, 8%)  scale(0.95); opacity: 0.8; }
+          100% { transform: translate(12%, -5%) scale(1.05); opacity: 0.9; }
+        }
+        @keyframes aurora2 {
+          0%   { transform: translate(0%, 0%)    scale(1);    opacity: 0.6; }
+          33%  { transform: translate(-10%, 8%)  scale(1.08); opacity: 0.9; }
+          66%  { transform: translate(6%, -10%)  scale(1.02); opacity: 0.7; }
+          100% { transform: translate(-8%, 5%)   scale(0.97); opacity: 1;   }
+        }
+        @keyframes aurora3 {
+          0%   { transform: translate(0%, 0%)   scale(1);    opacity: 0.5; }
+          50%  { transform: translate(5%, -8%)  scale(1.12); opacity: 0.8; }
+          100% { transform: translate(-6%, 6%)  scale(0.98); opacity: 0.6; }
+        }
+        @keyframes shoot1 {
+          0%   { opacity: 0; transform: rotate(-35deg) translateX(-60px); }
+          5%   { opacity: 1; }
+          15%  { opacity: 0; transform: rotate(-35deg) translateX(80px);  }
+          100% { opacity: 0; transform: rotate(-35deg) translateX(80px);  }
+        }
+        @keyframes shoot2 {
+          0%   { opacity: 0; transform: rotate(-30deg) translateX(-40px); }
+          40%  { opacity: 0; }
+          45%  { opacity: 1; }
+          55%  { opacity: 0; transform: rotate(-30deg) translateX(60px);  }
+          100% { opacity: 0; transform: rotate(-30deg) translateX(60px);  }
+        }
+      `}</style>
+    </div>
   );
 };
 
