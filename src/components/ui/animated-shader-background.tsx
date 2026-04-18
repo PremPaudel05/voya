@@ -1,128 +1,127 @@
-import { useEffect, useRef } from 'react';
-import * as THREE from 'three';
+const AnimatedShaderBackground = () => (
+  <div className="absolute inset-0 w-full h-full overflow-hidden bg-[#020617]">
 
-const AnimatedShaderBackground = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+    {/* Aurora blob 1 — teal/cyan, top-left */}
+    <div style={{
+      position: 'absolute', top: '-15%', left: '-5%',
+      width: '60%', height: '65%',
+      background: 'radial-gradient(ellipse at 40% 40%, rgba(16,185,129,0.22) 0%, rgba(6,182,212,0.13) 35%, transparent 68%)',
+      filter: 'blur(55px)',
+      animation: 'voya-a1 16s ease-in-out infinite alternate',
+    }} />
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    {/* Aurora blob 2 — indigo/blue, top-right */}
+    <div style={{
+      position: 'absolute', top: '-20%', right: '-10%',
+      width: '58%', height: '60%',
+      background: 'radial-gradient(ellipse at 55% 40%, rgba(99,102,241,0.24) 0%, rgba(59,130,246,0.14) 40%, transparent 68%)',
+      filter: 'blur(65px)',
+      animation: 'voya-a2 20s ease-in-out infinite alternate',
+    }} />
 
-    // Get a WebGL context manually so we can reuse it (avoids context limit)
-    const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, powerPreference: 'low-power' })
-      ?? canvas.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'low-power' });
-    if (!gl) return;
+    {/* Aurora blob 3 — violet mid */}
+    <div style={{
+      position: 'absolute', top: '5%', left: '20%',
+      width: '55%', height: '50%',
+      background: 'radial-gradient(ellipse at 50% 45%, rgba(139,92,246,0.16) 0%, rgba(99,102,241,0.08) 50%, transparent 70%)',
+      filter: 'blur(75px)',
+      animation: 'voya-a3 24s ease-in-out infinite alternate',
+    }} />
 
-    let renderer: THREE.WebGLRenderer;
-    try {
-      renderer = new THREE.WebGLRenderer({
-        canvas,
-        context: gl as WebGLRenderingContext,
-        antialias: false,
-        alpha: false,
-        powerPreference: 'low-power',
-      });
-    } catch {
-      return;
-    }
+    {/* Shooting star 1 */}
+    <div style={{
+      position: 'absolute', top: '10%', left: '8%',
+      width: '140px', height: '1.5px',
+      background: 'linear-gradient(90deg, transparent 0%, rgba(147,210,255,0.95) 50%, transparent 100%)',
+      borderRadius: '999px',
+      transform: 'rotate(-32deg)',
+      animation: 'voya-s1 9s ease-in-out infinite',
+    }} />
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    {/* Shooting star 2 */}
+    <div style={{
+      position: 'absolute', top: '6%', left: '52%',
+      width: '90px', height: '1px',
+      background: 'linear-gradient(90deg, transparent 0%, rgba(196,160,255,0.9) 50%, transparent 100%)',
+      borderRadius: '999px',
+      transform: 'rotate(-28deg)',
+      animation: 'voya-s2 14s ease-in-out infinite',
+    }} />
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    {/* Shooting star 3 */}
+    <div style={{
+      position: 'absolute', top: '18%', right: '12%',
+      width: '70px', height: '1px',
+      background: 'linear-gradient(90deg, transparent 0%, rgba(100,200,255,0.8) 50%, transparent 100%)',
+      borderRadius: '999px',
+      transform: 'rotate(-38deg)',
+      animation: 'voya-s3 18s ease-in-out infinite',
+    }} />
 
-    const material = new THREE.ShaderMaterial({
-      uniforms: {
-        iTime:       { value: 0 },
-        iResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-      },
-      vertexShader: `void main() { gl_Position = vec4(position, 1.0); }`,
-      fragmentShader: `
-        uniform float iTime;
-        uniform vec2  iResolution;
-        #define NUM_OCTAVES 3
+    {/* Static star field */}
+    <div style={{ position: 'absolute', inset: 0, backgroundImage: `
+      radial-gradient(1px 1px at  8% 12%, rgba(255,255,255,0.65) 0%, transparent 100%),
+      radial-gradient(1px 1px at 19% 37%, rgba(255,255,255,0.45) 0%, transparent 100%),
+      radial-gradient(1px 1px at 33%  7%, rgba(255,255,255,0.70) 0%, transparent 100%),
+      radial-gradient(1px 1px at 47% 52%, rgba(255,255,255,0.35) 0%, transparent 100%),
+      radial-gradient(1px 1px at 58% 19%, rgba(255,255,255,0.55) 0%, transparent 100%),
+      radial-gradient(1px 1px at 71% 68%, rgba(255,255,255,0.40) 0%, transparent 100%),
+      radial-gradient(1px 1px at 84% 11%, rgba(255,255,255,0.60) 0%, transparent 100%),
+      radial-gradient(1px 1px at 91% 43%, rgba(255,255,255,0.35) 0%, transparent 100%),
+      radial-gradient(1px 1px at  4% 78%, rgba(255,255,255,0.50) 0%, transparent 100%),
+      radial-gradient(1px 1px at 16% 63%, rgba(255,255,255,0.40) 0%, transparent 100%),
+      radial-gradient(1px 1px at 29% 83%, rgba(255,255,255,0.30) 0%, transparent 100%),
+      radial-gradient(1px 1px at 42% 28%, rgba(255,255,255,0.50) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 88%, rgba(255,255,255,0.40) 0%, transparent 100%),
+      radial-gradient(1px 1px at 66%  4%, rgba(255,255,255,0.65) 0%, transparent 100%),
+      radial-gradient(1px 1px at 77% 35%, rgba(255,255,255,0.30) 0%, transparent 100%),
+      radial-gradient(1px 1px at 87% 73%, rgba(255,255,255,0.50) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 13% 26%, rgba(255,255,255,0.75) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 38% 70%, rgba(255,255,255,0.65) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 63% 48%, rgba(255,255,255,0.55) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 89% 20%, rgba(255,255,255,0.70) 0%, transparent 100%),
+      radial-gradient(1px 1px at 24% 55%, rgba(200,230,255,0.45) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 90%, rgba(200,230,255,0.35) 0%, transparent 100%),
+      radial-gradient(1px 1px at 51% 15%, rgba(200,230,255,0.50) 0%, transparent 100%)
+    `}} />
 
-        float rand(vec2 n) {
-          return fract(sin(dot(n, vec2(12.9898,4.1414))) * 43758.5453);
-        }
-        float noise(vec2 p) {
-          vec2 ip = floor(p), u = fract(p);
-          u = u*u*(3.0-2.0*u);
-          return mix(mix(rand(ip),rand(ip+vec2(1,0)),u.x),mix(rand(ip+vec2(0,1)),rand(ip+vec2(1,1)),u.x),u.y);
-        }
-        float fbm(vec2 x) {
-          float v=0.0,a=0.3;
-          vec2 shift=vec2(100);
-          mat2 rot=mat2(cos(0.5),sin(0.5),-sin(0.5),cos(0.5));
-          for(int i=0;i<NUM_OCTAVES;i++){v+=a*noise(x);x=rot*x*2.0+shift;a*=0.4;}
-          return v;
-        }
-        float star(vec2 uv,float scale,float thresh){
-          vec2 cell=floor(uv*scale);
-          vec2 j=vec2(rand(cell),rand(cell+vec2(7.3,2.1)));
-          vec2 pos=(cell+0.2+j*0.6)/scale;
-          float d=length(uv-pos)*scale;
-          return smoothstep(0.08,0.0,d)*step(thresh,rand(cell+vec2(13.1,5.7)));
-        }
-
-        void main(){
-          vec2 uv=gl_FragCoord.xy/iResolution.xy;
-          vec2 shake=vec2(sin(iTime*1.2)*0.005,cos(iTime*2.1)*0.005);
-          vec2 p=((gl_FragCoord.xy+shake*iResolution.xy)-iResolution.xy*0.5)/iResolution.y*mat2(6,-4,4,6);
-          vec2 v; vec4 o=vec4(0);
-          float f=2.0+fbm(p+vec2(iTime*5.0,0))*0.5;
-          for(float i=0.0;i<24.0;i++){
-            v=p+cos(i*i+(iTime+p.x*0.08)*0.025+i*vec2(13,11))*3.5+vec2(sin(iTime*3.0+i)*0.003,cos(iTime*3.5-i)*0.003);
-            float tn=fbm(v+vec2(iTime*0.5,i))*0.3*(1.0-i/24.0);
-            vec4 col=vec4(0.1+0.3*sin(i*0.2+iTime*0.4),0.3+0.5*cos(i*0.3+iTime*0.5),0.7+0.3*sin(i*0.4+iTime*0.3),1);
-            o+=col*exp(sin(i*i+iTime*0.8))/length(max(v,vec2(v.x*f*0.015,v.y*1.5)))*(1.0+tn*0.8)*smoothstep(0.0,1.0,i/24.0)*0.6;
-          }
-          o=tanh(pow(o/100.0,vec4(1.6)))*1.5;
-          float s=star(uv,80.0,0.985)*0.9+star(uv,140.0,0.978)*0.7+star(uv,220.0,0.970)*0.55;
-          gl_FragColor=vec4(o.rgb+vec3(0.9,0.95,1.0)*s,1.0);
-        }
-      `,
-    });
-
-    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
-    scene.add(mesh);
-
-    let frameId: number;
-    let destroyed = false;
-
-    const animate = () => {
-      if (destroyed) return;
-      material.uniforms.iTime.value += 0.016;
-      renderer.render(scene, camera);
-      frameId = requestAnimationFrame(animate);
-    };
-    animate();
-
-    const onResize = () => {
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      material.uniforms.iResolution.value.set(window.innerWidth, window.innerHeight);
-    };
-    window.addEventListener('resize', onResize);
-
-    return () => {
-      destroyed = true;
-      cancelAnimationFrame(frameId);
-      window.removeEventListener('resize', onResize);
-      material.dispose();
-      mesh.geometry.dispose();
-      // Don't call renderer.dispose() — it would lose the context we manually created
-      // Just stop rendering; the canvas stays in the DOM controlled by React
-    };
-  }, []);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full"
-      style={{ display: 'block' }}
-    />
-  );
-};
+    <style>{`
+      @keyframes voya-a1 {
+        0%   { transform: translate(0%,0%)   scale(1);    opacity:.75; }
+        33%  { transform: translate(7%,10%)  scale(1.08); opacity:1;   }
+        66%  { transform: translate(-4%,6%)  scale(0.94); opacity:.82; }
+        100% { transform: translate(10%,-4%) scale(1.04); opacity:.90; }
+      }
+      @keyframes voya-a2 {
+        0%   { transform: translate(0%,0%)    scale(1);    opacity:.65; }
+        33%  { transform: translate(-9%,7%)   scale(1.06); opacity:.92; }
+        66%  { transform: translate(5%,-9%)   scale(1.01); opacity:.72; }
+        100% { transform: translate(-7%,4%)   scale(0.96); opacity:1;   }
+      }
+      @keyframes voya-a3 {
+        0%   { transform: translate(0%,0%)  scale(1);    opacity:.55; }
+        50%  { transform: translate(4%,-7%) scale(1.10); opacity:.82; }
+        100% { transform: translate(-5%,5%) scale(0.97); opacity:.62; }
+      }
+      @keyframes voya-s1 {
+        0%,100% { opacity:0; transform:rotate(-32deg) translateX(-30px); }
+        4%      { opacity:1; }
+        14%     { opacity:0; transform:rotate(-32deg) translateX(160px); }
+      }
+      @keyframes voya-s2 {
+        0%,38%,100% { opacity:0; }
+        0%          { transform:rotate(-28deg) translateX(-20px); }
+        43%         { opacity:1; }
+        53%         { opacity:0; transform:rotate(-28deg) translateX(110px); }
+      }
+      @keyframes voya-s3 {
+        0%,68%,100% { opacity:0; }
+        0%          { transform:rotate(-38deg) translateX(-15px); }
+        72%         { opacity:1; }
+        80%         { opacity:0; transform:rotate(-38deg) translateX(90px); }
+      }
+    `}</style>
+  </div>
+);
 
 export default AnimatedShaderBackground;
