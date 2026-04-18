@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useRef, useCallback, useMemo, type MutableRefObject } from "react"
+import { useEffect, useRef, useCallback } from "react"
 import createGlobe from "cobe"
 
 interface Marker {
@@ -34,8 +34,6 @@ interface GlobeProps {
   theta?: number
   diffuse?: number
   mapSamples?: number
-  phiRef?: MutableRefObject<number>
-  thetaRef?: MutableRefObject<number>
 }
 
 export function Globe({
@@ -56,8 +54,6 @@ export function Globe({
   theta = 0.2,
   diffuse = 1.5,
   mapSamples = 16000,
-  phiRef,
-  thetaRef,
 }: GlobeProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const pointerInteracting = useRef<{ x: number; y: number } | null>(null)
@@ -82,10 +78,10 @@ export function Globe({
       const now = Date.now()
       if (lastPointer.current) {
         const dt = Math.max(now - lastPointer.current.t, 1)
-        const max = 0.15
+        const maxV = 0.15
         velocity.current = {
-          phi: Math.max(-max, Math.min(max, ((e.clientX - lastPointer.current.x) / dt) * 0.3)),
-          theta: Math.max(-max, Math.min(max, ((e.clientY - lastPointer.current.y) / dt) * 0.08)),
+          phi: Math.max(-maxV, Math.min(maxV, ((e.clientX - lastPointer.current.x) / dt) * 0.3)),
+          theta: Math.max(-maxV, Math.min(maxV, ((e.clientY - lastPointer.current.y) / dt) * 0.08)),
         }
       }
       lastPointer.current = { x: e.clientX, y: e.clientY, t: now }
@@ -113,23 +109,15 @@ export function Globe({
     }
   }, [handlePointerMove, handlePointerUp])
 
-  const cobeMarkers = useMemo(
-    () => markers.map((m) => ({ location: m.location, size: markerSize, id: m.id })),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [JSON.stringify(markers), markerSize]
-  )
-  const cobeArcs = useMemo(
-    () => arcs.map((a) => ({ from: a.from, to: a.to, id: a.id })),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [JSON.stringify(arcs)]
-  )
-
   useEffect(() => {
     if (!canvasRef.current) return
     const canvas = canvasRef.current
     let globe: ReturnType<typeof createGlobe> | null = null
     let animationId: number
     let phi = 0
+
+    const cobeMarkers = markers.map((m) => ({ location: m.location, size: markerSize, id: m.id }))
+    const cobeArcs = arcs.map((a) => ({ from: a.from, to: a.to, id: a.id }))
 
     function init() {
       const width = canvas.offsetWidth
@@ -172,14 +160,9 @@ export function Globe({
           else if (thetaOffsetRef.current > tMax) thetaOffsetRef.current += (tMax - thetaOffsetRef.current) * 0.1
         }
 
-        const currentPhi = phi + phiOffsetRef.current + dragOffset.current.phi
-        const currentTheta = theta + thetaOffsetRef.current + dragOffset.current.theta
-        if (phiRef) phiRef.current = currentPhi
-        if (thetaRef) thetaRef.current = currentTheta
-
         globe!.update({
-          phi: currentPhi,
-          theta: currentTheta,
+          phi: phi + phiOffsetRef.current + dragOffset.current.phi,
+          theta: theta + thetaOffsetRef.current + dragOffset.current.theta,
           dark,
           mapBrightness,
           markerColor,
@@ -211,7 +194,7 @@ export function Globe({
       if (globe) globe.destroy()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cobeMarkers, cobeArcs, markerColor, baseColor, arcColor, glowColor, dark, mapBrightness, markerSize, markerElevation, arcWidth, arcHeight, speed, theta, diffuse, mapSamples])
+  }, [markers, arcs, markerColor, baseColor, arcColor, glowColor, dark, mapBrightness, markerSize, markerElevation, arcWidth, arcHeight, speed, theta, diffuse, mapSamples])
 
   return (
     <div className={`relative aspect-square select-none ${className}`}>
@@ -219,36 +202,15 @@ export function Globe({
         ref={canvasRef}
         onPointerDown={handlePointerDown}
         style={{
-          width: "100%", height: "100%", cursor: "grab",
-          opacity: 0, transition: "opacity 1.2s ease",
-          borderRadius: "50%", touchAction: "none",
+          width: "100%",
+          height: "100%",
+          cursor: "grab",
+          opacity: 0,
+          transition: "opacity 1.2s ease",
+          borderRadius: "50%",
+          touchAction: "none",
         }}
       />
-      {/* CSS Anchor-positioned marker labels */}
-      {markers.map((m) => (
-        <div key={m.id} style={{
-          position: "absolute",
-          ...({ positionAnchor: `--cobe-${m.id}` } as React.CSSProperties),
-          bottom: "anchor(top)", left: "anchor(center)",
-          translate: "-50% 0", marginBottom: 8,
-          padding: "2px 8px",
-          background: "rgba(15,23,42,0.85)", backdropFilter: "blur(8px)",
-          color: "#e2e8f0", fontFamily: "system-ui", fontSize: "0.6rem",
-          letterSpacing: "0.08em", textTransform: "uppercase" as const,
-          whiteSpace: "nowrap" as const, pointerEvents: "none" as const,
-          borderRadius: 4, border: "1px solid rgba(255,255,255,0.1)",
-          opacity: `var(--cobe-visible-${m.id}, 0)` as unknown as number,
-          filter: `blur(calc((1 - var(--cobe-visible-${m.id}, 0)) * 8px))`,
-          transition: "opacity 0.6s, filter 0.6s",
-        }}>
-          {m.label}
-          <span style={{
-            position: "absolute", top: "100%", left: "50%",
-            transform: "translate3d(-50%,-1px,0)",
-            border: "5px solid transparent", borderTopColor: "rgba(15,23,42,0.85)",
-          }} />
-        </div>
-      ))}
     </div>
   )
 }
