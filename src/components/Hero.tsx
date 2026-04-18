@@ -1,10 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Search, Compass, Lightbulb } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Globe } from './ui/cobe-globe';
-import { GlobePins } from './ui/globe-pins';
+import { CSSGlobe } from './ui/css-globe';
 import AnimatedShaderBackground from './ui/animated-shader-background';
-import { GlobeErrorBoundary } from './ui/globe-fallback';
 
 interface HeroProps {
   onSearch: (country: string) => void;
@@ -49,8 +47,6 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
   const [factIndex, setFactIndex] = useState(0);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
-  const globePhiRef = useRef(0);
-  const globeThetaRef = useRef(0.18);
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
@@ -224,31 +220,14 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
               <div
                 className="w-[80%] aspect-square rounded-full"
                 style={{
-                  background: 'radial-gradient(circle, rgba(59,130,246,0.18) 0%, rgba(99,102,241,0.10) 40%, transparent 70%)',
-                  filter: 'blur(20px)',
+                  background: 'radial-gradient(circle, rgba(59,130,246,0.22) 0%, rgba(99,102,241,0.12) 40%, transparent 70%)',
+                  filter: 'blur(30px)',
                 }}
               />
             </div>
-            <GlobeErrorBoundary>
-              <div className="relative w-full max-w-[500px] lg:max-w-[600px]">
-                <Globe
-                  className="w-full drop-shadow-2xl"
-                  dark={1}
-                  mapBrightness={7}
-                  baseColor={[0.06, 0.10, 0.26]}
-                  glowColor={[0.18, 0.38, 0.88]}
-                  speed={0.004}
-                  theta={0.18}
-                  diffuse={1.3}
-                  phiRef={globePhiRef}
-                  thetaRef={globeThetaRef}
-                />
-                <GlobePins phiRef={globePhiRef} thetaRef={globeThetaRef} elevation={0.82} />
-              </div>
-            </GlobeErrorBoundary>
-            <p className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-xs text-slate-500 whitespace-nowrap">
-              Drag to rotate
-            </p>
+            <div className="relative w-full max-w-[500px] lg:max-w-[560px]">
+              <CSSGlobe />
+            </div>
           </motion.div>
 
         </div>
