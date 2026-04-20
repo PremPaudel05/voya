@@ -1,5 +1,5 @@
-import { useRef, useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useRef, useMemo } from "react";
+import { motion } from "framer-motion";
 import DottedMap from "dotted-map";
 
 interface MapProps {
@@ -21,7 +21,6 @@ export function WorldMap({
   loop = true,
 }: MapProps) {
   const svgRef = useRef<SVGSVGElement>(null);
-  const [hoveredLocation, setHoveredLocation] = useState<string | null>(null);
 
   const map = useMemo(() => new DottedMap({ height: 100, grid: "diagonal" }), []);
 
@@ -154,8 +153,6 @@ export function WorldMap({
             <g key={`points-group-${i}`}>
               {/* Start point */}
               <motion.g
-                onHoverStart={() => setHoveredLocation(dot.start.label || `Location ${i}`)}
-                onHoverEnd={() => setHoveredLocation(null)}
                 className="cursor-pointer"
                 whileHover={{ scale: 1.2 }}
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
@@ -172,8 +169,6 @@ export function WorldMap({
 
               {/* End point */}
               <motion.g
-                onHoverStart={() => setHoveredLocation(dot.end.label || `Destination ${i}`)}
-                onHoverEnd={() => setHoveredLocation(null)}
                 className="cursor-pointer"
                 whileHover={{ scale: 1.2 }}
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}

@@ -70,7 +70,7 @@ export function CSSGlobe() {
           { location: [35.68, 139.69],  size: 0.05 },
           { location: [-23.55, -46.63], size: 0.05 },
         ],
-        onRender(state) {
+        onRender(state: Record<string, number>) {
           if (!pointerDown) {
             velocity *= 0.92
             phi += 0.004 + velocity

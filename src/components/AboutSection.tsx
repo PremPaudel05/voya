@@ -90,7 +90,7 @@ export function AboutSection() {
 
             {[
               {
-                label: "Hello, traveller.",
+                label: "Hello.",
                 text: "My name is Prem Paudel. I'm an Information Systems Management student at the University of Akron, and Voya started as a question I kept asking myself: why is it still so hard to plan a trip well, without paying for a subscription?",
               },
               {

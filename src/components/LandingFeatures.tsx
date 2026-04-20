@@ -14,7 +14,7 @@ const features = [
 
 export function LandingFeatures() {
   return (
-    <section className="bg-[#F7F3EE]">
+    <section id="features" className="bg-[#F7F3EE] scroll-mt-8">
 
       {/* Divider rule */}
       <div className="max-w-7xl mx-auto px-6">
