@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Calendar, Sun, CloudRain, DollarSign, PartyPopper } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 interface MapSectionProps {
   mapData: {
@@ -16,15 +16,9 @@ interface MapSectionProps {
     instagrammableSpots?: string[];
     areasToAvoid?: string[];
   };
-  bestTimeToVisit?: {
-    bestMonths: string;
-    rainySeason: string;
-    cheapestSeason: string;
-    majorFestivals: string[];
-  };
 }
 
-export function MapSection({ mapData, bestTimeToVisit }: MapSectionProps) {
+export function MapSection({ mapData }: MapSectionProps) {
   const [currentQuery, setCurrentQuery] = useState(mapData.countryQuery);
   const [zoom, setZoom] = useState(5);
   const [activeCity, setActiveCity] = useState<string | null>(null);
@@ -177,48 +171,6 @@ export function MapSection({ mapData, bestTimeToVisit }: MapSectionProps) {
         </div>
       </div>
 
-      {bestTimeToVisit && (
-        <div className="border-t border-slate-100 p-6 bg-slate-50/50">
-          <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2 mb-4">
-            <Calendar className="text-blue-600 w-5 h-5" />
-            Best Time To Visit
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-2">
-              <div className="flex items-center gap-2 text-amber-500 font-medium">
-                <Sun className="w-5 h-5" />
-                Best Months
-              </div>
-              <p className="text-slate-700 text-sm">{bestTimeToVisit.bestMonths}</p>
-            </div>
-            <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-2">
-              <div className="flex items-center gap-2 text-blue-500 font-medium">
-                <CloudRain className="w-5 h-5" />
-                Rainy Season
-              </div>
-              <p className="text-slate-700 text-sm">{bestTimeToVisit.rainySeason}</p>
-            </div>
-            <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-2">
-              <div className="flex items-center gap-2 text-emerald-500 font-medium">
-                <DollarSign className="w-5 h-5" />
-                Cheapest Season
-              </div>
-              <p className="text-slate-700 text-sm">{bestTimeToVisit.cheapestSeason}</p>
-            </div>
-            <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col gap-2">
-              <div className="flex items-center gap-2 text-purple-500 font-medium">
-                <PartyPopper className="w-5 h-5" />
-                Major Festivals
-              </div>
-              <ul className="text-slate-700 text-sm list-disc list-inside">
-                {bestTimeToVisit.majorFestivals.map((fest, i) => (
-                  <li key={i} className="truncate" title={fest}>{fest}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

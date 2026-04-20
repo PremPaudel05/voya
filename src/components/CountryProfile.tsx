@@ -82,9 +82,15 @@ export function CountryProfile({ data }: CountryProfileProps) {
 
       {/* ── Hero Banner ── */}
       <div className="relative overflow-hidden bg-[#1a1208]">
-        {/* Grain texture */}
-        <div className="absolute inset-0 opacity-[0.04]"
-          style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")' }} />
+        {/* Scenic country photo from Unsplash */}
+        <img
+          src={`https://source.unsplash.com/1600x600/?${encodeURIComponent(data.mapData.countryQuery + ' landscape scenic')}`}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover opacity-40"
+        />
+        {/* Dark gradient overlay so text stays readable */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#1a1208]/90 via-[#1a1208]/70 to-[#1a1208]/40" />
         {/* Amber glow */}
         <div className="absolute -top-24 -right-24 w-[420px] h-[420px] rounded-full pointer-events-none"
           style={{ background: 'radial-gradient(circle, rgba(176,122,58,0.18) 0%, transparent 70%)' }} />
@@ -376,7 +382,7 @@ export function CountryProfile({ data }: CountryProfileProps) {
         {/* MAP */}
         <Section id="map" refs={sectionRefs} title="Interactive Map" icon={<Map size={17} />}>
           <div className="rounded-2xl overflow-hidden border border-[#e8dfd2] shadow-sm">
-            <MapSection mapData={data.mapData} bestTimeToVisit={data.bestTimeToVisit} />
+            <MapSection mapData={data.mapData} />
           </div>
         </Section>
 
