@@ -22,14 +22,14 @@ const funFacts = [
 ];
 
 const topDestinations = [
-  { name: "Japan",         flag: "🇯🇵" },
-  { name: "Italy",         flag: "🇮🇹" },
-  { name: "France",        flag: "🇫🇷" },
-  { name: "Thailand",      flag: "🇹🇭" },
-  { name: "Morocco",       flag: "🇲🇦" },
-  { name: "Iceland",       flag: "🇮🇸" },
-  { name: "Peru",          flag: "🇵🇪" },
-  { name: "New Zealand",   flag: "🇳🇿" },
+  { name: "Japan",         code: "jp" },
+  { name: "Italy",         code: "it" },
+  { name: "France",        code: "fr" },
+  { name: "Thailand",      code: "th" },
+  { name: "Morocco",       code: "ma" },
+  { name: "Iceland",       code: "is" },
+  { name: "Peru",          code: "pe" },
+  { name: "New Zealand",   code: "nz" },
 ];
 
 const placeholderCountries = ["Japan", "Morocco", "Iceland", "Peru", "Italy", "Bali", "Portugal", "Kenya"];
@@ -214,7 +214,8 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                   disabled={isLoading}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white border border-[#e8dfd2] text-[#6b5740] hover:bg-[#1a1208] hover:text-[#F7F3EE] hover:border-[#1a1208] transition-all duration-200 shadow-sm disabled:opacity-40"
                 >
-                  <span style={{ fontFamily: '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Twemoji Mozilla",sans-serif' }}>{dest.flag}</span>{dest.name}
+                  <img src={`https://flagcdn.com/w20/${dest.code}.png`} alt={dest.name} className="w-4 h-3 object-cover rounded-sm shrink-0" />
+                  {dest.name}
                 </button>
               ))}
             </div>
