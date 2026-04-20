@@ -15,6 +15,94 @@ import fs from 'fs';
 import path from 'path';
 import { extraCultureProfiles, extraFoodData, extraMapCategoryData } from './indexExtra.mjs';
 
+// ── Gemini Flash AI enrichment ──────────────────────────────────────────────
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
+const geminiCache = new Map(); // session cache to avoid duplicate AI calls
+
+async function geminiEnrich(countryName, capital, currencyCode) {
+  const key = countryName.toLowerCase();
+  if (geminiCache.has(key)) return geminiCache.get(key);
+
+  if (!GEMINI_API_KEY) return null;
+
+  const prompt = `You are a travel data API. Return ONLY a valid JSON object (no markdown, no explanation) for the country "${countryName}" with this exact structure:
+{
+  "foods": [
+    { "name": "...", "description": "...", "famousFor": "..." }
+  ],
+  "attractions": [
+    { "name": "...", "city": "...", "famousFor": "...", "interestingFact": "...", "imageSearchQuery": "..." }
+  ],
+  "phrases": [
+    { "english": "...", "local": "...", "phonetic": "..." }
+  ],
+  "funFacts": ["...", "...", "...", "...", "..."],
+  "bestTimeToVisit": {
+    "bestMonths": "...",
+    "rainySeason": "...",
+    "cheapestSeason": "...",
+    "majorFestivals": ["...", "...", "..."]
+  },
+  "culture": {
+    "traditions": ["...", "...", "...", "...", "..."],
+    "socialNorms": ["...", "...", "...", "...", "..."],
+    "religionOverview": "...",
+    "etiquetteTips": ["...", "...", "...", "...", "..."]
+  },
+  "mapCategories": {
+    "bestBeaches": ["...", "...", "..."],
+    "bestFoodAreas": ["...", "...", "..."],
+    "nightlifeZones": ["...", "...", "..."],
+    "instagrammableSpots": ["...", "...", "...", "...", "..."],
+    "areasToAvoid": ["...", "..."]
+  },
+  "prices": {
+    "hotel": "...",
+    "meal": "...",
+    "streetFood": "...",
+    "coffee": "...",
+    "transport": "...",
+    "taxi": "..."
+  }
+}
+Rules:
+- foods: exactly 5 real traditional dishes
+- attractions: exactly 5 real famous attractions with real city names
+- phrases: exactly 10 common travel phrases in the country's primary language
+- funFacts: exactly 5 surprising, specific, true facts
+- prices: use USD with realistic ranges for ${countryName}
+- mapCategories: use real place names in ${countryName}, skip arrays if not applicable (empty array)
+- Be specific and accurate. Capital is ${capital}, currency is ${currencyCode}.`;
+
+  try {
+    const resp = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.2, maxOutputTokens: 2048 },
+        }),
+      }
+    );
+    if (!resp.ok) {
+      console.warn('Gemini API error:', resp.status, await resp.text());
+      return null;
+    }
+    const json = await resp.json();
+    const raw = json?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    // Strip markdown code fences if present
+    const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
+    const parsed = JSON.parse(cleaned);
+    geminiCache.set(key, parsed);
+    return parsed;
+  } catch (e) {
+    console.warn('Gemini enrichment failed for', countryName, e?.message || e);
+    return null;
+  }
+}
+// ────────────────────────────────────────────────────────────────────────────
 
 const app = express();
 
@@ -2719,6 +2807,24 @@ app.get('/api/country', async (req, res) => {
     const cultureData = getCultureData(countryName);
     const mapCategoryData = getMapCategoryData(countryName);
 
+    const staticFoods = getFoodData(countryName);
+    const staticAttractions = getAttractionsData(countryName, capital);
+    const staticPhrases = getPhrasesData(countryName);
+    const staticPrices = getPricesData(countryName);
+    const staticBestTime = getBestTimeToVisitData(countryName);
+    const staticFunFacts = getFunFactsData(countryName);
+
+    // Check if static data is generic fallback (not real curated data)
+    const hasRealAttractions = staticAttractions.length > 0 && !staticAttractions[0].name.includes(`${countryName} National Museum`);
+    const hasRealPhrases = staticPhrases.length > 0 && staticPhrases[0].local !== 'Hello';
+    const hasRealFoods = staticFoods.length > 0 && !staticFoods[0].name.includes('Local Specialty');
+    const needsAI = !hasRealAttractions || !hasRealPhrases || !hasRealFoods;
+
+    // Enrich with Gemini if static data is missing
+    const ai = needsAI ? await geminiEnrich(countryName, capital, currencyCode) : null;
+
+    const majorCities = knownGeoData?.majorCities || await getMajorCities(countryName, capital, iso);
+
     const response = {
       isValidCountry: true,
       overview: {
@@ -2733,30 +2839,30 @@ app.get('/api/country', async (req, res) => {
       geography: {
         climate: knownGeoData?.climate || (climateText.length > 1 ? climateText : 'Climate varies by region; check local conditions.'),
         landscape: knownGeoData?.landscape || (landscapeText.length > 1 ? landscapeText : 'Diverse landscapes including mountains, plains, and coastlines.'),
-        majorCities: knownGeoData?.majorCities || await getMajorCities(countryName, capital, iso),
+        majorCities,
         naturalLandmarks: knownGeoData?.naturalLandmarks || await getNaturalLandmarks(countryName, wikiSummary),
       },
       culture: {
-        traditions: cultureData?.traditions || ['Local festivals and celebrations', 'Traditional ceremonies', 'Community gatherings and events', 'Seasonal celebrations', 'Cultural performances'],
-        socialNorms: cultureData?.socialNorms || ['Greet people politely', 'Respect local customs and traditions', 'Observe personal space norms', 'Follow local dress codes at religious sites', 'Be mindful of local social etiquette'],
-        religionOverview: cultureData?.religionOverview || 'Diverse religious and spiritual practices.',
-        etiquetteTips: cultureData?.etiquetteTips || ['Greet people politely and use formal titles when appropriate', 'Ask before photographing people or religious sites', 'Respect local customs and dress modestly at religious sites', 'Learn a few words in the local language', 'Be respectful of local traditions and practices'],
+        traditions: cultureData?.traditions || ai?.culture?.traditions || ['Local festivals and celebrations', 'Traditional ceremonies', 'Community gatherings and events', 'Seasonal celebrations', 'Cultural performances'],
+        socialNorms: cultureData?.socialNorms || ai?.culture?.socialNorms || ['Greet people politely', 'Respect local customs and traditions', 'Observe personal space norms', 'Follow local dress codes at religious sites', 'Be mindful of local social etiquette'],
+        religionOverview: cultureData?.religionOverview || ai?.culture?.religionOverview || 'Diverse religious and spiritual practices.',
+        etiquetteTips: cultureData?.etiquetteTips || ai?.culture?.etiquetteTips || ['Greet people politely and use formal titles when appropriate', 'Ask before photographing people or religious sites', 'Respect local customs and dress modestly at religious sites', 'Learn a few words in the local language', 'Be respectful of local traditions and practices'],
       },
-      foods: getFoodData(countryName),
-      attractions: getAttractionsData(countryName, capital),
+      foods: hasRealFoods ? staticFoods : (ai?.foods || staticFoods),
+      attractions: hasRealAttractions ? staticAttractions : (ai?.attractions || staticAttractions),
       languageCode,
-      phrases: getPhrasesData(countryName),
-      prices: getPricesData(countryName),
-      bestTimeToVisit: getBestTimeToVisitData(countryName),
-      funFacts: getFunFactsData(countryName),
+      phrases: hasRealPhrases ? staticPhrases : (ai?.phrases || staticPhrases),
+      prices: ai?.prices || staticPrices,
+      bestTimeToVisit: ai?.bestTimeToVisit || staticBestTime,
+      funFacts: ai?.funFacts || staticFunFacts,
       mapData: {
         countryQuery: countryName,
-        cities: (knownGeoData?.majorCities || []).slice(0, 5).map(c => ({ name: c, query: `${c}, ${countryName}`, highlights: [] })),
-        bestBeaches: mapCategoryData?.bestBeaches || [],
-        bestFoodAreas: mapCategoryData?.bestFoodAreas || [],
-        nightlifeZones: mapCategoryData?.nightlifeZones || [],
-        instagrammableSpots: mapCategoryData?.instagrammableSpots || [],
-        areasToAvoid: mapCategoryData?.areasToAvoid || [],
+        cities: majorCities.slice(0, 5).map(c => ({ name: c, query: `${c}, ${countryName}`, highlights: [] })),
+        bestBeaches: mapCategoryData?.bestBeaches || ai?.mapCategories?.bestBeaches || [],
+        bestFoodAreas: mapCategoryData?.bestFoodAreas || ai?.mapCategories?.bestFoodAreas || [],
+        nightlifeZones: mapCategoryData?.nightlifeZones || ai?.mapCategories?.nightlifeZones || [],
+        instagrammableSpots: mapCategoryData?.instagrammableSpots || ai?.mapCategories?.instagrammableSpots || [],
+        areasToAvoid: mapCategoryData?.areasToAvoid || ai?.mapCategories?.areasToAvoid || [],
       },
     };
 
