@@ -214,7 +214,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                   disabled={isLoading}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white border border-[#e8dfd2] text-[#6b5740] hover:bg-[#1a1208] hover:text-[#F7F3EE] hover:border-[#1a1208] transition-all duration-200 shadow-sm disabled:opacity-40"
                 >
-                  <span>{dest.flag}</span>{dest.name}
+                  <span style={{ fontFamily: '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Twemoji Mozilla",sans-serif' }}>{dest.flag}</span>{dest.name}
                 </button>
               ))}
             </div>
@@ -257,7 +257,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                             transition={{ duration: 0.3 }}
                             className="absolute inset-0 text-[#6b5740] text-sm line-clamp-2"
                           >
-                            <span className="mr-1.5">{funFacts[factIndex].flag}</span>
+                            <span className="mr-1.5" style={{ fontFamily: '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Twemoji Mozilla",sans-serif' }}>{funFacts[factIndex].flag}</span>
                             {funFacts[factIndex].fact}
                           </motion.p>
                         </AnimatePresence>
