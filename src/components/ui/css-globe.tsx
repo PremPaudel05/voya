@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
-import createGlobe, { COBEOptions } from 'cobe'
+import createGlobe from 'cobe'
+import type { COBEOptions } from 'cobe'
 
 export function CSSGlobe() {
   const containerRef = useRef<HTMLDivElement>(null)
