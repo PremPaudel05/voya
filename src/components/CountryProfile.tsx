@@ -107,7 +107,10 @@ export function CountryProfile({ data }: CountryProfileProps) {
                   onError={() => setFlagError(true)}
                 />
               ) : (
-                <span className="text-7xl md:text-8xl">{data.overview.flagEmoji}</span>
+                <span
+                  className="text-7xl md:text-8xl"
+                  style={{ fontFamily: '"Twemoji Mozilla","Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif' }}
+                >{data.overview.flagEmoji}</span>
               )}
             </div>
           </motion.div>

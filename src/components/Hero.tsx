@@ -92,10 +92,13 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
           <span className="text-xl font-black tracking-tight text-[#1a1208]">Voya</span>
           <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#b07a3a] bg-[#b07a3a]/10 px-2 py-0.5 rounded-full">Travel</span>
         </div>
-        <div className="hidden sm:flex items-center gap-6 text-sm font-medium text-[#6b5740]">
-          <button onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-[#1a1208] transition-colors">About</button>
+        <div className="flex items-center gap-3 sm:gap-6 text-sm font-medium text-[#6b5740]">
+          <button onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })} className="hidden sm:block hover:text-[#1a1208] transition-colors">About</button>
           <button
-            onClick={() => inputRef.current?.focus()}
+            onClick={() => {
+              inputRef.current?.focus();
+              inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }}
             className="px-4 py-2 rounded-full bg-[#1a1208] text-[#F7F3EE] text-xs font-semibold hover:bg-[#2d1f0e] transition-colors"
           >
             Start exploring →
