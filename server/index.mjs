@@ -2814,14 +2814,18 @@ app.get('/api/country', async (req, res) => {
     const staticBestTime = getBestTimeToVisitData(countryName);
     const staticFunFacts = getFunFactsData(countryName);
 
-    // Check if static data is generic fallback (not real curated data)
+    // Check if static data is real curated data (not a generic fallback)
     const hasRealAttractions = staticAttractions.length > 0 && !staticAttractions[0].name.includes(`${countryName} National Museum`);
-    const hasRealPhrases = staticPhrases.length > 0 && staticPhrases[0].local !== 'Hello';
     const hasRealFoods = staticFoods.length > 0 && !staticFoods[0].name.includes('Local Specialty');
-    const needsAI = !hasRealAttractions || !hasRealPhrases || !hasRealFoods;
+    // Phrases from knownPhrasesData are always preferred; language-group fallbacks are replaced by AI
+    const hasHandcraftedPhrases = (() => {
+      const key = (countryAliases[countryName.toLowerCase().trim()] || countryName.toLowerCase().trim());
+      return !!(knownPhrasesData[key]);
+    })();
 
-    // Enrich with Gemini if static data is missing
-    const ai = needsAI ? await geminiEnrich(countryName, capital, currencyCode) : null;
+    // Always call Gemini — it powers phrases for all countries, plus fills gaps in attractions/food/culture.
+    // geminiEnrich is cached per session so repeat searches are free.
+    const ai = await geminiEnrich(countryName, capital, currencyCode);
 
     const majorCities = knownGeoData?.majorCities || await getMajorCities(countryName, capital, iso);
 
@@ -2851,7 +2855,8 @@ app.get('/api/country', async (req, res) => {
       foods: hasRealFoods ? staticFoods : (ai?.foods || staticFoods),
       attractions: hasRealAttractions ? staticAttractions : (ai?.attractions || staticAttractions),
       languageCode,
-      phrases: hasRealPhrases ? staticPhrases : (ai?.phrases || staticPhrases),
+      // Prefer handcrafted phrases → AI phrases → generic language-group fallback
+      phrases: hasHandcraftedPhrases ? staticPhrases : (ai?.phrases || staticPhrases),
       prices: ai?.prices || staticPrices,
       bestTimeToVisit: ai?.bestTimeToVisit || staticBestTime,
       funFacts: ai?.funFacts || staticFunFacts,
