@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { Hero } from './components/Hero';
 import { LandingFeatures } from './components/LandingFeatures';
+import { AboutSection } from './components/AboutSection';
+import { Footer } from './components/Footer';
 
 export default function App() {
   const navigate = useNavigate();
@@ -13,9 +15,11 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 font-sans text-slate-900">
+    <div className="min-h-screen bg-[#F7F3EE] font-sans text-[#1a1208]">
       <Hero onSearch={handleSearch} isLoading={false} />
       <LandingFeatures />
+      <AboutSection />
+      <Footer />
     </div>
   );
 }
