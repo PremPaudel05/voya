@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import createGlobe from 'cobe'
+import createGlobe, { COBEOptions } from 'cobe'
 
 export function CSSGlobe() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -12,8 +12,8 @@ export function CSSGlobe() {
 
     let phi = 0
     let globe: ReturnType<typeof createGlobe> | null = null
+    let rafId = 0
 
-    // Drag state
     let pointerDown = false
     let lastX = 0
     let velocity = 0
@@ -44,13 +44,14 @@ export function CSSGlobe() {
 
     function init() {
       if (globe) { globe.destroy(); globe = null }
+      cancelAnimationFrame(rafId)
 
       const size = container!.offsetWidth
       if (!size) return
 
       const dpr = Math.min(window.devicePixelRatio || 1, 2)
 
-      globe = createGlobe(canvas!, {
+      const opts: COBEOptions = {
         devicePixelRatio: dpr,
         width: size * dpr,
         height: size * dpr,
@@ -70,16 +71,20 @@ export function CSSGlobe() {
           { location: [35.68, 139.69],  size: 0.05 },
           { location: [-23.55, -46.63], size: 0.05 },
         ],
-        onRender(state: Record<string, number>) {
-          if (!pointerDown) {
-            velocity *= 0.92
-            phi += 0.004 + velocity
-          }
-          state.phi = phi
-        },
-      })
+      }
 
+      globe = createGlobe(canvas!, opts)
       canvas!.style.opacity = '1'
+
+      function animate() {
+        if (!pointerDown) {
+          velocity *= 0.92
+          phi += 0.004 + velocity
+        }
+        globe!.update({ phi })
+        rafId = requestAnimationFrame(animate)
+      }
+      rafId = requestAnimationFrame(animate)
     }
 
     const size = container.offsetWidth
@@ -90,10 +95,11 @@ export function CSSGlobe() {
         if (container!.offsetWidth > 0) { ro.disconnect(); init() }
       })
       ro.observe(container)
-      return () => ro.disconnect()
+      return () => { ro.disconnect(); cancelAnimationFrame(rafId) }
     }
 
     return () => {
+      cancelAnimationFrame(rafId)
       globe?.destroy()
       window.removeEventListener('pointermove', onPointerMove)
       window.removeEventListener('pointerup', onPointerUp)
