@@ -64,29 +64,30 @@ export default function CountryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 font-sans">
+    <div className="min-h-screen bg-[#F7F3EE] font-sans">
 
-      {/* ── Top Nav ─── */}
-      <div className="sticky top-0 z-50 bg-slate-950/90 backdrop-blur border-b border-white/5 px-4 py-2.5 flex items-center gap-4">
+      {/* ── Top Nav ── */}
+      <div className="sticky top-0 z-50 bg-[#F7F3EE]/95 backdrop-blur border-b border-[#e8dfd2] px-6 py-3 flex items-center gap-4">
         <button onClick={() => navigate('/')}
-          className="flex items-center gap-1.5 text-slate-400 hover:text-white transition-colors text-sm font-medium shrink-0">
-          <ArrowLeft size={15} /> Home
+          className="flex items-center gap-1.5 text-[#9c8470] hover:text-[#1a1208] transition-colors text-sm font-semibold shrink-0">
+          <ArrowLeft size={14} /> Home
         </button>
 
-        {/* Inline search */}
         <form onSubmit={handleSearch} className="flex-1 max-w-sm">
-          <div className="flex items-center gap-2 bg-white/8 border border-white/10 focus-within:border-blue-500/50 rounded-xl px-3 py-1.5 transition-colors">
-            <Search size={13} className="text-slate-500 shrink-0" />
+          <div className="flex items-center gap-2 bg-white border border-[#ddd4c4] focus-within:border-[#b07a3a]/60 rounded-xl px-3 py-2 transition-colors shadow-sm">
+            <Search size={13} className="text-[#b07a3a] shrink-0" />
             <input
               value={searchInput}
               onChange={e => setSearchInput(e.target.value)}
               placeholder={decoded || 'Search another country…'}
-              className="flex-1 bg-transparent text-white text-xs placeholder:text-slate-500 focus:outline-none"
+              className="flex-1 bg-transparent text-[#1a1208] text-xs placeholder:text-[#b8a898] focus:outline-none font-medium"
             />
           </div>
         </form>
 
-        <span className="text-blue-400 font-bold text-sm tracking-wide shrink-0">Voya</span>
+        <span className="text-[#1a1208] font-black text-sm tracking-tight shrink-0">
+          Voya <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#b07a3a] bg-[#b07a3a]/10 px-2 py-0.5 rounded-full ml-1">Travel</span>
+        </span>
       </div>
 
       <main>
@@ -101,17 +102,17 @@ export default function CountryPage() {
           {error && !isLoading && (
             <motion.div key="error" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               className="px-4 py-20">
-              <div className="max-w-lg mx-auto bg-slate-900 border border-red-500/20 rounded-2xl p-8 text-center">
+              <div className="max-w-lg mx-auto bg-white border border-[#e8dfd2] rounded-3xl p-10 text-center shadow-sm">
                 <div className="text-5xl mb-4">🌍</div>
-                <h2 className="text-xl font-bold text-white mb-2">Couldn't load insights</h2>
-                <p className="text-slate-400 text-sm leading-relaxed mb-6">{error}</p>
+                <h2 className="text-xl font-black text-[#1a1208] mb-2">Couldn't load insights</h2>
+                <p className="text-[#7a6650] text-sm leading-relaxed mb-6">{error}</p>
                 <div className="flex items-center justify-center gap-3">
                   <button onClick={() => navigate('/')}
-                    className="px-5 py-2.5 bg-slate-800 text-white rounded-xl hover:bg-slate-700 transition-colors text-sm font-medium">
+                    className="px-5 py-2.5 bg-[#F7F3EE] border border-[#e8dfd2] text-[#1a1208] rounded-xl hover:bg-[#eee7dc] transition-colors text-sm font-semibold">
                     ← Home
                   </button>
                   <button onClick={() => navigate(`/country/${encodeURIComponent(decoded)}`)}
-                    className="px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors text-sm font-medium">
+                    className="px-5 py-2.5 bg-[#1a1208] text-[#F7F3EE] rounded-xl hover:bg-[#b07a3a] transition-colors text-sm font-semibold">
                     Try Again
                   </button>
                 </div>
@@ -131,21 +132,21 @@ export default function CountryPage() {
         {showScrollTop && (
           <motion.button initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.5 }}
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="fixed bottom-8 right-8 p-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-colors z-50">
-            <ArrowUp size={20} />
+            className="fixed bottom-8 right-8 p-3 bg-[#1a1208] text-[#F7F3EE] rounded-full shadow-lg hover:bg-[#b07a3a] transition-colors z-50">
+            <ArrowUp size={18} />
           </motion.button>
         )}
       </AnimatePresence>
 
-      <footer className="bg-slate-950 text-slate-500 border-t border-white/5 mt-4">
-        <div className="border-b border-white/5 py-3 px-6 text-center">
-          <p className="text-xs max-w-2xl mx-auto">
-            <span className="text-slate-400 font-medium">Heads up:</span> Voya compiles travel insights from curated data sources — always verify critical details before you travel.
+      <footer className="bg-[#F7F3EE] border-t border-[#e8dfd2] mt-4">
+        <div className="border-b border-[#e8dfd2] py-3 px-6 text-center">
+          <p className="text-xs text-[#9c8470] max-w-2xl mx-auto">
+            <span className="text-[#6b5740] font-semibold">Heads up:</span> Voya compiles travel insights from AI — always verify critical details before you travel.
           </p>
         </div>
-        <div className="max-w-5xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span className="text-blue-400 font-bold">Voya <span className="text-slate-600 font-normal">· Your smart travel guide</span></span>
-          <p className="text-xs">© {new Date().getFullYear()} Voya. Built to make travel planning joyful.</p>
+        <div className="max-w-5xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <span className="text-[#1a1208] font-black text-sm">Voya <span className="text-[#9c8470] font-normal">· Your smart travel guide</span></span>
+          <p className="text-xs text-[#9c8470]">© {new Date().getFullYear()} Voya. Built to make travel planning joyful.</p>
         </div>
       </footer>
     </div>
