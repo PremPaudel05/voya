@@ -4,6 +4,7 @@ import type { CountryData } from '../types';
 import { MapSection } from './MapSection';
 import { PhraseTable } from './PhraseTable';
 import { AttractionCard } from './AttractionCard';
+import { DownloadModal } from './DownloadModal';
 import {
   Map, Users, Utensils, Camera, MessageCircle, CreditCard,
   ArrowRightLeft, Calendar, Thermometer, Mountain, Globe,
@@ -189,7 +190,7 @@ export function CountryProfile({ data }: CountryProfileProps) {
 
       {/* ── Sticky Tab Bar ── */}
       <div className="sticky top-[49px] z-40 bg-[#F7F3EE]/95 backdrop-blur border-b border-[#e8dfd2] shadow-sm">
-        <div className="max-w-5xl mx-auto px-4 flex gap-0.5 overflow-x-auto scrollbar-none py-2">
+        <div className="max-w-5xl mx-auto px-4 flex items-center gap-0.5 overflow-x-auto scrollbar-none py-2">
           {TABS.map(({ id, label, icon: Icon }) => (
             <button key={id} onClick={() => scrollToTab(id)}
               className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all
@@ -201,6 +202,9 @@ export function CountryProfile({ data }: CountryProfileProps) {
               {label}
             </button>
           ))}
+          <div className="ml-auto pl-2 shrink-0">
+            <DownloadModal data={data} countryName={data.mapData.countryQuery} />
+          </div>
         </div>
       </div>
 
