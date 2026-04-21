@@ -33,7 +33,16 @@ const topDestinations = [
   { name: "New Zealand",   code: "nz" },
 ];
 
-const placeholderCountries = ["Japan", "Morocco", "Iceland", "Peru", "Italy", "Bali", "Portugal", "Kenya"];
+const placeholderCountries = [
+  { prefix: "Dreaming of",   country: "Japan" },
+  { prefix: "Planning a trip to", country: "Morocco" },
+  { prefix: "Curious about", country: "Iceland" },
+  { prefix: "Exploring",     country: "Peru" },
+  { prefix: "Heading to",    country: "Italy" },
+  { prefix: "Wandering",     country: "Portugal" },
+  { prefix: "Adventuring in",country: "Kenya" },
+  { prefix: "Discovering",   country: "Thailand" },
+];
 
 const travelWords = ["wander", "explore", "discover", "roam"];
 
@@ -88,7 +97,8 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
         style={{ background: 'radial-gradient(circle, rgba(185,90,60,0.12) 0%, transparent 70%)' }} />
 
       {/* Top nav strip */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-7 flex items-center justify-between">
+      <div className="sticky top-0 z-50 bg-[#F7F3EE]/95 backdrop-blur border-b border-[#e8dfd2] w-full">
+      <div className="w-full max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-xl font-black tracking-tight text-[#1a1208]">Voya</span>
           <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#b07a3a] bg-[#b07a3a]/10 px-2 py-0.5 rounded-full">Travel</span>
@@ -106,6 +116,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
             Start exploring →
           </button>
         </div>
+      </div>
       </div>
 
       {/* Main content */}
@@ -166,19 +177,20 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                   <Search size={16} className="text-[#b07a3a] shrink-0" />
                   <div className="relative flex-1 h-full flex items-center overflow-hidden">
                     {!query && (
-                      <div className="absolute inset-0 flex items-center pointer-events-none">
-                        <span className="text-[#b8a898] text-sm whitespace-nowrap mr-1">Try </span>
+                      <div className="absolute inset-0 flex items-center pointer-events-none overflow-hidden">
                         <AnimatePresence mode="wait">
                           <motion.span
                             key={placeholderIndex}
                             initial={{ opacity: 0, y: 8 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -8 }}
-                            transition={{ duration: 0.25 }}
-                            className="absolute text-[#b8a898] text-sm whitespace-nowrap"
-                            style={{ left: '2.3rem' }}
+                            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                            className="text-[#b8a898] text-sm whitespace-nowrap"
                           >
-                            {placeholderCountries[placeholderIndex]}…
+                            <span className="text-[#c9b89a]">{placeholderCountries[placeholderIndex].prefix}</span>
+                            {' '}
+                            <span className="text-[#b07a3a]/70 font-medium">{placeholderCountries[placeholderIndex].country}</span>
+                            <span className="text-[#b8a898]">?</span>
                           </motion.span>
                         </AnimatePresence>
                       </div>
