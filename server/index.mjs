@@ -2958,6 +2958,78 @@ Rules:
 }
 app.post('/api/itinerary', handleItinerary);
 app.post('/itinerary', handleItinerary);
+
+// GET version — takes query params, goes through the same /api rewrite as /api/country
+app.get('/api/plan', async (req, res) => {
+  try {
+    const countryName = String(req.query.countryName || '').trim();
+    const days = parseInt(req.query.days) || 7;
+    const budget = String(req.query.budget || 'mid-range');
+    const styles = String(req.query.styles || 'culture').split(',').filter(Boolean);
+    const traveler = String(req.query.traveler || 'couple');
+    const notes = String(req.query.notes || '');
+
+    if (!countryName) return res.status(400).json({ error: 'Missing countryName' });
+    if (!GEMINI_API_KEY) return res.status(500).json({ error: 'Missing GEMINI_API_KEY' });
+
+    const styleList = styles.join(', ');
+    const prompt = `You are an expert travel planner. Create a detailed ${days}-day trip itinerary for ${countryName}.
+
+Traveler profile:
+- Group: ${traveler}
+- Budget: ${budget}
+- Interests: ${styleList}
+- Special requests: ${notes || 'none'}
+
+Return ONLY a valid JSON object (no markdown, no extra text):
+{
+  "intro": "2-3 sentence overview of the trip",
+  "days": [
+    {
+      "day": 1,
+      "title": "Catchy day title",
+      "morning": "Detailed morning activity with specific place names (2-3 sentences)",
+      "afternoon": "Detailed afternoon activity with specific place names (2-3 sentences)",
+      "evening": "Detailed evening activity and dinner recommendation (2-3 sentences)",
+      "tip": "One practical tip specific to this day",
+      "estimatedCost": "e.g. $50-80 per person"
+    }
+  ],
+  "packingEssentials": ["item1","item2","item3","item4","item5","item6"],
+  "budgetSummary": "2-sentence total trip budget estimate",
+  "bestAdvice": "Single most important piece of advice for this trip"
+}
+Rules: exactly ${days} day objects, real place names in ${countryName}, ${budget} budget level.`;
+
+    const geminiResp = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.7, maxOutputTokens: 4096 },
+        }),
+      }
+    );
+
+    if (!geminiResp.ok) {
+      const errText = await geminiResp.text();
+      console.error('Gemini plan error:', geminiResp.status, errText);
+      return res.status(502).json({ error: `Gemini error ${geminiResp.status}` });
+    }
+
+    const json = await geminiResp.json();
+    const raw = json?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
+    const parsed = JSON.parse(cleaned);
+    if (!parsed.days?.length) throw new Error('Invalid AI response');
+    return res.json(parsed);
+  } catch (err) {
+    console.error('Plan generation failed:', err);
+    return res.status(500).json({ error: err?.message || 'Failed to generate plan' });
+  }
+});
 // ────────────────────────────────────────────────────────────────────────────
 
 // Only start the server when running locally (not on Vercel)

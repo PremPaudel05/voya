@@ -82,15 +82,17 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
     setError('');
 
 
-    const body = JSON.stringify({ countryName, days, budget, styles: [...styles], traveler, notes });
-    const headers = { 'Content-Type': 'application/json' };
+    const params = new URLSearchParams({
+      countryName,
+      days: String(days),
+      budget,
+      styles: [...styles].join(','),
+      traveler,
+      notes: notes || '',
+    });
 
     try {
-      // Try primary path, fall back to /itinerary if rewrite strips /api prefix
-      let resp = await fetch('/api/itinerary', { method: 'POST', headers, body });
-      if (!resp.ok && resp.status === 404) {
-        resp = await fetch('/itinerary', { method: 'POST', headers, body });
-      }
+      const resp = await fetch(`/api/plan?${params.toString()}`);
       if (!resp.ok) {
         const errJson = await resp.json().catch(() => ({}));
         throw new Error(errJson.error || `Server error ${resp.status}`);
