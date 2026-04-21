@@ -100,21 +100,57 @@ export default function CountryPage() {
           )}
 
           {error && !isLoading && (
-            <motion.div key="error" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-              className="px-4 py-20">
-              <div className="max-w-lg mx-auto bg-white border border-[#e8dfd2] rounded-3xl p-10 text-center shadow-sm">
-                <div className="text-5xl mb-4">🌍</div>
-                <h2 className="text-xl font-black text-[#1a1208] mb-2">Couldn't load insights</h2>
-                <p className="text-[#7a6650] text-sm leading-relaxed mb-6">{error}</p>
+            <motion.div key="error" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="px-4 py-16 min-h-[70vh] flex items-center justify-center">
+              <div className="max-w-md w-full mx-auto text-center">
+
+                {/* Icon */}
+                <div className="w-16 h-16 rounded-2xl bg-[#b07a3a]/10 border border-[#b07a3a]/20 flex items-center justify-center mx-auto mb-6">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#b07a3a" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                </div>
+
+                {/* Heading */}
+                <h2 className="text-2xl font-black text-[#1a1208] mb-2 tracking-tight">
+                  {error.includes('valid country') ? 'Country not found' : 'Something went wrong'}
+                </h2>
+                <p className="text-[#9c8470] text-sm leading-relaxed mb-8 max-w-xs mx-auto">
+                  {error.includes('valid country')
+                    ? `"${decoded}" doesn't match any country in our database. Check the spelling or try a different name.`
+                    : 'We had trouble loading insights for this destination. It might be a temporary issue.'}
+                </p>
+
+                {/* Suggestions if invalid country */}
+                {error.includes('valid country') && (
+                  <div className="mb-8">
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-[#b07a3a] mb-3">Try one of these</p>
+                    <div className="flex flex-wrap justify-center gap-2">
+                      {['Japan', 'France', 'Morocco', 'Thailand', 'Brazil', 'Iceland'].map(c => (
+                        <button key={c} onClick={() => navigate(`/country/${encodeURIComponent(c)}`)}
+                          className="px-3 py-1.5 rounded-full text-xs font-semibold bg-white border border-[#e8dfd2] text-[#6b5740] hover:bg-[#1a1208] hover:text-white hover:border-[#1a1208] transition-all shadow-sm">
+                          {c}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Actions */}
                 <div className="flex items-center justify-center gap-3">
                   <button onClick={() => navigate('/')}
-                    className="px-5 py-2.5 bg-[#F7F3EE] border border-[#e8dfd2] text-[#1a1208] rounded-xl hover:bg-[#eee7dc] transition-colors text-sm font-semibold">
-                    ← Home
+                    className="flex items-center gap-1.5 px-5 py-2.5 bg-white border border-[#e8dfd2] text-[#1a1208] rounded-xl hover:bg-[#F7F3EE] transition-colors text-sm font-semibold shadow-sm">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                    Home
                   </button>
-                  <button onClick={() => navigate(`/country/${encodeURIComponent(decoded)}`)}
-                    className="px-5 py-2.5 bg-[#1a1208] text-[#F7F3EE] rounded-xl hover:bg-[#b07a3a] transition-colors text-sm font-semibold">
-                    Try Again
-                  </button>
+                  {!error.includes('valid country') && (
+                    <button onClick={() => navigate(`/country/${encodeURIComponent(decoded)}`)}
+                      className="px-5 py-2.5 bg-[#1a1208] text-[#F7F3EE] rounded-xl hover:bg-[#b07a3a] transition-colors text-sm font-semibold">
+                      Try Again
+                    </button>
+                  )}
                 </div>
               </div>
             </motion.div>
