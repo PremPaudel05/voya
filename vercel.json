@@ -1,7 +1,13 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "functions": {
+    "api/index.mjs": { "memory": 1024, "maxDuration": 30 },
+    "api/itinerary.mjs": { "memory": 1024, "maxDuration": 30 },
+    "api/chat.mjs": { "memory": 512, "maxDuration": 15 }
+  },
   "rewrites": [
+    { "source": "/api/itinerary", "destination": "/api/itinerary" },
     { "source": "/api/(.*)", "destination": "/api" },
     { "source": "/((?!api).*)", "destination": "/index.html" }
   ]
