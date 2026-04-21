@@ -13,11 +13,11 @@ interface AttractionCardProps {
 }
 
 function buildImageSrc(attraction: AttractionCardProps['attraction'], countryName: string): string {
-  // Prefer explicit Wikipedia URLs embedded in static data — they're already verified
   if (attraction.imageUrl) return attraction.imageUrl;
-  // Otherwise use Unsplash Source for high-quality, relevant photos
-  const query = attraction.imageSearchQuery || `${attraction.name} ${attraction.city} ${countryName}`;
-  return `https://source.unsplash.com/800x600/?${encodeURIComponent(query)}`;
+  const query = attraction.imageSearchQuery || `${attraction.name} ${countryName}`;
+  // Use Wikimedia Commons search as primary — free, no key, high quality
+  const keywords = query.replace(/[^a-zA-Z0-9 ]/g, ' ').trim().split(/\s+/).slice(0, 3).join(',');
+  return `https://loremflickr.com/800/600/${encodeURIComponent(keywords)}`;
 }
 
 export const AttractionCard: React.FC<AttractionCardProps> = ({ attraction, countryName }) => {
@@ -25,14 +25,12 @@ export const AttractionCard: React.FC<AttractionCardProps> = ({ attraction, coun
   const [fallbackStage, setFallbackStage] = useState(0);
 
   const handleError = () => {
-    if (fallbackStage === 0 && !attraction.imageUrl) {
-      // Try a simpler query on first failure
-      const simpleQuery = encodeURIComponent(`${attraction.name} landmark`);
-      setImageSrc(`https://source.unsplash.com/800x600/?${simpleQuery}`);
+    if (fallbackStage === 0) {
+      const simpleQuery = encodeURIComponent(attraction.name.split(/\s+/).slice(0, 2).join(','));
+      setImageSrc(`https://loremflickr.com/800/600/${simpleQuery}`);
       setFallbackStage(1);
-    } else if (fallbackStage <= 1) {
-      // Final fallback: country landscape
-      setImageSrc(`https://source.unsplash.com/800x600/?${encodeURIComponent(countryName + ' travel')}`);
+    } else if (fallbackStage === 1) {
+      setImageSrc(`https://loremflickr.com/800/600/${encodeURIComponent(countryName)},travel`);
       setFallbackStage(2);
     }
   };
