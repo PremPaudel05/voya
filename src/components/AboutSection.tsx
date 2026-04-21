@@ -4,7 +4,7 @@ const steps = [
   {
     step: "01",
     title: "Pick anywhere on Earth",
-    desc: "Type a country name — any of the 195 countries covered. No filters, no dropdowns, just type.",
+    desc: "Type a country name. Any of the 195 countries covered. No filters, no dropdowns, just type.",
   },
   {
     step: "02",
@@ -95,11 +95,11 @@ export function AboutSection() {
               },
               {
                 label: "The problem I noticed.",
-                text: "Today's AI tools are genuinely powerful — but they fall short for real-world travel planning unless you're on a paid plan. Hit a usage limit mid-itinerary. Generic routes that don't account for budget, culture, or practical costs. No guidance on local etiquette, what to pack, or what phrases actually matter. I felt that gap every time I tried to plan a trip.",
+                text: "Today's AI tools are genuinely powerful, but they fall short for real-world travel planning unless you're on a paid plan. Hit a usage limit mid-itinerary. Generic routes that don't account for budget, culture, or practical costs. No guidance on local etiquette, what to pack, or what phrases actually matter. I felt that gap every time I tried to plan a trip.",
               },
               {
                 label: "Why I built Voya.",
-                text: "Voya — short for voyage — bridges the gap between technology and authentic travel. Whether you're building a personalised, well-structured travel route or simply exploring the languages and cultures of a country you've always been curious about, Voya gives you the practical insights and context you need to travel with confidence. No account. No subscription. Just type a country and go.",
+                text: "Voya (short for voyage) bridges the gap between technology and authentic travel. Whether you're building a personalised, well-structured travel route or simply exploring the languages and cultures of a country you've always been curious about, Voya gives you the practical insights and context you need to travel with confidence. No account. No subscription. Just type a country and go.",
               },
             ].map((para, i) => (
               <motion.div

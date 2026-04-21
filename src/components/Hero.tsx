@@ -69,7 +69,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
   }, []);
 
   useEffect(() => {
-    const t = setInterval(() => setWordIndex(i => (i + 1) % travelWords.length), 4200);
+    const t = setInterval(() => setWordIndex(i => (i + 1) % travelWords.length), 3200);
     return () => clearInterval(t);
   }, []);
 
@@ -169,7 +169,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
             </h1>
 
             <p className="text-[#6b5740] text-lg leading-relaxed mb-9 max-w-[480px]">
-              Type any country. Get instant, curated insights — culture, food, phrases, costs, and a day-by-day itinerary built just for you.
+              Type any country. Get instant, curated insights: culture, food, phrases, costs, and a day-by-day itinerary built just for you.
             </p>
 
             {/* Search */}

@@ -5,7 +5,7 @@ const features = [
   { icon: Map,           title: "Geography & Culture",     description: "History, climate, customs, and everything you need before you land.",          num: "01" },
   { icon: Utensils,      title: "Food & Cuisine",          description: "Must-try dishes, street food gems, dining etiquette, and local flavours.",      num: "02" },
   { icon: MessageCircle, title: "Local Phrases",           description: "Essential phrases with pronunciation so you can connect like a local.",          num: "03" },
-  { icon: DollarSign,    title: "Travel Costs",            description: "Real budget breakdowns — stay, eat, move, and experience, for every budget.",    num: "04" },
+  { icon: DollarSign,    title: "Travel Costs",            description: "Real budget breakdowns: stay, eat, move, and experience, for every budget.",    num: "04" },
   { icon: Calendar,      title: "Day-by-Day Itinerary",    description: "A personalised trip plan tuned to your duration, style, and budget.",           num: "05" },
   { icon: ShieldCheck,   title: "Safety Advice",           description: "Up-to-date safety tips, health info, emergency contacts, and travel warnings.",  num: "06" },
   { icon: Luggage,       title: "Packing Lists",           description: "Smart packing picks tailored to your destination's climate and culture.",         num: "07" },
