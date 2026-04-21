@@ -81,66 +81,24 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
     setStep('generating');
     setError('');
 
-    const styleList = [...styles].join(', ');
-    const budgetLabel = BUDGET_OPTIONS.find(b => b.id === budget)?.label || budget;
-    const travelerLabel = TRAVELER_OPTIONS.find(t => t.id === traveler)?.label || traveler;
-
-    const prompt = `You are an expert travel planner. Create a detailed ${days}-day trip itinerary for ${countryName}.
-
-Traveler profile:
-- Group: ${travelerLabel}
-- Budget: ${budgetLabel}
-- Interests: ${styleList}
-- Special requests: ${notes || 'none'}
-
-Return ONLY a valid JSON object with this exact structure (no markdown):
-{
-  "intro": "2-3 sentence overview of the trip",
-  "days": [
-    {
-      "day": 1,
-      "title": "Catchy day title e.g. Arrival & First Impressions",
-      "morning": "Detailed morning activity (2-3 sentences with specific place names)",
-      "afternoon": "Detailed afternoon activity (2-3 sentences with specific place names)",
-      "evening": "Detailed evening activity + dinner recommendation (2-3 sentences)",
-      "tip": "One practical tip specific to this day",
-      "estimatedCost": "Estimated daily spend e.g. $50-80 per person"
-    }
-  ],
-  "packingEssentials": ["item1", "item2", "item3", "item4", "item5", "item6"],
-  "budgetSummary": "2-sentence total trip budget estimate",
-  "bestAdvice": "Single most important piece of advice for this specific trip"
-}
-
-Rules:
-- Create exactly ${days} day objects
-- Use real, specific place names in ${countryName}
-- Morning/afternoon/evening must be detailed and actionable
-- Tips must be practical and specific (not generic)
-- Budget estimates must reflect the ${budgetLabel} level
-- If family, include child-friendly options
-- If adventure, include physical activities
-- Make it genuinely useful, not generic`;
 
     try {
-      const resp = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBZUmDQ5uPbTTTmYeqQM7YgvtZBPlaLFa0`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.7, maxOutputTokens: 4096 },
-          }),
-        }
-      );
+      const resp = await fetch('/api/itinerary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          countryName,
+          days,
+          budget,
+          styles: [...styles],
+          traveler,
+          notes,
+        }),
+      });
 
       if (!resp.ok) throw new Error('AI service unavailable');
 
-      const json = await resp.json();
-      const raw = json?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
-      const parsed: GeneratedPlan = JSON.parse(cleaned);
+      const parsed: GeneratedPlan = await resp.json();
       setPlan(parsed);
       setStep('result');
     } catch (e) {
