@@ -123,7 +123,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
 
       {/* Main content */}
       <div className="relative z-10 flex-1 flex items-center">
-        <div className="w-full max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-16 items-center">
+        <div className="w-full max-w-7xl mx-auto px-6 py-8 lg:py-12 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-8 lg:gap-16 items-center">
 
           {/* Left column */}
           <motion.div
@@ -295,25 +295,27 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.9, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="hidden lg:block relative"
+            className="relative block"
           >
             {/* Subtle top label */}
             <div className="flex items-center gap-2 mb-3">
               <div className="w-1.5 h-1.5 rounded-full bg-[#b07a3a] animate-pulse" />
               <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#b07a3a]">Live routes</span>
             </div>
-            <WorldMap
-              lineColor="#b07a3a"
-              showLabels={true}
-              dots={[
-                { start: { lat: 48.85, lng: 2.35,   label: "Paris" },      end: { lat: 35.68,  lng: 139.69, label: "Tokyo" } },
-                { start: { lat: 40.71, lng: -74.01, label: "New York" },   end: { lat: 51.51,  lng: -0.13,  label: "London" } },
-                { start: { lat: 1.35,  lng: 103.82, label: "Singapore" },  end: { lat: -33.87, lng: 151.21, label: "Sydney" } },
-                { start: { lat: 25.20, lng: 55.27,  label: "Dubai" },      end: { lat: -1.29,  lng: 36.82,  label: "Nairobi" } },
-                { start: { lat: 19.43, lng: -99.13, label: "Mexico City"}, end: { lat: -23.55, lng: -46.63, label: "São Paulo" } },
-                { start: { lat: 55.75, lng: 37.62,  label: "Moscow" },     end: { lat: 28.61,  lng: 77.21,  label: "New Delhi" } },
-              ]}
-            />
+            <div className="lg:max-h-none max-h-[260px] overflow-hidden">
+              <WorldMap
+                lineColor="#b07a3a"
+                showLabels={true}
+                dots={[
+                  { start: { lat: 48.85, lng: 2.35,   label: "Paris" },      end: { lat: 35.68,  lng: 139.69, label: "Tokyo" } },
+                  { start: { lat: 40.71, lng: -74.01, label: "New York" },   end: { lat: 51.51,  lng: -0.13,  label: "London" } },
+                  { start: { lat: 1.35,  lng: 103.82, label: "Singapore" },  end: { lat: -33.87, lng: 151.21, label: "Sydney" } },
+                  { start: { lat: 25.20, lng: 55.27,  label: "Dubai" },      end: { lat: -1.29,  lng: 36.82,  label: "Nairobi" } },
+                  { start: { lat: 19.43, lng: -99.13, label: "Mexico City"}, end: { lat: -23.55, lng: -46.63, label: "São Paulo" } },
+                  { start: { lat: 55.75, lng: 37.62,  label: "Moscow" },     end: { lat: 28.61,  lng: 77.21,  label: "New Delhi" } },
+                ]}
+              />
+            </div>
           </motion.div>
 
         </div>
