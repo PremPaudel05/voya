@@ -84,7 +84,7 @@ export function ShareButton({ countryName }: ShareButtonProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button className="hidden sm:block hover:text-[#1a1208] transition-colors text-sm font-medium text-[#6b5740]">
+        <button className="hover:text-[#1a1208] transition-colors text-xs sm:text-sm font-medium text-[#6b5740]">
           Share
         </button>
       </PopoverTrigger>
