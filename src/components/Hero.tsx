@@ -3,6 +3,7 @@ import { Search, ArrowRight, Lightbulb } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WorldMap } from './ui/map';
 import { ShareButton } from './ShareButton';
+import { TextEffect } from './ui/text-effect';
 
 interface HeroProps {
   onSearch: (country: string) => void;
@@ -179,19 +180,23 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                     {!query && (
                       <div className="absolute inset-0 flex items-center pointer-events-none overflow-hidden">
                         <AnimatePresence mode="wait">
-                          <motion.span
-                            key={placeholderIndex}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                            className="text-[#b8a898] text-sm whitespace-nowrap"
-                          >
-                            <span className="text-[#c9b89a]">{placeholderCountries[placeholderIndex].prefix}</span>
-                            {' '}
-                            <span className="text-[#b07a3a]/70 font-medium">{placeholderCountries[placeholderIndex].country}</span>
-                            <span className="text-[#b8a898]">?</span>
-                          </motion.span>
+                          <div key={placeholderIndex} className="flex items-baseline gap-1">
+                            <TextEffect
+                              per="char"
+                              preset="blur"
+                              className="text-[#c9b89a] text-sm whitespace-nowrap"
+                            >
+                              {placeholderCountries[placeholderIndex].prefix}
+                            </TextEffect>
+                            <TextEffect
+                              per="char"
+                              preset="blur"
+                              delay={placeholderCountries[placeholderIndex].prefix.length * 0.03}
+                              className="text-[#b07a3a]/80 text-sm font-semibold whitespace-nowrap"
+                            >
+                              {placeholderCountries[placeholderIndex].country + '?'}
+                            </TextEffect>
+                          </div>
                         </AnimatePresence>
                       </div>
                     )}
