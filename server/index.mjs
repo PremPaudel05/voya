@@ -2856,7 +2856,12 @@ app.get('/api/country', async (req, res) => {
       attractions: hasRealAttractions ? staticAttractions : (ai?.attractions || staticAttractions),
       languageCode,
       // Prefer handcrafted phrases → AI phrases → generic language-group fallback
-      phrases: hasHandcraftedPhrases ? staticPhrases : (ai?.phrases || staticPhrases),
+      // Strip slash-alternatives (e.g. "Hello / Hi" → "Hello") so TTS reads cleanly
+      phrases: ((hasHandcraftedPhrases ? staticPhrases : (ai?.phrases || staticPhrases)) || []).map(p => ({
+        english: p.english,
+        local: (p.local || '').split(/\s*\/\s*/)[0].trim(),
+        phonetic: (p.phonetic || p.pronunciation || '').split(/\s*\/\s*/)[0].trim(),
+      })),
       prices: ai?.prices || staticPrices,
       bestTimeToVisit: ai?.bestTimeToVisit || staticBestTime,
       funFacts: ai?.funFacts || staticFunFacts,
