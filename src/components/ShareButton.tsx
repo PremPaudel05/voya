@@ -17,7 +17,12 @@ export function ShareButton({ countryName }: ShareButtonProps) {
     : `https://voyatravel.vercel.app/country/${encodeURIComponent(countryName)}`;
 
   const encodedUrl = encodeURIComponent(shareUrl);
-  const encodedText = encodeURIComponent(`Explore ${countryName} with Voya — your free AI travel guide`);
+  const isHomepage = countryName === 'Voya';
+  const encodedText = encodeURIComponent(
+    isHomepage
+      ? 'Voya — your free AI travel guide for every country on Earth'
+      : `Explore ${countryName} with Voya — your free AI travel guide`
+  );
 
   const handleCopy = () => {
     navigator.clipboard.writeText(shareUrl);
@@ -53,7 +58,7 @@ export function ShareButton({ countryName }: ShareButtonProps) {
       </PopoverTrigger>
       <PopoverContent className="w-64" align="end" showArrow>
         <div className="flex flex-col gap-3">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#b07a3a]">Share {countryName}</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-[#b07a3a]">{isHomepage ? 'Share Voya' : `Share ${countryName}`}</p>
 
           {/* Social buttons */}
           <div className="flex gap-2">
