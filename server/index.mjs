@@ -2970,7 +2970,8 @@ app.get('/api/plan', async (req, res) => {
     const notes = String(req.query.notes || '');
 
     if (!countryName) return res.status(400).json({ error: 'Missing countryName' });
-    if (!GEMINI_API_KEY) return res.status(500).json({ error: 'Missing GEMINI_API_KEY' });
+    const planKey = process.env.GEMINI_API_KEY || GEMINI_API_KEY;
+    if (!planKey) return res.status(500).json({ error: 'Missing GEMINI_API_KEY' });
 
     const styleList = styles.join(', ');
     const prompt = `You are an expert travel planner. Create a detailed ${days}-day trip itinerary for ${countryName}.
@@ -3002,7 +3003,7 @@ Return ONLY a valid JSON object (no markdown, no extra text):
 Rules: exactly ${days} day objects, real place names in ${countryName}, ${budget} budget level.`;
 
     const geminiResp = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${planKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
