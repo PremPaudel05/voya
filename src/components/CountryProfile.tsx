@@ -5,6 +5,7 @@ import { MapSection } from './MapSection';
 import { PhraseTable } from './PhraseTable';
 import { AttractionCard } from './AttractionCard';
 import { DownloadModal } from './DownloadModal';
+import { TripPlannerModal } from './TripPlannerModal';
 import {
   Map, Users, Utensils, Camera, MessageCircle, CreditCard,
   ArrowRightLeft, Calendar, Thermometer, Mountain, Globe,
@@ -202,7 +203,8 @@ export function CountryProfile({ data }: CountryProfileProps) {
               {label}
             </button>
           ))}
-          <div className="ml-auto pl-2 shrink-0">
+          <div className="ml-auto pl-2 shrink-0 flex items-center gap-2">
+            <TripPlannerModal countryName={data.mapData.countryQuery} />
             <DownloadModal data={data} countryName={data.mapData.countryQuery} />
           </div>
         </div>
