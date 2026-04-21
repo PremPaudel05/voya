@@ -95,7 +95,7 @@ export function AboutSection() {
               },
               {
                 label: "The problem I noticed.",
-                text: "Today's AI tools are genuinely powerful, but they fall short for real-world travel planning unless you're on a paid plan. Hit a usage limit mid-itinerary. Generic routes that don't account for budget, culture, or practical costs. No guidance on local etiquette, what to pack, or what phrases actually matter. I felt that gap every time I tried to plan a trip.",
+                text: "Today's AI tools are genuinely powerful, but they fall short for real-world travel planning unless you're on a paid plan. Hit a usage limit mid-itinerary and your planning stops cold, with no photos, no context, and no way forward without upgrading. Generic routes that don't account for budget, culture, or practical costs. No guidance on local etiquette, what to pack, or what phrases actually matter. I felt that gap every time I tried to plan a trip, and I got tired of it.",
               },
               {
                 label: "Why I built Voya.",
