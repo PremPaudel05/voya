@@ -2884,7 +2884,8 @@ app.get('/api/country', async (req, res) => {
 });
 
 // ── /api/itinerary — AI trip planner ────────────────────────────────────────
-app.post('/api/itinerary', async (req, res) => {
+// Register on both paths to handle Vercel rewrite variations
+async function handleItinerary(req, res) {
   try {
     const { countryName, days, budget, styles, traveler, notes } = req.body;
     if (!countryName || !days) return res.status(400).json({ error: 'Missing required fields' });
@@ -2954,7 +2955,9 @@ Rules:
     console.error('Itinerary generation failed:', err);
     return res.status(500).json({ error: err?.message || 'Failed to generate itinerary' });
   }
-});
+}
+app.post('/api/itinerary', handleItinerary);
+app.post('/itinerary', handleItinerary);
 // ────────────────────────────────────────────────────────────────────────────
 
 // Only start the server when running locally (not on Vercel)

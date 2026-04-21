@@ -82,27 +82,26 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
     setError('');
 
 
+    const body = JSON.stringify({ countryName, days, budget, styles: [...styles], traveler, notes });
+    const headers = { 'Content-Type': 'application/json' };
+
     try {
-      const resp = await fetch('/api/itinerary', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          countryName,
-          days,
-          budget,
-          styles: [...styles],
-          traveler,
-          notes,
-        }),
-      });
-
-      if (!resp.ok) throw new Error('AI service unavailable');
-
+      // Try primary path, fall back to /itinerary if rewrite strips /api prefix
+      let resp = await fetch('/api/itinerary', { method: 'POST', headers, body });
+      if (!resp.ok && resp.status === 404) {
+        resp = await fetch('/itinerary', { method: 'POST', headers, body });
+      }
+      if (!resp.ok) {
+        const errJson = await resp.json().catch(() => ({}));
+        throw new Error(errJson.error || `Server error ${resp.status}`);
+      }
       const parsed: GeneratedPlan = await resp.json();
+      if (!parsed.days?.length) throw new Error('Invalid response from AI');
       setPlan(parsed);
       setStep('result');
-    } catch (e) {
-      setError('Failed to generate plan. Please try again.');
+    } catch (e: any) {
+      console.error('Trip planner error:', e);
+      setError(e?.message || 'Failed to generate plan. Please try again.');
       setStep('form');
     }
   };
@@ -327,7 +326,7 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
           <>
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+              className="fixed inset-0 bg-black/60 backdrop-blur-md z-[60]"
               onClick={() => setOpen(false)}
             />
 
@@ -336,7 +335,7 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 50, scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 280, damping: 26 }}
-              className="fixed inset-x-4 bottom-0 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-[540px] max-h-[90vh] z-50 bg-[#F7F3EE] rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+              className="fixed inset-x-4 bottom-0 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-[540px] max-h-[90vh] z-[70] bg-[#F7F3EE] rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden"
             >
               {/* Header */}
               <div className="bg-[#1a1208] px-6 py-5 flex items-center justify-between shrink-0">
@@ -349,8 +348,8 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                     <p className="text-[#9c8470] text-xs mt-0.5">{countryName} — AI-generated itinerary</p>
                   </div>
                 </div>
-                <button onClick={() => setOpen(false)} className="text-[#9c8470] hover:text-white transition-colors">
-                  <X size={18} />
+                <button onClick={() => setOpen(false)} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors shrink-0">
+                  <X size={16} />
                 </button>
               </div>
 
