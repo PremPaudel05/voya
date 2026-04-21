@@ -324,21 +324,24 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
       <AnimatePresence>
         {open && (
           <>
+            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               className="fixed inset-0 bg-black/60 backdrop-blur-md z-[60]"
               onClick={() => setOpen(false)}
             />
 
+            {/* Modal — always centered */}
+            <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 pointer-events-none">
             <motion.div
-              initial={{ opacity: 0, y: 50, scale: 0.97 }}
+              initial={{ opacity: 0, y: 30, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 50, scale: 0.97 }}
+              exit={{ opacity: 0, y: 30, scale: 0.96 }}
               transition={{ type: 'spring', stiffness: 280, damping: 26 }}
-              className="fixed inset-x-4 bottom-0 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-[540px] max-h-[90vh] z-[70] bg-[#F7F3EE] rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+              className="w-full max-w-[540px] max-h-[88vh] bg-[#F7F3EE] rounded-2xl shadow-2xl flex flex-col overflow-hidden pointer-events-auto"
             >
               {/* Header */}
-              <div className="bg-[#1a1208] px-6 py-5 flex items-center justify-between shrink-0">
+              <div className="bg-[#1a1208] px-6 py-4 flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-[#b07a3a]/20 rounded-xl">
                     <Sparkles size={15} className="text-[#b07a3a]" />
@@ -348,8 +351,11 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                     <p className="text-[#9c8470] text-xs mt-0.5">{countryName} — AI-generated itinerary</p>
                   </div>
                 </div>
-                <button onClick={() => setOpen(false)} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors shrink-0">
-                  <X size={16} />
+                <button
+                  onClick={() => setOpen(false)}
+                  className="w-9 h-9 rounded-full bg-white/15 hover:bg-white/30 flex items-center justify-center text-white transition-colors shrink-0 border border-white/20"
+                >
+                  <X size={16} strokeWidth={2.5} />
                 </button>
               </div>
 
@@ -540,6 +546,7 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                 ) : null}
               </div>
             </motion.div>
+            </div>
           </>
         )}
       </AnimatePresence>
