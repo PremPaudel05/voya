@@ -63,12 +63,12 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
   }, [isLoading]);
 
   useEffect(() => {
-    const t = setInterval(() => setPlaceholderIndex(i => (i + 1) % placeholderCountries.length), 2500);
+    const t = setInterval(() => setPlaceholderIndex(i => (i + 1) % placeholderCountries.length), 3800);
     return () => clearInterval(t);
   }, []);
 
   useEffect(() => {
-    const t = setInterval(() => setWordIndex(i => (i + 1) % travelWords.length), 2800);
+    const t = setInterval(() => setWordIndex(i => (i + 1) % travelWords.length), 4200);
     return () => clearInterval(t);
   }, []);
 
@@ -150,7 +150,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                     initial={{ opacity: 0, y: 16, rotateX: -20 }}
                     animate={{ opacity: 1, y: 0, rotateX: 0 }}
                     exit={{ opacity: 0, y: -16, rotateX: 20 }}
-                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                     className="absolute left-0 whitespace-nowrap"
                     style={{
                       backgroundImage: 'linear-gradient(135deg, #b07a3a 0%, #d4954a 40%, #c1622c 100%)',
@@ -181,10 +181,10 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                         <AnimatePresence mode="wait">
                           <motion.span
                             key={placeholderIndex}
-                            initial={{ opacity: 0, y: 8 }}
+                            initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -8 }}
-                            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                             className="text-[#b8a898] text-sm whitespace-nowrap"
                           >
                             <span className="text-[#c9b89a]">{placeholderCountries[placeholderIndex].prefix}</span>
