@@ -4,7 +4,7 @@ const steps = [
   {
     step: "01",
     title: "Pick anywhere on Earth",
-    desc: "Type a country name — any of the 195 we cover. No filters, no dropdowns, just type.",
+    desc: "Type a country name — any of the 195 countries covered. No filters, no dropdowns, just type.",
   },
   {
     step: "02",

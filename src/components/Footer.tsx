@@ -137,7 +137,7 @@ export function Footer() {
           <p><strong>Search queries</strong> — Country names you type are sent to an AI provider to generate travel content. They are not linked to your identity and are not retained after the response is delivered.</p>
           <p><strong>Analytics</strong> — I may use privacy-respecting, anonymous analytics (page views only) to improve the product. No personal identifiers are collected.</p>
           <p><strong>Third-party services</strong> — Voya uses an AI language model to generate travel insights. Please review the AI provider's own privacy policy for details on how prompts are handled on their end.</p>
-          <p>For any privacy concerns, contact us at <a href="mailto:Prempaudel5b@gmail.com" className="text-[#b07a3a] underline">Prempaudel5b@gmail.com</a>.</p>
+          <p>For any privacy concerns, reach me at <a href="mailto:Prempaudel5b@gmail.com" className="text-[#b07a3a] underline">Prempaudel5b@gmail.com</a>.</p>
         </Modal>
       )}
 
@@ -170,7 +170,7 @@ export function Footer() {
         <Modal title="Help & Contact" onClose={() => setOpen(null)}>
           <p>I'm building Voya to make travel more accessible and informed. I'd love to hear from you.</p>
           <div className="bg-[#e8dfd2] rounded-xl p-4 space-y-1">
-            <div className="text-[10px] font-bold uppercase tracking-widest text-[#b07a3a]">Email us</div>
+            <div className="text-[10px] font-bold uppercase tracking-widest text-[#b07a3a]">Email me</div>
             <a href="mailto:Prempaudel5b@gmail.com" className="text-[#1a1208] font-semibold hover:text-[#b07a3a] transition-colors">
               Prempaudel5b@gmail.com
             </a>
@@ -178,8 +178,8 @@ export function Footer() {
           <p><strong>Common questions:</strong></p>
           <ul className="list-disc pl-5 space-y-2">
             <li><strong>Is Voya free?</strong> — Yes, always. No subscription, no account required.</li>
-            <li><strong>How accurate is the information?</strong> — Generally reliable, but AI can make mistakes. See our AI Accuracy Notice for details.</li>
-            <li><strong>Can I suggest a feature?</strong> — Absolutely. Email us with your idea.</li>
+            <li><strong>How accurate is the information?</strong> — Generally reliable, but AI can make mistakes. See the AI Accuracy Notice for details.</li>
+            <li><strong>Can I suggest a feature?</strong> — Absolutely. Email me with your idea.</li>
             <li><strong>I found incorrect information.</strong> — Please report it via email so I can investigate and improve.</li>
           </ul>
           <p className="text-[#6b5740]">I aim to respond within 48 hours.</p>

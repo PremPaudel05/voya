@@ -27,7 +27,7 @@ export function LoadingAnimation() {
       </h2>
 
       <p className="text-slate-500 text-base leading-7 max-w-md mb-6">
-        We are preparing destination insights, culture highlights, attractions,
+        Preparing destination insights, culture highlights, attractions,
         and travel tips for your search.
       </p>
 

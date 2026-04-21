@@ -50,7 +50,7 @@ export default function CountryPage() {
         const msg = err instanceof Error ? err.message : 'Unknown error';
         setError(msg.toLowerCase().includes('timed out')
           ? 'The request took too long. Please try again.'
-          : 'We could not load travel insights. Please try again later.');
+          : 'Could not load travel insights. Please try again later.');
       })
       .finally(() => setIsLoading(false));
   }, [name]);
