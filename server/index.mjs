@@ -2746,7 +2746,7 @@ app.get('/api/country', async (req, res) => {
     if (name.length > 100) return res.status(400).json({ error: 'Invalid country name' });
 
     // 1) Fetch REST Countries data
-    const rc = await fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(name)}?fullText=true`);
+    const rc = await fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(name)}?fullText=true`, { signal: AbortSignal.timeout(7000) });
     let primary;
     if (!rc.ok) {
       const rcPartial = await fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(name)}?fullText=false`);
@@ -2832,9 +2832,11 @@ app.get('/api/country', async (req, res) => {
       return !!(knownPhrasesData[key]);
     })();
 
-    // Always call Gemini — it powers phrases for all countries, plus fills gaps in attractions/food/culture.
-    // geminiEnrich is cached per session so repeat searches are free.
-    const ai = await geminiEnrich(countryName, capital, currencyCode);
+    // AI enrichment — capped at 8s so it never blocks the response
+    const ai = await Promise.race([
+      geminiEnrich(countryName, capital, currencyCode),
+      new Promise(resolve => setTimeout(() => resolve(null), 8000)),
+    ]);
 
     const majorCities = knownGeoData?.majorCities || await getMajorCities(countryName, capital, iso);
 
