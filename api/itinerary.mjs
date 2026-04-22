@@ -6,8 +6,8 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
-  if (!OPENAI_API_KEY) return res.status(500).json({ error: 'Missing OPENAI_API_KEY' });
+  const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
+  if (!GROQ_API_KEY) return res.status(500).json({ error: 'Missing GROQ_API_KEY' });
 
   const { countryName, days, budget, styles, traveler, notes } = req.body || {};
   if (!countryName || !days) return res.status(400).json({ error: 'Missing required fields' });
@@ -50,11 +50,11 @@ Rules:
 - If adventure interest, include physical activities`;
 
   try {
-    const aiResp = await fetch('https://api.openai.com/v1/chat/completions', {
+    const aiResp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${OPENAI_API_KEY}` },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${GROQ_API_KEY}` },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'llama-3.3-70b-versatile',
         temperature: 0.7,
         max_tokens: 4096,
         messages: [{ role: 'user', content: prompt }],
@@ -63,8 +63,8 @@ Rules:
 
     if (!aiResp.ok) {
       const errText = await aiResp.text();
-      console.error('OpenAI error:', aiResp.status, errText);
-      return res.status(502).json({ error: `OpenAI error ${aiResp.status}` });
+      console.error('Groq error:', aiResp.status, errText);
+      return res.status(502).json({ error: `Groq error ${aiResp.status}` });
     }
 
     const json = await aiResp.json();

@@ -15,15 +15,15 @@ import fs from 'fs';
 import path from 'path';
 import { extraCultureProfiles, extraFoodData, extraMapCategoryData } from './indexExtra.mjs';
 
-// ── OpenAI AI enrichment ─────────────────────────────────────────────────────
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
+// ── Groq AI enrichment ───────────────────────────────────────────────────────
+const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
 const geminiCache = new Map(); // session cache to avoid duplicate AI calls
 
 async function geminiEnrich(countryName, capital, currencyCode) {
   const key = countryName.toLowerCase();
   if (geminiCache.has(key)) return geminiCache.get(key);
 
-  if (!OPENAI_API_KEY) return null;
+  if (!GROQ_API_KEY) return null;
 
   const prompt = `You are a travel data API. Return ONLY a valid JSON object (no markdown, no explanation) for the country "${countryName}" with this exact structure:
 {
@@ -75,18 +75,18 @@ Rules:
 - Be specific and accurate. Capital is ${capital}, currency is ${currencyCode}.`;
 
   try {
-    const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+    const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${OPENAI_API_KEY}` },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${GROQ_API_KEY}` },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'llama-3.3-70b-versatile',
         temperature: 0.2,
         max_tokens: 2048,
         messages: [{ role: 'user', content: prompt }],
       }),
     });
     if (!resp.ok) {
-      console.warn('OpenAI API error:', resp.status, await resp.text());
+      console.warn('Groq API error:', resp.status, await resp.text());
       return null;
     }
     const json = await resp.json();
@@ -96,7 +96,7 @@ Rules:
     geminiCache.set(key, parsed);
     return parsed;
   } catch (e) {
-    console.warn('OpenAI enrichment failed for', countryName, e?.message || e);
+    console.warn('Groq enrichment failed for', countryName, e?.message || e);
     return null;
   }
 }
@@ -2926,11 +2926,11 @@ Rules:
 - If adventure, include physical activities
 - Make it genuinely useful, not generic`;
 
-    const aiResp = await fetch('https://api.openai.com/v1/chat/completions', {
+    const aiResp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${OPENAI_API_KEY}` },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${GROQ_API_KEY}` },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'llama-3.3-70b-versatile',
         temperature: 0.7,
         max_tokens: 4096,
         messages: [{ role: 'user', content: prompt }],
@@ -2939,7 +2939,7 @@ Rules:
 
     if (!aiResp.ok) {
       const errText = await aiResp.text();
-      console.error('OpenAI itinerary error:', aiResp.status, errText);
+      console.error('Groq itinerary error:', aiResp.status, errText);
       return res.status(502).json({ error: 'AI service error' });
     }
 
@@ -2967,8 +2967,8 @@ app.get('/api/plan', async (req, res) => {
     const notes = String(req.query.notes || '');
 
     if (!countryName) return res.status(400).json({ error: 'Missing countryName' });
-    const planKey = process.env.OPENAI_API_KEY || OPENAI_API_KEY;
-    if (!planKey) return res.status(500).json({ error: 'Missing OPENAI_API_KEY' });
+    const planKey = process.env.GROQ_API_KEY || GROQ_API_KEY;
+    if (!planKey) return res.status(500).json({ error: 'Missing GROQ_API_KEY' });
 
     const styleList = styles.join(', ');
     const prompt = `You are an expert travel planner. Create a detailed ${days}-day trip itinerary for ${countryName}.
@@ -2999,11 +2999,11 @@ Return ONLY a valid JSON object (no markdown, no extra text):
 }
 Rules: exactly ${days} day objects, real place names in ${countryName}, ${budget} budget level.`;
 
-    const aiResp = await fetch('https://api.openai.com/v1/chat/completions', {
+    const aiResp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${planKey}` },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'llama-3.3-70b-versatile',
         temperature: 0.7,
         max_tokens: 4096,
         messages: [{ role: 'user', content: prompt }],
@@ -3012,8 +3012,8 @@ Rules: exactly ${days} day objects, real place names in ${countryName}, ${budget
 
     if (!aiResp.ok) {
       const errText = await aiResp.text();
-      console.error('OpenAI plan error:', aiResp.status, errText);
-      return res.status(502).json({ error: `OpenAI error ${aiResp.status}` });
+      console.error('Groq plan error:', aiResp.status, errText);
+      return res.status(502).json({ error: `Groq error ${aiResp.status}` });
     }
 
     const json = await aiResp.json();
