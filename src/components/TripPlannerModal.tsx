@@ -55,9 +55,19 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
 
   useEffect(() => {
     if (open) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Lock body scroll without shifting layout
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
       setTimeout(() => bodyRef.current?.scrollTo({ top: 0 }), 0);
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
     }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    };
   }, [open]);
 
   const [days, setDays] = useState(7);
@@ -297,12 +307,13 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
       <AnimatePresence>
         {open && (
           <>
-            {/* Backdrop + centering wrapper */}
+            {/* Backdrop + centering wrapper — scrollable so X always reachable */}
             <div
               style={{
                 position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-                zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                padding: '16px', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(12px)',
+                zIndex: 60, overflowY: 'auto',
+                display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
+                padding: '24px 16px', background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(14px)',
               }}
               onClick={() => setOpen(false)}
             >
@@ -312,7 +323,7 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                 exit={{ opacity: 0, y: 24, scale: 0.97 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 28 }}
                 className="w-full max-w-[560px] flex flex-col rounded-2xl shadow-2xl overflow-hidden"
-                style={{ background: '#F7F3EE', maxHeight: 'calc(100vh - 32px)' }}
+                style={{ background: '#F7F3EE', maxHeight: 'calc(100dvh - 48px)', marginTop: 'auto', marginBottom: 'auto' }}
                 onClick={e => e.stopPropagation()}
               >
                 {/* Top accent bar */}
