@@ -54,28 +54,7 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
   const bodyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (open) {
-      const scrollY = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-      document.body.style.overflowY = 'scroll'; // keep scrollbar width stable
-      // Scroll modal body to top
-      setTimeout(() => bodyRef.current?.scrollTo({ top: 0 }), 0);
-    } else {
-      const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      document.body.style.overflowY = '';
-      if (scrollY) window.scrollTo(0, parseInt(scrollY || '0') * -1);
-    }
-    return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      document.body.style.overflowY = '';
-    };
+    if (open) setTimeout(() => bodyRef.current?.scrollTo({ top: 0 }), 0);
   }, [open]);
 
   const [days, setDays] = useState(7);
@@ -315,10 +294,13 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
       <AnimatePresence>
         {open && (
           <>
-            {/* Backdrop + centering wrapper — single div handles both */}
+            {/* Backdrop + centering wrapper */}
             <div
-              className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto"
-              style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(12px)', padding: '16px' }}
+              style={{
+                position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                padding: '16px', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(12px)',
+              }}
               onClick={() => setOpen(false)}
             >
               <motion.div
@@ -326,7 +308,7 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 24, scale: 0.97 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-                className="w-full max-w-[560px] flex flex-col rounded-2xl shadow-2xl overflow-hidden my-auto"
+                className="w-full max-w-[560px] flex flex-col rounded-2xl shadow-2xl overflow-hidden"
                 style={{ background: '#F7F3EE', maxHeight: 'calc(100vh - 32px)' }}
                 onClick={e => e.stopPropagation()}
               >
