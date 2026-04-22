@@ -175,11 +175,6 @@ export default function CountryPage() {
       </AnimatePresence>
 
       <footer className="bg-[#F7F3EE] border-t border-[#e8dfd2] mt-4">
-        <div className="border-b border-[#e8dfd2] py-3 px-6 text-center">
-          <p className="text-xs text-[#9c8470] max-w-2xl mx-auto">
-            <span className="text-[#6b5740] font-semibold">Heads up:</span> Voya compiles travel insights from AI. Always verify critical details before you travel.
-          </p>
-        </div>
         <div className="max-w-5xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <span className="text-[#1a1208] font-black text-sm">Voya <span className="text-[#9c8470] font-normal">· Your smart travel guide</span></span>
           <p className="text-xs text-[#9c8470]">© {new Date().getFullYear()} Voya. Built to make travel planning joyful.</p>

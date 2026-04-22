@@ -442,17 +442,17 @@ function BudgetSection({ prices }: { prices: CountryData['prices'] }) {
   return (
     <div>
       {/* Tier switcher */}
-      <div className="flex gap-2 mb-5 p-1 bg-[#f0ebe4] rounded-2xl">
+      <div className="flex gap-2 mb-5 p-1.5 rounded-2xl" style={{ background: '#ede7de' }}>
         {TIERS.map(t => (
           <button key={t.id} onClick={() => setTier(t.id)}
-            className="flex-1 flex flex-col items-center py-2.5 px-2 rounded-xl transition-all duration-200"
+            className="flex-1 flex flex-col items-center py-3 px-2 rounded-xl transition-all duration-200"
             style={{
-              background: tier === t.id ? '#1a1208' : 'transparent',
-              boxShadow: tier === t.id ? '0 2px 8px rgba(0,0,0,0.2)' : 'none',
+              background: tier === t.id ? 'linear-gradient(135deg, #b07a3a 0%, #8f6030 100%)' : 'transparent',
+              boxShadow: tier === t.id ? '0 2px 10px rgba(176,122,58,0.35)' : 'none',
             }}>
             <span className="text-lg mb-0.5">{t.icon}</span>
-            <span className="text-[10px] font-black uppercase tracking-wider" style={{ color: tier === t.id ? '#b07a3a' : '#9c8470' }}>{t.label}</span>
-            <span className="text-[9px] mt-0.5" style={{ color: tier === t.id ? '#c8b89a' : '#b8a898' }}>{t.desc}</span>
+            <span className="text-[10px] font-black uppercase tracking-wider" style={{ color: tier === t.id ? '#fff' : '#9c8470' }}>{t.label}</span>
+            <span className="text-[9px] mt-0.5" style={{ color: tier === t.id ? 'rgba(255,255,255,0.7)' : '#b8a898' }}>{t.desc}</span>
           </button>
         ))}
       </div>
