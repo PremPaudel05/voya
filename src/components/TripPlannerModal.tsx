@@ -111,6 +111,7 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
       const resp = await fetch(`/api/plan?${params.toString()}`);
       if (!resp.ok) {
         const errJson = await resp.json().catch(() => ({}));
+        if (resp.status === 429) throw new Error('You\'ve reached the limit of 5 itineraries per hour. Please try again later.');
         throw new Error(errJson.error || `Server error ${resp.status}`);
       }
       const parsed: GeneratedPlan = await resp.json();

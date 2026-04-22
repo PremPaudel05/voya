@@ -120,6 +120,17 @@ const apiLimiter = rateLimit({
 });
 app.use('/api/', apiLimiter);
 
+// Strict limiter for AI plan generation — 5 requests per hour per IP
+const planLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Plan limit reached. You can generate up to 5 itineraries per hour.' },
+});
+app.use('/api/plan', planLimiter);
+app.use('/api/itinerary', planLimiter);
+
 // CORS - restrict in production
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',')
