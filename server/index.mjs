@@ -76,7 +76,7 @@ Rules:
 
   try {
     const resp = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -2929,7 +2929,7 @@ Rules:
 - Make it genuinely useful, not generic`;
 
     const geminiResp = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -3003,7 +3003,7 @@ Return ONLY a valid JSON object (no markdown, no extra text):
 Rules: exactly ${days} day objects, real place names in ${countryName}, ${budget} budget level.`;
 
     const geminiResp = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${planKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${planKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
