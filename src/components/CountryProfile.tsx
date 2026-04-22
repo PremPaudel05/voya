@@ -4,7 +4,6 @@ import type { CountryData } from '../types';
 import { MapSection } from './MapSection';
 import { PhraseTable } from './PhraseTable';
 import { AttractionCard } from './AttractionCard';
-import { DownloadModal } from './DownloadModal';
 import { TripPlannerModal } from './TripPlannerModal';
 import {
   Map, Users, Utensils, Camera, MessageCircle, CreditCard,
