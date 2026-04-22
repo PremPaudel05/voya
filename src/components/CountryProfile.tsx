@@ -401,53 +401,88 @@ export function CountryProfile({ data }: CountryProfileProps) {
 
         {/* BUDGET */}
         <Section id="budget" refs={sectionRefs} title="Average Travel Budget" icon={<CreditCard size={17} />}>
-          {/* Budget tier bar */}
-          <div className="flex items-center gap-3 mb-5">
-            {[
-              { id: 'budget', label: 'Budget', icon: '🎒', desc: 'Under $50/day' },
-              { id: 'mid',    label: 'Mid-range', icon: '🏨', desc: '$50–$150/day' },
-              { id: 'luxury', label: 'Luxury', icon: '✨', desc: '$150+/day' },
-            ].map((tier, i) => (
-              <div key={tier.id} className={`flex-1 rounded-xl px-3 py-2.5 text-center border transition-all ${i === 1 ? 'bg-[#1a1208] border-[#1a1208] text-white' : 'bg-white border-[#e8dfd2] text-[#6b5740]'}`}>
-                <div className="text-base mb-0.5">{tier.icon}</div>
-                <div className={`text-[10px] font-black uppercase tracking-wider ${i === 1 ? 'text-[#b07a3a]' : 'text-[#9c8470]'}`}>{tier.label}</div>
-                <div className={`text-[9px] mt-0.5 ${i === 1 ? 'text-[#c8b89a]' : 'text-[#b8a898]'}`}>{tier.desc}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Price cards */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
-            {[
-              { label: 'Mid-range Hotel', price: data.prices.hotel,      icon: '🏨', sub: 'per night' },
-              { label: 'Restaurant Meal', price: data.prices.meal,       icon: '🍽️', sub: 'per person' },
-              { label: 'Street Food',     price: data.prices.streetFood, icon: '🌮', sub: 'per item' },
-              { label: 'Coffee',          price: data.prices.coffee,     icon: '☕', sub: 'per cup' },
-              { label: 'Public Transit',  price: data.prices.transport,  icon: '🚌', sub: 'per ride' },
-              { label: 'Taxi',            price: data.prices.taxi,       icon: '🚕', sub: 'per km' },
-            ].map(({ label, price, icon, sub }) => (
-              <motion.div key={label} whileHover={{ y: -3, boxShadow: '0 8px 24px rgba(176,122,58,0.12)' }}
-                transition={{ type: 'spring', stiffness: 300 }}
-                className="bg-white border border-[#e8dfd2] rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:border-[#b07a3a]/30 transition-all cursor-default">
-                <div className="w-10 h-10 rounded-xl bg-[#F7F3EE] flex items-center justify-center text-xl shrink-0">{icon}</div>
-                <div className="min-w-0">
-                  <div className="text-[9px] font-bold uppercase tracking-wider text-[#9c8470] mb-0.5">{label}</div>
-                  <div className="font-extrabold text-[#1a1208] text-sm leading-tight">{price}</div>
-                  <div className="text-[9px] text-[#b8a898] mt-0.5">{sub}</div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Friendly disclaimer */}
-          <div className="flex items-start gap-3 bg-[#fffbf5] border border-[#f0e4cc] rounded-xl px-4 py-3">
-            <span className="text-base shrink-0 mt-0.5">💡</span>
-            <p className="text-xs text-[#6b5740] leading-relaxed">
-              <span className="font-bold text-[#b07a3a]">Heads up:</span> These are estimated mid-range prices and may vary depending on the season, location, and exchange rates. Always check current prices before you travel.
-            </p>
-          </div>
+          <BudgetSection prices={data.prices} />
         </Section>
 
+      </div>
+    </div>
+  );
+}
+
+/* ── Budget Section ── */
+function BudgetSection({ prices }: { prices: CountryData['prices'] }) {
+  const [tier, setTier] = useState<'budget' | 'mid' | 'luxury'>('mid');
+
+  const TIERS = [
+    { id: 'budget' as const, label: 'Budget',    icon: '🎒', desc: 'Under $50/day',   mult: 0.45 },
+    { id: 'mid'    as const, label: 'Mid-range', icon: '🏨', desc: '$50–$150/day',    mult: 1 },
+    { id: 'luxury' as const, label: 'Luxury',    icon: '✨', desc: '$150+/day',        mult: 2.4 },
+  ];
+
+  const scalePrice = (raw: string, mult: number) => {
+    // Extract numbers from strings like "$10-$20" or "$15 per meal"
+    return raw.replace(/\$[\d,.]+/g, match => {
+      const num = parseFloat(match.replace(/[$,]/g, ''));
+      const scaled = Math.round(num * mult);
+      return `$${scaled}`;
+    });
+  };
+
+  const active = TIERS.find(t => t.id === tier)!;
+
+  const cards = [
+    { label: tier === 'budget' ? 'Budget Hotel'   : tier === 'luxury' ? 'Luxury Hotel' : 'Mid-range Hotel', price: prices.hotel,      icon: tier === 'luxury' ? '🏩' : '🏨', sub: 'per night' },
+    { label: 'Restaurant Meal', price: prices.meal,       icon: '🍽️', sub: 'per person' },
+    { label: 'Street Food',     price: prices.streetFood, icon: '🌮', sub: 'per item' },
+    { label: 'Coffee',          price: prices.coffee,     icon: '☕', sub: 'per cup' },
+    { label: 'Public Transit',  price: prices.transport,  icon: '🚌', sub: 'per ride' },
+    { label: 'Taxi',            price: prices.taxi,       icon: '🚕', sub: 'per km' },
+  ];
+
+  return (
+    <div>
+      {/* Tier switcher */}
+      <div className="flex gap-2 mb-5 p-1 bg-[#f0ebe4] rounded-2xl">
+        {TIERS.map(t => (
+          <button key={t.id} onClick={() => setTier(t.id)}
+            className="flex-1 flex flex-col items-center py-2.5 px-2 rounded-xl transition-all duration-200"
+            style={{
+              background: tier === t.id ? '#1a1208' : 'transparent',
+              boxShadow: tier === t.id ? '0 2px 8px rgba(0,0,0,0.2)' : 'none',
+            }}>
+            <span className="text-lg mb-0.5">{t.icon}</span>
+            <span className="text-[10px] font-black uppercase tracking-wider" style={{ color: tier === t.id ? '#b07a3a' : '#9c8470' }}>{t.label}</span>
+            <span className="text-[9px] mt-0.5" style={{ color: tier === t.id ? '#c8b89a' : '#b8a898' }}>{t.desc}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Price cards */}
+      <AnimatePresence mode="wait">
+        <motion.div key={tier}
+          initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.2 }}
+          className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
+          {cards.map(({ label, price, icon, sub }) => (
+            <motion.div key={label} whileHover={{ y: -3 }} transition={{ type: 'spring', stiffness: 300 }}
+              className="bg-white border border-[#e8dfd2] rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:border-[#b07a3a]/30 hover:shadow-md transition-all">
+              <div className="w-10 h-10 rounded-xl bg-[#F7F3EE] flex items-center justify-center text-xl shrink-0">{icon}</div>
+              <div className="min-w-0">
+                <div className="text-[9px] font-bold uppercase tracking-wider text-[#9c8470] mb-0.5">{label}</div>
+                <div className="font-extrabold text-[#1a1208] text-sm leading-tight">{scalePrice(price, active.mult)}</div>
+                <div className="text-[9px] text-[#b8a898] mt-0.5">{sub}</div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Disclaimer */}
+      <div className="flex items-start gap-3 bg-[#fffbf5] border border-[#f0e4cc] rounded-xl px-4 py-3">
+        <span className="text-base shrink-0 mt-0.5">💡</span>
+        <p className="text-xs text-[#6b5740] leading-relaxed">
+          <span className="font-bold text-[#b07a3a]">Heads up:</span> Prices are estimates and may vary by season, location, and exchange rates. Always verify current costs before you travel.
+        </p>
       </div>
     </div>
   );
