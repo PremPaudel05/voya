@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Download, MapPin, Calendar, Wallet, Heart, Users, ChevronDown, Loader2 } from 'lucide-react';
 import jsPDF from 'jspdf';
@@ -294,18 +295,9 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
     doc.save(`${countryName.replace(/\s+/g, '_')}_${days}Day_Itinerary.pdf`);
   };
 
-  return (
-    <>
-      <button
-        onClick={() => { setOpen(true); reset(); }}
-        className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#1a1208] hover:bg-[#2d1f0e] text-[#F7F3EE] text-xs font-semibold transition-colors shadow-sm"
-      >
-        <Sparkles size={13} className="text-[#b07a3a]" />
-        Plan My Trip
-      </button>
-
-      <AnimatePresence>
-        {open && (
+  const modalContent = (
+    <AnimatePresence>
+      {open && (
           <>
             {/* Backdrop + centering wrapper — scrollable so X always reachable */}
             <div
@@ -635,6 +627,18 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
           </>
         )}
       </AnimatePresence>
+  );
+
+  return (
+    <>
+      <button
+        onClick={() => { setOpen(true); reset(); }}
+        className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#1a1208] hover:bg-[#2d1f0e] text-[#F7F3EE] text-xs font-semibold transition-colors shadow-sm"
+      >
+        <Sparkles size={13} className="text-[#b07a3a]" />
+        Plan My Trip
+      </button>
+      {createPortal(modalContent, document.body)}
     </>
   );
 }
