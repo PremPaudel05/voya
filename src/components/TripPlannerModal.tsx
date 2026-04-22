@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Download, MapPin, Calendar, Wallet, Heart, Users, ChevronRight, Loader } from 'lucide-react';
 import jsPDF from 'jspdf';
@@ -50,6 +50,26 @@ interface GeneratedPlan {
 export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<'form' | 'generating' | 'result'>('form');
+
+  useEffect(() => {
+    if (open) {
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+    } else {
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      if (scrollY) window.scrollTo(0, parseInt(scrollY || '0') * -1);
+    }
+    return () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+    };
+  }, [open]);
 
   // Form state
   const [days, setDays] = useState(7);
