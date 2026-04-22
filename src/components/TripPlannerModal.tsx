@@ -311,7 +311,7 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
             <div
               style={{
                 position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-                zIndex: 60, overflowY: 'auto',
+                zIndex: 9999, overflowY: 'auto',
                 display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
                 padding: '24px 16px', background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(14px)',
               }}
