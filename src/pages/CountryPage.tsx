@@ -7,7 +7,7 @@ import { LoadingAnimation } from '../components/LoadingAnimation';
 import { generateCountryProfile } from '../services/countryService';
 import type { CountryData } from '../types';
 
-const SEARCH_TIMEOUT_MS = 15000;
+const SEARCH_TIMEOUT_MS = 25000;
 
 export default function CountryPage() {
   const { name } = useParams<{ name: string }>();
