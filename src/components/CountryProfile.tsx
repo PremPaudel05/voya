@@ -205,7 +205,6 @@ export function CountryProfile({ data }: CountryProfileProps) {
           ))}
           <div className="ml-auto pl-2 shrink-0 flex items-center gap-2">
             <TripPlannerModal countryName={data.mapData.countryQuery} />
-            <DownloadModal data={data} countryName={data.mapData.countryQuery} />
           </div>
         </div>
       </div>
