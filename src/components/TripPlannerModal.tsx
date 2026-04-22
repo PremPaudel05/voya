@@ -317,8 +317,8 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
           <>
             {/* Backdrop + centering wrapper — single div handles both */}
             <div
-              className="fixed inset-0 z-[60] flex items-center justify-center p-4"
-              style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(12px)' }}
+              className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto"
+              style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(12px)', padding: '16px' }}
               onClick={() => setOpen(false)}
             >
               <motion.div
@@ -326,7 +326,7 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 24, scale: 0.97 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-                className="w-full max-w-[560px] flex flex-col rounded-2xl shadow-2xl overflow-hidden"
+                className="w-full max-w-[560px] flex flex-col rounded-2xl shadow-2xl overflow-hidden my-auto"
                 style={{ background: '#F7F3EE', maxHeight: 'calc(100vh - 32px)' }}
                 onClick={e => e.stopPropagation()}
               >
