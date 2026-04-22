@@ -54,7 +54,10 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
   const bodyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (open) setTimeout(() => bodyRef.current?.scrollTo({ top: 0 }), 0);
+    if (open) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => bodyRef.current?.scrollTo({ top: 0 }), 0);
+    }
   }, [open]);
 
   const [days, setDays] = useState(7);
