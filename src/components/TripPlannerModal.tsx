@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Download, MapPin, Calendar, Wallet, Heart, Users, ChevronDown, Loader2 } from 'lucide-react';
 import jsPDF from 'jspdf';
@@ -51,6 +51,7 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<'form' | 'generating' | 'result'>('form');
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (open) {
@@ -58,17 +59,22 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = '100%';
+      document.body.style.overflowY = 'scroll'; // keep scrollbar width stable
+      // Scroll modal body to top
+      setTimeout(() => bodyRef.current?.scrollTo({ top: 0 }), 0);
     } else {
       const scrollY = document.body.style.top;
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.width = '';
+      document.body.style.overflowY = '';
       if (scrollY) window.scrollTo(0, parseInt(scrollY || '0') * -1);
     }
     return () => {
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.width = '';
+      document.body.style.overflowY = '';
     };
   }, [open]);
 
@@ -370,7 +376,7 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                 )}
 
                 {/* Body */}
-                <div className="flex-1 overflow-y-auto">
+                <div ref={bodyRef} className="flex-1 overflow-y-auto">
 
                   {/* ── FORM ── */}
                   {step === 'form' && (
