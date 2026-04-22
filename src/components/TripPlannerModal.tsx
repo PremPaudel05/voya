@@ -315,22 +315,20 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
       <AnimatePresence>
         {open && (
           <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/70 backdrop-blur-lg z-[60]"
+            {/* Backdrop + centering wrapper — single div handles both */}
+            <div
+              className="fixed inset-0 z-[60] flex items-center justify-center p-4"
+              style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(12px)' }}
               onClick={() => setOpen(false)}
-            />
-
-            {/* Modal */}
-            <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 pointer-events-none">
+            >
               <motion.div
                 initial={{ opacity: 0, y: 24, scale: 0.97 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 24, scale: 0.97 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-                className="w-full max-w-[560px] max-h-[90vh] flex flex-col rounded-2xl shadow-2xl overflow-hidden pointer-events-auto"
-                style={{ background: '#F7F3EE' }}
+                className="w-full max-w-[560px] flex flex-col rounded-2xl shadow-2xl overflow-hidden"
+                style={{ background: '#F7F3EE', maxHeight: 'calc(100vh - 32px)' }}
+                onClick={e => e.stopPropagation()}
               >
                 {/* Top accent bar */}
                 <div className="h-1 w-full shrink-0" style={{ background: 'linear-gradient(90deg, #b07a3a 0%, #d4a05a 50%, #b07a3a 100%)' }} />

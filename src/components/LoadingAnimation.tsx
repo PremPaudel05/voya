@@ -52,18 +52,15 @@ export function LoadingAnimation() {
       {/* Globe + title row */}
       <div className="flex flex-col items-center gap-4">
         <div className="relative flex items-center justify-center">
-          <motion.div className="absolute w-24 h-24 rounded-full"
-            style={{ border: '2px dashed rgba(176,122,58,0.25)' }}
-            animate={{ rotate: 360 }} transition={{ duration: 14, repeat: Infinity, ease: 'linear' }} />
           <motion.div
-            className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl relative z-10"
-            style={{ background: 'linear-gradient(135deg, #1a1208 0%, #2d1f0e 100%)', boxShadow: '0 6px 24px rgba(176,122,58,0.2)' }}
-            animate={{ scale: [1, 1.06, 1] }} transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}>
+            className="text-5xl select-none"
+            animate={{ scale: [1, 1.08, 1], rotate: [0, 8, -8, 0] }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}>
             🌍
           </motion.div>
-          <motion.div className="absolute w-2.5 h-2.5 rounded-full bg-[#b07a3a]"
-            style={{ top: '50%', left: '50%', marginTop: -5, marginLeft: -5, transformOrigin: '5px 48px' }}
-            animate={{ rotate: 360 }} transition={{ duration: 3, repeat: Infinity, ease: 'linear' }} />
+          {/* Soft glow ring */}
+          <div className="absolute w-20 h-20 rounded-full -z-10"
+            style={{ background: 'radial-gradient(circle, rgba(176,122,58,0.12) 0%, transparent 70%)' }} />
         </div>
 
         <div>
