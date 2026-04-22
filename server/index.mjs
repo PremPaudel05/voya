@@ -15,15 +15,15 @@ import fs from 'fs';
 import path from 'path';
 import { extraCultureProfiles, extraFoodData, extraMapCategoryData } from './indexExtra.mjs';
 
-// ── Gemini Flash AI enrichment ──────────────────────────────────────────────
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
+// ── OpenAI AI enrichment ─────────────────────────────────────────────────────
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
 const geminiCache = new Map(); // session cache to avoid duplicate AI calls
 
 async function geminiEnrich(countryName, capital, currencyCode) {
   const key = countryName.toLowerCase();
   if (geminiCache.has(key)) return geminiCache.get(key);
 
-  if (!GEMINI_API_KEY) return null;
+  if (!OPENAI_API_KEY) return null;
 
   const prompt = `You are a travel data API. Return ONLY a valid JSON object (no markdown, no explanation) for the country "${countryName}" with this exact structure:
 {
@@ -75,30 +75,28 @@ Rules:
 - Be specific and accurate. Capital is ${capital}, currency is ${currencyCode}.`;
 
   try {
-    const resp = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.2, maxOutputTokens: 2048 },
-        }),
-      }
-    );
+    const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${OPENAI_API_KEY}` },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        temperature: 0.2,
+        max_tokens: 2048,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    });
     if (!resp.ok) {
-      console.warn('Gemini API error:', resp.status, await resp.text());
+      console.warn('OpenAI API error:', resp.status, await resp.text());
       return null;
     }
     const json = await resp.json();
-    const raw = json?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    // Strip markdown code fences if present
+    const raw = json?.choices?.[0]?.message?.content || '';
     const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
     const parsed = JSON.parse(cleaned);
     geminiCache.set(key, parsed);
     return parsed;
   } catch (e) {
-    console.warn('Gemini enrichment failed for', countryName, e?.message || e);
+    console.warn('OpenAI enrichment failed for', countryName, e?.message || e);
     return null;
   }
 }
@@ -2928,26 +2926,25 @@ Rules:
 - If adventure, include physical activities
 - Make it genuinely useful, not generic`;
 
-    const geminiResp = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.7, maxOutputTokens: 4096 },
-        }),
-      }
-    );
+    const aiResp = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${OPENAI_API_KEY}` },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        temperature: 0.7,
+        max_tokens: 4096,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    });
 
-    if (!geminiResp.ok) {
-      const errText = await geminiResp.text();
-      console.error('Gemini itinerary error:', geminiResp.status, errText);
+    if (!aiResp.ok) {
+      const errText = await aiResp.text();
+      console.error('OpenAI itinerary error:', aiResp.status, errText);
       return res.status(502).json({ error: 'AI service error' });
     }
 
-    const json = await geminiResp.json();
-    const raw = json?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const json = await aiResp.json();
+    const raw = json?.choices?.[0]?.message?.content || '';
     const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
     const parsed = JSON.parse(cleaned);
     return res.json(parsed);
@@ -2970,8 +2967,8 @@ app.get('/api/plan', async (req, res) => {
     const notes = String(req.query.notes || '');
 
     if (!countryName) return res.status(400).json({ error: 'Missing countryName' });
-    const planKey = process.env.GEMINI_API_KEY || GEMINI_API_KEY;
-    if (!planKey) return res.status(500).json({ error: 'Missing GEMINI_API_KEY' });
+    const planKey = process.env.OPENAI_API_KEY || OPENAI_API_KEY;
+    if (!planKey) return res.status(500).json({ error: 'Missing OPENAI_API_KEY' });
 
     const styleList = styles.join(', ');
     const prompt = `You are an expert travel planner. Create a detailed ${days}-day trip itinerary for ${countryName}.
@@ -3002,26 +2999,25 @@ Return ONLY a valid JSON object (no markdown, no extra text):
 }
 Rules: exactly ${days} day objects, real place names in ${countryName}, ${budget} budget level.`;
 
-    const geminiResp = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${planKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.7, maxOutputTokens: 4096 },
-        }),
-      }
-    );
+    const aiResp = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${planKey}` },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        temperature: 0.7,
+        max_tokens: 4096,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    });
 
-    if (!geminiResp.ok) {
-      const errText = await geminiResp.text();
-      console.error('Gemini plan error:', geminiResp.status, errText);
-      return res.status(502).json({ error: `Gemini error ${geminiResp.status}` });
+    if (!aiResp.ok) {
+      const errText = await aiResp.text();
+      console.error('OpenAI plan error:', aiResp.status, errText);
+      return res.status(502).json({ error: `OpenAI error ${aiResp.status}` });
     }
 
-    const json = await geminiResp.json();
-    const raw = json?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const json = await aiResp.json();
+    const raw = json?.choices?.[0]?.message?.content || '';
     const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
     const parsed = JSON.parse(cleaned);
     if (!parsed.days?.length) throw new Error('Invalid AI response');

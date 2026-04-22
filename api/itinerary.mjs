@@ -6,8 +6,8 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-  if (!GEMINI_API_KEY) return res.status(500).json({ error: 'Missing GEMINI_API_KEY' });
+  const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
+  if (!OPENAI_API_KEY) return res.status(500).json({ error: 'Missing OPENAI_API_KEY' });
 
   const { countryName, days, budget, styles, traveler, notes } = req.body || {};
   if (!countryName || !days) return res.status(400).json({ error: 'Missing required fields' });
@@ -50,26 +50,25 @@ Rules:
 - If adventure interest, include physical activities`;
 
   try {
-    const geminiResp = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.7, maxOutputTokens: 4096 },
-        }),
-      }
-    );
+    const aiResp = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${OPENAI_API_KEY}` },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        temperature: 0.7,
+        max_tokens: 4096,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    });
 
-    if (!geminiResp.ok) {
-      const errText = await geminiResp.text();
-      console.error('Gemini error:', geminiResp.status, errText);
-      return res.status(502).json({ error: `Gemini error ${geminiResp.status}` });
+    if (!aiResp.ok) {
+      const errText = await aiResp.text();
+      console.error('OpenAI error:', aiResp.status, errText);
+      return res.status(502).json({ error: `OpenAI error ${aiResp.status}` });
     }
 
-    const json = await geminiResp.json();
-    const raw = json?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const json = await aiResp.json();
+    const raw = json?.choices?.[0]?.message?.content || '';
     const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
     const parsed = JSON.parse(cleaned);
 
