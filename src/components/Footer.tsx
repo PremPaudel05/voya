@@ -94,10 +94,10 @@ export function Footer() {
               Ideas, suggestions, or feedback? I'd genuinely love to hear them — every message is read and appreciated.
             </p>
             <a
-              href="mailto:Prempaudel5b@gmail.com"
+              href="mailto:leduopprem15@gmail.com"
               className="text-[14px] font-semibold text-white hover:text-[#c49050] transition-colors"
             >
-              Prempaudel5b@gmail.com →
+              leduopprem15@gmail.com →
             </a>
             {/* LinkedIn — single instance */}
             <a
@@ -137,7 +137,7 @@ export function Footer() {
           <p><strong>Search queries:</strong> Country names you type are sent to an AI provider to generate travel content. They are not linked to your identity and are not retained after the response is delivered.</p>
           <p><strong>Analytics:</strong> I may use privacy-respecting, anonymous analytics (page views only) to improve the product. No personal identifiers are collected.</p>
           <p><strong>Third-party services:</strong> Voya uses an AI language model to generate travel insights. Please review the AI provider's own privacy policy for details on how prompts are handled on their end.</p>
-          <p>For any privacy concerns, reach me at <a href="mailto:Prempaudel5b@gmail.com" className="text-[#b07a3a] underline">Prempaudel5b@gmail.com</a>.</p>
+          <p>For any privacy concerns, reach me at <a href="mailto:leduopprem15@gmail.com" className="text-[#b07a3a] underline">leduopprem15@gmail.com</a>.</p>
         </Modal>
       )}
 
@@ -148,7 +148,7 @@ export function Footer() {
           <p><strong>No guarantees:</strong> Voya provides AI-generated travel information. While I strive for accuracy, I cannot guarantee that all content is current or error-free. Always verify critical information (e.g. visa requirements, health advice, safety conditions) with official government or embassy sources before travelling.</p>
           <p><strong>Acceptable use:</strong> You agree not to use Voya for any unlawful purpose, to attempt to reverse-engineer the service, or to overload the system with automated requests.</p>
           <p><strong>Changes:</strong> I reserve the right to modify these terms at any time. Continued use of the service constitutes acceptance of the updated terms.</p>
-          <p>Questions? <a href="mailto:Prempaudel5b@gmail.com" className="text-[#b07a3a] underline">Prempaudel5b@gmail.com</a></p>
+          <p>Questions? <a href="mailto:leduopprem15@gmail.com" className="text-[#b07a3a] underline">leduopprem15@gmail.com</a></p>
         </Modal>
       )}
 
@@ -162,7 +162,7 @@ export function Footer() {
             <li>Cost estimates are approximate and based on general knowledge. Actual prices may differ depending on season, location, and market conditions.</li>
             <li>Historical or cultural facts are sourced from the model's training data, which has a knowledge cutoff and may not reflect very recent events.</li>
           </ul>
-          <p>I'm continuously working to improve the quality and accuracy of the content. If you notice an error, please let me know at <a href="mailto:Prempaudel5b@gmail.com" className="text-[#b07a3a] underline">Prempaudel5b@gmail.com</a>.</p>
+          <p>I'm continuously working to improve the quality and accuracy of the content. If you notice an error, please let me know at <a href="mailto:leduopprem15@gmail.com" className="text-[#b07a3a] underline">leduopprem15@gmail.com</a>.</p>
         </Modal>
       )}
 
@@ -171,8 +171,8 @@ export function Footer() {
           <p>I'm building Voya to make travel more accessible and informed. I'd love to hear from you.</p>
           <div className="bg-[#e8dfd2] rounded-xl p-4 space-y-1">
             <div className="text-[10px] font-bold uppercase tracking-widest text-[#b07a3a]">Email me</div>
-            <a href="mailto:Prempaudel5b@gmail.com" className="text-[#1a1208] font-semibold hover:text-[#b07a3a] transition-colors">
-              Prempaudel5b@gmail.com
+            <a href="mailto:leduopprem15@gmail.com" className="text-[#1a1208] font-semibold hover:text-[#b07a3a] transition-colors">
+              leduopprem15@gmail.com
             </a>
           </div>
           <p><strong>Common questions:</strong></p>
