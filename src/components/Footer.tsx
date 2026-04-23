@@ -154,7 +154,7 @@ export function Footer() {
 
       {open === 'accuracy' && (
         <Modal title="AI Accuracy Notice" onClose={() => setOpen(null)}>
-          <p>Voya uses a large language model to generate travel insights. This technology is powerful, but it is not infallible.</p>
+          <p>Voya uses advanced AI technology to generate travel insights. This technology is powerful, but it is not infallible.</p>
           <p><strong>What this means for you:</strong></p>
           <ul className="list-disc pl-5 space-y-2">
             <li>Information such as visa requirements, entry rules, currency exchange rates, and safety advisories can change rapidly. Always cross-check with official government or embassy sources.</li>
