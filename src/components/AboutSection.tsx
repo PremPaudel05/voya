@@ -95,7 +95,7 @@ export function AboutSection() {
               },
               {
                 label: "The problem I noticed.",
-                text: "Today's AI tools are genuinely powerful, but free AI tools fail at travel planning. Why not just use ChatGPT? Because staring at a giant wall of plain text isn't helpful. Without an interactive UI, planning may feel like a job — right until a usage limit cuts you off entirely. Standard AI takes away the inspiration. They leave out destination photos, interactive maps, and guides to the most Instagrammable spots. They also skip the logistical essentials, offering no guidance on local etiquette, the best months to visit, essential phrases, or realistic budget breakdowns tailored to your style.",
+                text: "Today's AI tools are genuinely powerful, but free AI tools fail at travel planning. Why not just use ChatGPT? Because staring at a giant wall of plain text isn't helpful. Without an interactive UI, planning may feel like a job — right until a usage limit cuts you off entirely. Standard AI takes away the inspiration. They leave out destination photos, interactive maps, and perhaps guides to the most Instagrammable spots. They also skip the logistical essentials, offering no guidance on local etiquette, the best months to visit, essential phrases, or realistic budget breakdowns tailored to your style.",
               },
               {
                 label: "Why I built Voya.",
