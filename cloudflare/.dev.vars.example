@@ -1,0 +1,3 @@
+# Copy to .dev.vars for local development. Production secrets use wrangler secret put.
+TURNSTILE_SECRET_KEY=replace-with-turnstile-secret
+IP_HASH_SECRET=replace-with-32-random-bytes

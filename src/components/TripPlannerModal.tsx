@@ -3,6 +3,10 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Download, MapPin, Calendar, Wallet, Heart, Users, ChevronDown, Loader2 } from 'lucide-react';
 import jsPDF from 'jspdf';
+import { useNavigate } from 'react-router-dom';
+import { useAccount } from '../account/AccountContext';
+import { AccountError, accountRequest } from '../services/accountService';
+import { SecurityCheck } from './SecurityCheck';
 
 interface TripPlannerModalProps {
   countryName: string;
@@ -49,6 +53,8 @@ interface GeneratedPlan {
 }
 
 export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
+  const navigate = useNavigate();
+  const { account, config, refresh } = useAccount();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<'form' | 'generating' | 'result'>('form');
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
@@ -78,11 +84,16 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
   const [notes, setNotes] = useState('');
   const [plan, setPlan] = useState<GeneratedPlan | null>(null);
   const [error, setError] = useState('');
+  const [botToken, setBotToken] = useState('');
+  const [botAttempt, setBotAttempt] = useState(0);
+  const [savedResult, setSavedResult] = useState(false);
+  const generating = useRef(false);
+  const requestRef = useRef<{ input: string; id: string } | null>(null);
 
   const toggleStyle = (id: string) => {
     setStyles(prev => {
       const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) next.delete(id); else next.add(id);
       return next;
     });
   };
@@ -95,31 +106,29 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
   };
 
   const generate = async () => {
-    if (styles.size === 0) return;
+    if (styles.size === 0 || generating.current) return;
+    if (!account) { setOpen(false); navigate(`/account?returnTo=${encodeURIComponent(`/country/${countryName}`)}`); return; }
+    if (!config?.ready || !botToken) { setError('Complete the security check before generating a plan.'); return; }
+    generating.current = true;
     setStep('generating');
     setError('');
-    const params = new URLSearchParams({
-      countryName,
-      days: String(days),
-      budget,
-      styles: [...styles].join(','),
-      traveler,
-      notes: notes || '',
-    });
+    const input = { countryName, days, budget, styles: [...styles].sort(), traveler, notes };
+    const serialized = JSON.stringify(input);
+    if (requestRef.current?.input !== serialized) requestRef.current = { input: serialized, id: crypto.randomUUID() };
     try {
-      const resp = await fetch(`/api/plan?${params.toString()}`);
-      if (!resp.ok) {
-        const errJson = await resp.json().catch(() => ({}));
-        if (resp.status === 429) throw new Error('You\'ve reached the limit of 5 itineraries per hour. Please try again later.');
-        throw new Error(errJson.error || `Server error ${resp.status}`);
-      }
-      const parsed: GeneratedPlan = await resp.json();
+      const result = await accountRequest<{ plan: GeneratedPlan; saved: boolean }>('/plan', { method: 'POST', body: JSON.stringify({ ...input, requestId: requestRef.current!.id, turnstileToken: botToken }) });
+      const parsed = result.plan;
       if (!parsed.days?.length) throw new Error('Invalid response from AI');
       setPlan(parsed);
+      setSavedResult(result.saved);
+      requestRef.current = null;
       setStep('result');
-    } catch (e: any) {
-      setError(e?.message || 'Failed to generate plan. Please try again.');
+    } catch (e: unknown) {
+      if (e instanceof AccountError) requestRef.current = null;
+      setError(e instanceof AccountError ? e.message : 'The request did not finish. Check Saved plans before retrying; your plan may still be processing.');
       setStep('form');
+    } finally {
+      generating.current = false; setBotToken(''); setBotAttempt(a => a + 1); void refresh();
     }
   };
 
@@ -280,7 +289,7 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
     setColor('#6b5740');
     doc.text(plan.budgetSummary, margin + 4, y + 6.5);
 
-    const pageCount = (doc as any).internal.getNumberOfPages();
+    const pageCount = doc.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
       setFill('#1a1208');
@@ -367,6 +376,10 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                   {/* ── FORM ── */}
                   {step === 'form' && (
                     <div className="px-6 py-5 space-y-6">
+                      <div className="rounded-xl bg-white border border-[#e8dfd2] p-3 text-xs text-[#6b5740]">
+                        {account ? `${account.usage.remaining} of ${account.usage.limit} daily attempts remaining. Resets ${new Date(account.usage.resetsAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}.` : 'Sign in to create up to 3 plans daily and save your itineraries.'}
+                        <p className="mt-1">Wait 60 seconds between new plans. Failed attempts count; saved results can be reused.</p>
+                      </div>
 
                       {/* Travel style */}
                       <div>
@@ -427,10 +440,10 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                             <button onClick={() => setDays(d => Math.max(1, d - 1))}
                               className="w-7 h-7 rounded-lg bg-[#f5f0e8] hover:bg-[#1a1208] hover:text-white text-[#1a1208] font-bold text-base transition-all flex items-center justify-center">−</button>
                             <span className="text-xl font-black text-[#1a1208] flex-1 text-center">{days}</span>
-                            <button onClick={() => setDays(d => Math.min(21, d + 1))}
+                            <button onClick={() => setDays(d => Math.min(7, d + 1))}
                               className="w-7 h-7 rounded-lg bg-[#f5f0e8] hover:bg-[#1a1208] hover:text-white text-[#1a1208] font-bold text-base transition-all flex items-center justify-center">+</button>
                           </div>
-                          <p className="text-[9px] text-[#9c8470] text-center mt-1.5">days (max 21)</p>
+                          <p className="text-[9px] text-[#9c8470] text-center mt-1.5">days (max 7)</p>
                         </div>
 
                         {/* Budget */}
@@ -463,6 +476,7 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                         </label>
                         <textarea
                           value={notes}
+                          maxLength={500}
                           onChange={e => setNotes(e.target.value)}
                           placeholder="e.g. We love hiking, avoid crowded tourist spots, interested in local markets..."
                           rows={3}
@@ -470,6 +484,8 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                         />
                       </div>
 
+                      {account && config?.ready && <SecurityCheck key={botAttempt} siteKey={config.turnstileSiteKey} action="plan" onToken={setBotToken} />}
+                      {account && !config?.ready && <p className="text-xs text-[#9c8470]">Trip planning is temporarily unavailable. Please try again shortly.</p>}
                       {error && (
                         <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
                           <p className="text-red-600 text-xs font-medium">{error}</p>
@@ -507,6 +523,7 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                   {/* ── RESULT ── */}
                   {step === 'result' && plan && (
                     <div className="px-6 py-5 space-y-4">
+                      <p role="status" className="text-xs text-[#6b5740]">{savedResult ? 'Loaded your saved result without another AI call.' : 'Saved to your account for 30 days.'} Costs and opening hours should be checked before travel.</p>
                       {/* Intro */}
                       <div className="rounded-2xl p-4 relative overflow-hidden"
                         style={{ background: 'linear-gradient(135deg, rgba(176,122,58,0.08) 0%, rgba(176,122,58,0.03) 100%)', border: '1px solid rgba(176,122,58,0.2)' }}>
@@ -612,12 +629,12 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                   ) : step === 'form' ? (
                     <>
                       <span className="text-xs text-[#9c8470]">{days} days · {[...styles].length} interest{styles.size !== 1 ? 's' : ''}</span>
-                      <button onClick={generate} disabled={styles.size === 0}
+                      <button onClick={generate} disabled={styles.size === 0 || Boolean(account && (!botToken || !config?.ready))}
                         className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
                         style={{ background: '#1a1208' }}
                         onMouseEnter={e => { if (styles.size > 0) e.currentTarget.style.background = '#2d1f0e'; }}
                         onMouseLeave={e => (e.currentTarget.style.background = '#1a1208')}>
-                        <Sparkles size={14} className="text-[#b07a3a]" /> Generate Plan
+                        <Sparkles size={14} className="text-[#b07a3a]" /> {account ? 'Generate Plan' : 'Sign in to plan'}
                       </button>
                     </>
                   ) : null}
@@ -632,7 +649,10 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
   return (
     <>
       <button
-        onClick={() => { setOpen(true); reset(); }}
+        onClick={() => {
+          if (account) { setDays(account.settings.days); setBudget(account.settings.budget); setTraveler(account.settings.traveler); setStyles(new Set(account.settings.styles)); }
+          setOpen(true); reset(); setBotToken(''); setBotAttempt(a => a + 1);
+        }}
         className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#1a1208] hover:bg-[#2d1f0e] text-[#F7F3EE] text-xs font-semibold transition-colors shadow-sm"
       >
         <Sparkles size={13} className="text-[#b07a3a]" />

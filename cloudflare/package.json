@@ -1,0 +1,21 @@
+{
+  "name": "voya-account-api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "types": "wrangler types --include-runtime=false",
+    "check": "tsc --noEmit",
+    "test": "node --test --test-isolation=none test/*.test.mjs",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "jose": "^6.1.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260905.1",
+    "@types/node": "^24.12.0",
+    "typescript": "~5.9.3",
+    "wrangler": "^4.0.0"
+  }
+}

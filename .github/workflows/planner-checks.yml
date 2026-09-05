@@ -1,0 +1,28 @@
+name: Voya planner checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            cloudflare/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - run: node --test --test-isolation=none server/*.test.mjs
+      - run: npm ci
+        working-directory: cloudflare
+      - run: cp .dev.vars.example .dev.vars && npm run types && npm run check && npm test
+        working-directory: cloudflare
+        env:
+          WRANGLER_SEND_METRICS: 'false'

@@ -11,6 +11,11 @@ node_modules
 dist
 dist-ssr
 *.local
+.wrangler
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+cloudflare/worker-configuration.d.ts
 
 # Environment variables
 .env

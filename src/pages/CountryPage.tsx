@@ -6,12 +6,15 @@ import { CountryProfile } from '../components/CountryProfile';
 import { LoadingAnimation } from '../components/LoadingAnimation';
 import { generateCountryProfile } from '../services/countryService';
 import type { CountryData } from '../types';
+import { AccountLink } from '../components/AccountLink';
+import { useAccount } from '../account/AccountContext';
 
 const SEARCH_TIMEOUT_MS = 25000;
 
 export default function CountryPage() {
   const { name } = useParams<{ name: string }>();
   const navigate = useNavigate();
+  const { recordSearch } = useAccount();
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,6 +49,7 @@ export default function CountryPage() {
           setError('Destination not found. Please enter a valid country.');
         } else {
           setCountryData(data);
+          void recordSearch(data.overview.countryName).catch(() => { /* History failure must not hide a country guide. */ });
         }
       })
       .catch((err) => {
@@ -57,7 +61,7 @@ export default function CountryPage() {
       })
       .finally(() => { if (active) setIsLoading(false); });
     return () => { active = false; };
-  }, [name]);
+  }, [name, recordSearch]);
 
   const decoded = name ? decodeURIComponent(name) : '';
 
@@ -77,19 +81,20 @@ export default function CountryPage() {
           <ArrowLeft size={14} /> Home
         </button>
 
-        <form onSubmit={handleSearch} className="flex-1 max-w-sm">
+        <form onSubmit={handleSearch} className="flex-1 min-w-0 max-w-sm">
           <div className="flex items-center gap-2 bg-white border border-[#ddd4c4] focus-within:border-[#b07a3a]/60 rounded-xl px-3 py-2 transition-colors shadow-sm">
             <Search size={13} className="text-[#b07a3a] shrink-0" />
             <input
               value={searchInput}
               onChange={e => setSearchInput(e.target.value)}
               placeholder={decoded || 'Search another country…'}
-              className="flex-1 bg-transparent text-[#1a1208] text-xs placeholder:text-[#b8a898] focus:outline-none font-medium"
+              className="flex-1 min-w-0 bg-transparent text-[#1a1208] text-xs placeholder:text-[#b8a898] focus:outline-none font-medium"
             />
           </div>
         </form>
 
-        <span className="text-[#1a1208] font-black text-sm tracking-tight shrink-0">
+        <AccountLink />
+        <span className="hidden sm:inline text-[#1a1208] font-black text-sm tracking-tight shrink-0">
           Voya <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#b07a3a] bg-[#b07a3a]/10 px-2 py-0.5 rounded-full ml-1">Travel</span>
         </span>
       </div>

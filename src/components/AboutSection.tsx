@@ -9,7 +9,7 @@ const steps = [
   {
     step: "02",
     title: "Your full brief, instantly",
-    desc: "Culture, food, costs, phrases, safety, and a day-by-day itinerary appear in seconds. No account needed.",
+    desc: "Explore culture, food, costs, phrases, and safety without an account. Sign in for a personalised itinerary.",
   },
   {
     step: "03",
@@ -99,7 +99,7 @@ export function AboutSection() {
               },
               {
                 label: "Why I built Voya.",
-                text: "Voya (short for voyage) bridges the gap between technology and authentic travel. Whether you're building a personalised, well-structured travel route or simply exploring the languages and cultures of a country you've always been curious about, Voya gives you the practical insights and context you need to travel with confidence. No account. No subscription. Just type a country and go.",
+                text: "Voya (short for voyage) bridges the gap between technology and authentic travel. Whether you're building a personalised, well-structured travel route or simply exploring the languages and cultures of a country you've always been curious about, Voya gives you the practical insights and context you need to travel with confidence. Explore country guides without an account. Sign in free to save your discoveries and create personalised plans.",
               },
             ].map((para, i) => (
               <motion.div
