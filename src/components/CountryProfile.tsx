@@ -28,7 +28,7 @@ export function CountryProfile({ data }: CountryProfileProps) {
   const [activeTab, setActiveTab] = useState('overview');
   const [usdAmount, setUsdAmount] = useState<number | string>(100);
   const [factIdx, setFactIdx] = useState(0);
-  const [flagError, setFlagError] = useState(false);
+  const [failedFlag, setFailedFlag] = useState<string | null>(null);
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
@@ -65,31 +65,13 @@ export function CountryProfile({ data }: CountryProfileProps) {
     ? (Number(usdAmount) * data.overview.exchangeRateToUSD).toLocaleString(undefined, { maximumFractionDigits: 2 })
     : '0';
 
-  // Build flag image URL from flag emoji (convert emoji to country code)
-  const getFlagImageUrl = (flagEmoji: string) => {
-    try {
-      const codePoints = [...flagEmoji].map(c => c.codePointAt(0)! - 0x1F1E6 + 65);
-      const code = codePoints.map(n => String.fromCharCode(n)).join('').toLowerCase();
-      return `https://flagcdn.com/w160/${code}.png`;
-    } catch {
-      return null;
-    }
-  };
-
-  const flagUrl = getFlagImageUrl(data.overview.flagEmoji);
+  const flagUrl = data.overview.flagUrl;
 
   return (
     <div className="min-h-screen bg-[#F7F3EE] font-sans">
 
       {/* ── Hero Banner ── */}
       <div className="relative overflow-hidden bg-[#1a1208]">
-        {/* Scenic country photo from Unsplash */}
-        <img
-          src={`https://source.unsplash.com/1600x600/?${encodeURIComponent(data.mapData.countryQuery + ' landscape scenic')}`}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover opacity-40"
-        />
         {/* Dark gradient overlay so text stays readable */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#1a1208]/90 via-[#1a1208]/70 to-[#1a1208]/40" />
         {/* Amber glow */}
@@ -106,18 +88,17 @@ export function CountryProfile({ data }: CountryProfileProps) {
             className="shrink-0"
           >
             <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/10 bg-white/5 flex items-center justify-center select-none">
-              {flagUrl && !flagError ? (
+              {flagUrl && failedFlag !== flagUrl ? (
                 <img
                   src={flagUrl}
                   alt={`${data.mapData.countryQuery} flag`}
-                  className="w-full h-full object-cover"
-                  onError={() => setFlagError(true)}
+                  className="w-full h-full object-contain p-3"
+                  onError={() => setFailedFlag(flagUrl)}
                 />
               ) : (
                 <span
-                  className="text-7xl md:text-8xl"
-                  style={{ fontFamily: '"Twemoji Mozilla","Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif' }}
-                >{data.overview.flagEmoji}</span>
+                  className="text-sm text-white/70 text-center p-3"
+                >{data.overview.countryCode} · Flag unavailable</span>
               )}
             </div>
           </motion.div>
