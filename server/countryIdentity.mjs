@@ -1,11 +1,12 @@
-import { getData } from 'country-list';
+import { getAllCountries, getCountryByAlpha2 } from 'country-info-pro';
 
 const normalize = value => String(value).normalize('NFD').replace(/\p{M}/gu, '').trim().replace(/\s+/g, ' ').toLowerCase();
 const countries = new Map();
 const names = new Intl.DisplayNames(['en'], { type: 'region' });
-for (const { code, name } of getData()) {
-  countries.set(normalize(name), code);
-  countries.set(normalize(names.of(code)), code);
+for (const country of getAllCountries()) {
+  countries.set(normalize(country.name.common), country.cca2);
+  countries.set(normalize(country.name.official), country.cca2);
+  countries.set(normalize(names.of(country.cca2)), country.cca2);
 }
 for (const [alias, code] of Object.entries({
   usa: 'US', us: 'US', 'united states of america': 'US', uk: 'GB',
@@ -20,4 +21,9 @@ for (const [alias, code] of Object.entries({
 // Deliberately no fuzzy matching or automatic spelling correction.
 export function resolveCountryCode(input) {
   return typeof input === 'string' ? countries.get(normalize(input)) || null : null;
+}
+
+export function resolveCountry(input) {
+  const code = resolveCountryCode(input);
+  return code ? getCountryByAlpha2(code) || null : null;
 }
