@@ -11,8 +11,9 @@ the website bundle.
 The code and local checks are prepared. Production has **not** been switched.
 Cloudflare account reads succeeded, but database, Turnstile, and Workers subdomain
 creation each returned authentication error `10000`. The connection needs edit
-access to Workers, D1, Turnstile, and Workers AI. A Google web Client ID is also
-needed. Do not merge the website change until the backend is configured and
+access to Workers, D1, Turnstile, and Workers AI. The Google web Client ID is
+configured; its authorized origins and live sign-in still need verification.
+Do not merge the website change until the backend is configured and
 tested with a real Google account and production Turnstile token.
 
 ## Limits and stored data

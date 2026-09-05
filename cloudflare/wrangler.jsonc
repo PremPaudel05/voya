@@ -15,7 +15,7 @@
   }],
   "vars": {
     "ALLOWED_ORIGINS": "https://voyatravel.vercel.app,http://localhost:5173",
-    "GOOGLE_CLIENT_ID": "",
+    "GOOGLE_CLIENT_ID": "872049358055-6fckatn66h8c5ragsa0kvg610bguhe7q.apps.googleusercontent.com",
     "TURNSTILE_SITE_KEY": ""
   },
   "triggers": { "crons": ["17 0 * * *"] },
