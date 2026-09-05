@@ -8,13 +8,21 @@ the website bundle.
 
 ## Current activation status
 
-The code and local checks are prepared. Production has **not** been switched.
-Cloudflare account reads succeeded, but database, Turnstile, and Workers subdomain
-creation each returned authentication error `10000`. The connection needs edit
-access to Workers, D1, Turnstile, and Workers AI. The Google web Client ID is
-configured; its authorized origins and live sign-in still need verification.
-Do not merge the website change until the backend is configured and
-tested with a real Google account and production Turnstile token.
+The backend is deployed at
+`https://voya-account-api.voya-prempaudel05.workers.dev` with its D1 database,
+Google web Client ID, managed Turnstile widget, secrets, and daily cleanup.
+The account owner confirmed **Workers Free** in the dashboard on 2026-09-05;
+no billing subscription or paid AI Gateway was enabled.
+
+The frontend defaults to this public API address; Vercel can override it with
+`VITE_ACCOUNT_API_URL`. Live API checks verified account isolation, persisted
+settings/history/usage, private saved-plan reuse, session revocation, request
+bounds, and rejection of invalid Turnstile responses. A fourth daily database
+reservation was rejected. A real seven-day Workers AI response passed the
+production parser (1,198 tokens, about 28.08 Neurons). Temporary test accounts
+and sessions were removed. A successful Google sign-in and fresh Turnstile
+completion still need a check in the user's browser; automated browser access
+was unavailable. No production authentication bypass was introduced.
 
 ## Limits and stored data
 
@@ -47,36 +55,41 @@ meter. Keep the account on Workers **Free** and do not configure paid AI Gateway
 billing. Cloudflare's Free allowance is the final hard stop. Other applications
 in the same account share it, so the provider can reject requests sooner.
 
-## Deploy after access is enabled
+## Maintain or recreate the deployment
 
 1. Confirm the account's Workers plan is **Free** in the dashboard. Do not upgrade
    or add prepaid AI Gateway credits. Read access to account settings alone does
    not prove billing status.
-2. Create a D1 database called `voya-accounts`, leave read replication disabled,
-   and put its ID in `wrangler.jsonc`. Apply `migrations/0001_accounts.sql` with
-   `npx wrangler d1 migrations apply voya-accounts --remote` from this directory.
-3. Create a managed Turnstile widget for `voyatravel.vercel.app` and `localhost`.
+2. Reuse the D1 database ID in `wrangler.jsonc`; initial migration is already
+   applied and recorded in `d1_migrations`. Apply future migrations with
+   `npx wrangler d1 migrations apply voya-accounts --remote`. For a new environment,
+   create its own database and leave read replication disabled. Keep SQL files
+   with LF endings and avoid unparenthesized CASE expressions in trigger bodies,
+   because D1's statement splitter can reject SQL that local SQLite accepts.
+3. Reuse the managed Turnstile widget for `voyatravel.vercel.app` and `localhost`.
    Set its public site key in `TURNSTILE_SITE_KEY`. Store the secret using
    `npx wrangler secret put TURNSTILE_SECRET_KEY`.
-4. In Google Auth Platform, create an External app called Voya and a Web client.
+4. The Google Auth Platform web client is configured. Its
    Authorized JavaScript origins: `https://voyatravel.vercel.app`,
    `http://localhost`, and `http://localhost:5173`. Use only identity scopes
    (`openid`, `email`, `profile`); the callback-based flow needs no redirect URI
    or client secret. Put the public Client ID in `GOOGLE_CLIENT_ID`. Check audience
    availability for real travelers before launch; a testing configuration may
    restrict who can sign in.
-5. Generate 32 random bytes for `IP_HASH_SECRET` and store them with
-   `npx wrangler secret put IP_HASH_SECRET`. Keep the same value across deploys.
+5. Preserve the deployed `IP_HASH_SECRET` across redeployments. For a new
+   environment, generate 32 random bytes and store them with
+   `npx wrangler secret put IP_HASH_SECRET`.
 6. Run `npm ci`, copy `.dev.vars.example` to `.dev.vars` for local dummy values,
    then run `npm run types`, `npm run check`, `npm test`, and
    `npx wrangler deploy --dry-run`. Deploy the Worker with `npm run deploy`.
-7. Set **Vercel** `VITE_ACCOUNT_API_URL` to the actual HTTPS `workers.dev` URL,
-   with no trailing slash. No Vercel migration is needed. Add any exact additional
+7. The frontend already defaults to the deployed HTTPS `workers.dev` URL.
+   To use another environment, set **Vercel** `VITE_ACCOUNT_API_URL` with no
+   trailing slash. No Vercel migration is needed. Add any exact additional
    production origins to the Worker allowlist, Google Client ID, and Turnstile
    widget together. Do not allow every `*.vercel.app` hostname.
 8. Verify Google login, sign-out, reload, history/privacy toggle, preferences,
    saved plan retrieval, a real seven-day plan, duplicate reuse, and all quota
-   errors. Then deploy the Vercel website from the PR. Remove obsolete
+   errors. Vercel deploys the website from the repository. Remove obsolete
    `GROQ_API_KEY` and `HF_API_TOKEN` Vercel variables after the switch is confirmed.
 
 ## Validation

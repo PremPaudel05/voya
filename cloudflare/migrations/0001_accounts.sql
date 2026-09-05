@@ -50,14 +50,14 @@ CREATE INDEX jobs_retention ON plan_jobs(created_at);
 -- read-then-increment race and no in-memory/serverless counters. Failed and
 -- timed-out attempts remain charged because upstream may have used compute.
 CREATE TRIGGER reserve_plan BEFORE INSERT ON plan_jobs BEGIN
-  SELECT CASE WHEN (SELECT count(*) FROM plan_jobs WHERE user_id=NEW.user_id AND day_start=NEW.day_start) >= 3
-    THEN RAISE(ABORT, 'USER_DAILY_LIMIT') END;
-  SELECT CASE WHEN (SELECT count(*) FROM plan_jobs WHERE ip_hash=NEW.ip_hash AND day_start=NEW.day_start) >= 15
-    THEN RAISE(ABORT, 'IP_DAILY_LIMIT') END;
-  SELECT CASE WHEN (SELECT count(*) FROM plan_jobs WHERE day_start=NEW.day_start) >= 40
-    THEN RAISE(ABORT, 'SITE_DAILY_LIMIT') END;
-  SELECT CASE WHEN EXISTS(SELECT 1 FROM plan_jobs WHERE user_id=NEW.user_id AND created_at>NEW.created_at-60)
-    THEN RAISE(ABORT, 'COOLDOWN') END;
-  SELECT CASE WHEN EXISTS(SELECT 1 FROM plan_jobs WHERE user_id=NEW.user_id AND status='pending' AND created_at>NEW.created_at-120)
-    THEN RAISE(ABORT, 'PLAN_IN_PROGRESS') END;
+  SELECT RAISE(ABORT, 'USER_DAILY_LIMIT')
+    WHERE (SELECT count(*) FROM plan_jobs WHERE user_id=NEW.user_id AND day_start=NEW.day_start) >= 3;
+  SELECT RAISE(ABORT, 'IP_DAILY_LIMIT')
+    WHERE (SELECT count(*) FROM plan_jobs WHERE ip_hash=NEW.ip_hash AND day_start=NEW.day_start) >= 15;
+  SELECT RAISE(ABORT, 'SITE_DAILY_LIMIT')
+    WHERE (SELECT count(*) FROM plan_jobs WHERE day_start=NEW.day_start) >= 40;
+  SELECT RAISE(ABORT, 'COOLDOWN')
+    WHERE EXISTS(SELECT 1 FROM plan_jobs WHERE user_id=NEW.user_id AND created_at>NEW.created_at-60);
+  SELECT RAISE(ABORT, 'PLAN_IN_PROGRESS')
+    WHERE EXISTS(SELECT 1 FROM plan_jobs WHERE user_id=NEW.user_id AND status='pending' AND created_at>NEW.created_at-120);
 END;

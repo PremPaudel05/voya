@@ -1,4 +1,4 @@
-export const ACCOUNT_API = import.meta.env.VITE_ACCOUNT_API_URL || '';
+export const ACCOUNT_API = import.meta.env.VITE_ACCOUNT_API_URL || 'https://voya-account-api.voya-prempaudel05.workers.dev';
 export interface Preferences { budget: string; traveler: string; days: number; styles: string[]; saveHistory: boolean }
 export interface Usage { limit: number; used: number; remaining: number; resetsAt: number; cooldownUntil: number }
 export interface Account { user: { name: string; email: string }; settings: Preferences; usage: Usage }

@@ -10,13 +10,13 @@
   "d1_databases": [{
     "binding": "DB",
     "database_name": "voya-accounts",
-    "database_id": "00000000-0000-0000-0000-000000000000",
+    "database_id": "70f9e9ef-1cc5-4456-ac8a-f580ffbb3b4d",
     "migrations_dir": "migrations"
   }],
   "vars": {
     "ALLOWED_ORIGINS": "https://voyatravel.vercel.app,http://localhost:5173",
     "GOOGLE_CLIENT_ID": "872049358055-6fckatn66h8c5ragsa0kvg610bguhe7q.apps.googleusercontent.com",
-    "TURNSTILE_SITE_KEY": ""
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAEoYedaossJQBd4T"
   },
   "triggers": { "crons": ["17 0 * * *"] },
   "observability": { "enabled": true, "head_sampling_rate": 0.1 }
