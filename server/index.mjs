@@ -3,7 +3,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import { resolveCountryCode } from './countryIdentity.mjs';
+import { resolveCountry, resolveCountryCode } from './countryIdentity.mjs';
 import { findAttractionImage } from './attractionImages.mjs';
 import {
   knownAttractionsData,
@@ -2649,16 +2649,12 @@ function getLandscapeDescription(countryName, wikiSummary) {
 app.get('/api/country', async (req, res) => {
   try {
     const name = String(req.query.name || '').trim();
-    const code = name.length <= 100 ? resolveCountryCode(name) : null;
-    if (!code) return res.status(404).json({ isValidCountry: false, error: 'Incorrect country name. Please check the spelling.' });
+    const primary = name.length <= 100 ? resolveCountry(name) : null;
+    if (!primary) return res.status(404).json({ isValidCountry: false, error: 'Incorrect country name. Please check the spelling.' });
 
-    // Resolve only a validated ISO identity, never a partial or fuzzy name.
-    const rc = await fetch(`https://restcountries.com/v3.1/alpha/${code}`, { signal: AbortSignal.timeout(7000) });
-    if (!rc.ok) return res.status(502).json({ error: 'Country data is temporarily unavailable.' });
-    const rcJson = await rc.json();
-    const primary = (Array.isArray(rcJson) ? rcJson : [rcJson]).find(item => item.cca2 === code);
-    if (!primary?.name?.common) return res.status(502).json({ error: 'Country data is temporarily unavailable.' });
-    const iso = code;
+    // Core country facts are bundled with the app, so searches do not depend on
+    // a third-party country API being available or keeping the same version.
+    const iso = primary.cca2;
     const flagEmoji = codeToFlagEmoji(iso);
     const countryName = primary.name?.common || name;
     const capital = Array.isArray(primary.capital) ? primary.capital[0] : primary.capital || '';
@@ -2947,7 +2943,6 @@ if (!process.env.VERCEL) {
 }
 
 export default app;
-
 
 
 

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { resolveCountryCode } from './countryIdentity.mjs';
+import { resolveCountry, resolveCountryCode } from './countryIdentity.mjs';
 import { selectAttractionImage, findAttractionImage } from './attractionImages.mjs';
 
 test('country names accept case, whitespace, and explicit aliases only', () => {
@@ -10,6 +10,16 @@ test('country names accept case, whitespace, and explicit aliases only', () => {
   for (const name of ['Jaopan', 'Japn', 'Nepa', 'Atlantis', 'Japan vacation', '', '<Japan>']) {
     assert.equal(resolveCountryCode(name), null, name);
   }
+});
+
+test('valid countries have all core profile data without an API request', () => {
+  const france = resolveCountry('France');
+  assert.equal(france?.cca2, 'FR');
+  assert.deepEqual(france?.capital, ['Paris']);
+  assert.ok(Number(france?.population) > 0);
+  assert.equal(france?.currencies?.EUR?.name, 'Euro');
+  assert.ok(france?.timezones?.length);
+  assert.match(france?.flags?.svg || '', /^https:/);
 });
 
 test('attraction images reject unrelated city photos and prefer exact landmarks', () => {
