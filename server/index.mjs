@@ -3,7 +3,8 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import { getCode } from 'country-list';
+import { resolveCountryCode } from './countryIdentity.mjs';
+import { findAttractionImage } from './attractionImages.mjs';
 import {
   knownAttractionsData,
   knownPhrasesData,
@@ -154,90 +155,24 @@ app.get('/api/health', (_req, res) => {
   res.json({ ok: true, message: 'Server is up' });
 });
 
-// Image proxy: fetches real images from Wikipedia for attraction names
+// Return only images matched to the named landmark; never random travel photos.
 const imageCache = new Map();
-
-const BAD_IMAGE_PATTERNS = /logo|badge|seal|emblem|flag|icon|coat.of.arms|insignia|symbol|crest|\.svg/i;
-
-async function fetchWikiImage(searchQuery, minWidth = 300) {
-  const url = `https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(searchQuery)}&gsrlimit=5&prop=pageimages&piprop=thumbnail|name&pithumbsize=600&format=json&origin=*`;
-  const resp = await fetch(url);
-  const data = await resp.json();
-  const pages = data?.query?.pages;
-  if (pages) {
-    const sorted = Object.values(pages).sort((a, b) => (a.index || 0) - (b.index || 0));
-    const queryLower = searchQuery.toLowerCase();
-    const queryWords = queryLower.split(/\s+/);
-
-    // Score each page by how well its title matches the query
-    const validPages = sorted.filter(page => {
-      const thumb = page?.thumbnail;
-      if (!thumb?.source) return false;
-      if (BAD_IMAGE_PATTERNS.test(thumb.source)) return false;
-      return thumb.width >= minWidth && thumb.height >= 150;
-    });
-
-    if (validPages.length > 0) {
-      // Score: count how many query words appear in the title
-      const scored = validPages.map(page => {
-        const titleLower = (page.title || '').toLowerCase();
-        const titleWords = titleLower.split(/\s+/);
-        let score = 0;
-        for (const w of queryWords) {
-          if (titleLower.includes(w)) score++;
-        }
-        // Bonus for exact title match
-        if (titleLower === queryLower) score += 10;
-        // Bonus if title is a substring of query or vice versa
-        if (queryLower.includes(titleLower) && titleLower.length > 5) score += 2;
-        if (titleLower.includes(queryLower)) score += 3;
-        return { page, score };
-      });
-
-      // Sort by score desc, then by original search rank
-      scored.sort((a, b) => b.score - a.score);
-
-      // Only use scored match if it has a reasonable score
-      if (scored[0].score >= 2) {
-        return scored[0].page.thumbnail.source;
-      }
-
-      // Fallback to first valid result by search rank
-      return validPages[0].thumbnail.source;
-    }
-  }
-  return null;
-}
-
 app.get('/api/image', async (req, res) => {
-  const query = String(req.query.q || '').trim().replace(/[<>{}]/g, '');
-  if (!query) return res.status(400).send('Missing q parameter');
-  if (query.length > 200) return res.status(400).send('Invalid query');
-
-  if (imageCache.has(query)) {
-    return res.redirect(imageCache.get(query));
+  const name = String(req.query.name || '').trim();
+  const country = String(req.query.country || '').trim();
+  if (!name || name.length > 200 || !resolveCountryCode(country)) {
+    return res.status(400).send('Invalid attraction or country');
   }
-
+  const key = JSON.stringify([name, country]);
+  if (imageCache.has(key)) return res.redirect(imageCache.get(key));
   try {
-    let imageUrl = await fetchWikiImage(query);
-
-    if (!imageUrl) {
-      imageUrl = await fetchWikiImage(query + ' landmark');
-    }
-    if (!imageUrl) {
-      imageUrl = await fetchWikiImage(query + ' tourist attraction');
-    }
-
-    if (imageUrl) {
-      imageCache.set(query, imageUrl);
-      return res.redirect(imageUrl);
-    }
-
-    const fallback = `https://picsum.photos/seed/${encodeURIComponent(query)}/400/300`;
-    imageCache.set(query, fallback);
-    return res.redirect(fallback);
+    const image = await findAttractionImage(name, country);
+    if (!image) return res.status(404).send('Matching photo unavailable');
+    if (imageCache.size >= 500) imageCache.delete(imageCache.keys().next().value);
+    imageCache.set(key, image);
+    return res.redirect(image);
   } catch {
-    return res.redirect(`https://picsum.photos/seed/${encodeURIComponent(query)}/400/300`);
+    return res.status(502).send('Photo service unavailable');
   }
 });
 
@@ -2711,58 +2646,19 @@ function getLandscapeDescription(countryName, wikiSummary) {
   return 'Landscape features can include mountains, plains, forests, desert, and coasts depending on the region.';
 }
 
-function matchCountryFromResults(results, query) {
-  if (!Array.isArray(results) || !query) return null;
-  const normalized = query.trim().toLowerCase();
-
-  const exact = results.find((item) => {
-    const common = item.name?.common?.toLowerCase() || '';
-    const official = item.name?.official?.toLowerCase() || '';
-    const alt = Array.isArray(item.altSpellings)
-      ? item.altSpellings.map((s) => String(s).toLowerCase())
-      : [];
-    return common === normalized || official === normalized || alt.includes(normalized);
-  });
-
-  if (exact) return exact;
-
-  const fuzzy = results.find((item) => {
-    const common = item.name?.common?.toLowerCase() || '';
-    const official = item.name?.official?.toLowerCase() || '';
-    const alt = Array.isArray(item.altSpellings)
-      ? item.altSpellings.map((s) => String(s).toLowerCase())
-      : [];
-    return common.includes(normalized) || official.includes(normalized) || alt.some((s) => s.includes(normalized));
-  });
-
-  if (fuzzy) return fuzzy;
-  return results[0] || null;
-}
-
 app.get('/api/country', async (req, res) => {
   try {
-    const name = String(req.query.name || '').trim().replace(/[<>{}]/g, '');
-    if (!name) return res.status(400).json({ error: 'Missing name parameter' });
-    if (name.length > 100) return res.status(400).json({ error: 'Invalid country name' });
+    const name = String(req.query.name || '').trim();
+    const code = name.length <= 100 ? resolveCountryCode(name) : null;
+    if (!code) return res.status(404).json({ isValidCountry: false, error: 'Incorrect country name. Please check the spelling.' });
 
-    // 1) Fetch REST Countries data
-    const rc = await fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(name)}?fullText=true`, { signal: AbortSignal.timeout(7000) });
-    let primary;
-    if (!rc.ok) {
-      const rcPartial = await fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(name)}?fullText=false`);
-      if (!rcPartial.ok) return res.status(404).json({ error: 'Country not found' });
-      const rcJsonPartial = await rcPartial.json();
-      const partialMatch = matchCountryFromResults(Array.isArray(rcJsonPartial) ? rcJsonPartial : [rcJsonPartial], name);
-      if (!partialMatch) return res.status(404).json({ error: 'Country not found' });
-      primary = partialMatch;
-    } else {
-      const rcJson = await rc.json();
-      const matched = matchCountryFromResults(Array.isArray(rcJson) ? rcJson : [rcJson], name);
-      if (!matched) return res.status(404).json({ error: 'Country not found' });
-      primary = matched;
-    }
-
-    const iso = (primary.cca2 || primary.cca3 || '').toUpperCase();
+    // Resolve only a validated ISO identity, never a partial or fuzzy name.
+    const rc = await fetch(`https://restcountries.com/v3.1/alpha/${code}`, { signal: AbortSignal.timeout(7000) });
+    if (!rc.ok) return res.status(502).json({ error: 'Country data is temporarily unavailable.' });
+    const rcJson = await rc.json();
+    const primary = (Array.isArray(rcJson) ? rcJson : [rcJson]).find(item => item.cca2 === code);
+    if (!primary?.name?.common) return res.status(502).json({ error: 'Country data is temporarily unavailable.' });
+    const iso = code;
     const flagEmoji = codeToFlagEmoji(iso);
     const countryName = primary.name?.common || name;
     const capital = Array.isArray(primary.capital) ? primary.capital[0] : primary.capital || '';
@@ -2844,6 +2740,8 @@ app.get('/api/country', async (req, res) => {
       isValidCountry: true,
       overview: {
         flagEmoji,
+        countryCode: iso,
+        flagUrl: primary.flags?.svg || primary.flags?.png || `https://flagcdn.com/${iso.toLowerCase()}.svg`,
         capital,
         population: population.toLocaleString(),
         currency: currencyName || currencyCode,
@@ -3049,7 +2947,6 @@ if (!process.env.VERCEL) {
 }
 
 export default app;
-
 
 
 

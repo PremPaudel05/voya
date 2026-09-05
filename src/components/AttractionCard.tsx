@@ -13,38 +13,24 @@ interface AttractionCardProps {
 }
 
 function buildImageSrc(attraction: AttractionCardProps['attraction'], countryName: string): string {
-  if (attraction.imageUrl) return attraction.imageUrl;
-  const query = attraction.imageSearchQuery || `${attraction.name} ${countryName}`;
-  // Use Wikimedia Commons search as primary — free, no key, high quality
-  const keywords = query.replace(/[^a-zA-Z0-9 ]/g, ' ').trim().split(/\s+/).slice(0, 3).join(',');
-  return `https://loremflickr.com/800/600/${encodeURIComponent(keywords)}`;
+  return `/api/image?${new URLSearchParams({ name: attraction.name, country: countryName })}`;
 }
 
 export const AttractionCard: React.FC<AttractionCardProps> = ({ attraction, countryName }) => {
-  const [imageSrc, setImageSrc] = useState(() => buildImageSrc(attraction, countryName));
-  const [fallbackStage, setFallbackStage] = useState(0);
-
-  const handleError = () => {
-    if (fallbackStage === 0) {
-      const simpleQuery = encodeURIComponent(attraction.name.split(/\s+/).slice(0, 2).join(','));
-      setImageSrc(`https://loremflickr.com/800/600/${simpleQuery}`);
-      setFallbackStage(1);
-    } else if (fallbackStage === 1) {
-      setImageSrc(`https://loremflickr.com/800/600/${encodeURIComponent(countryName)},travel`);
-      setFallbackStage(2);
-    }
-  };
+  const imageSrc = buildImageSrc(attraction, countryName);
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
 
   return (
     <div className="flex flex-col sm:flex-row bg-white rounded-2xl overflow-hidden border border-[#e8dfd2] shadow-sm hover:shadow-md hover:border-[#b07a3a]/30 transition-all group">
       <div className="w-full sm:w-2/5 h-52 sm:h-auto shrink-0 relative overflow-hidden bg-[#e8dfd2]">
-        <img
+        {failedSrc !== imageSrc ? <img
           src={imageSrc}
           alt={attraction.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           referrerPolicy="no-referrer"
-          onError={handleError}
-        />
+          loading="lazy"
+          onError={() => setFailedSrc(imageSrc)}
+        /> : <div className="flex items-center justify-center h-full min-h-52 p-6 text-center text-sm text-[#6b5740]" role="img" aria-label={`Photo unavailable for ${attraction.name}`}>Photo unavailable</div>}
         {/* City badge overlay */}
         <div className="absolute top-3 left-3 bg-black/50 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
           {attraction.city}

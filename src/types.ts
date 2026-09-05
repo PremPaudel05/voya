@@ -2,6 +2,8 @@ export interface CountryData {
   isValidCountry: boolean;
   overview: {
     flagEmoji: string;
+    countryCode: string;
+    flagUrl: string;
     capital: string;
     population: string;
     currency: string;

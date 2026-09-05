@@ -28,6 +28,7 @@ export default function CountryPage() {
   useEffect(() => {
     if (!name) return;
     const decoded = decodeURIComponent(name);
+    let active = true;
 
     setIsLoading(true);
     setError(null);
@@ -40,6 +41,7 @@ export default function CountryPage() {
 
     Promise.race([generateCountryProfile(decoded), timeout])
       .then((data) => {
+        if (!active) return;
         if (!data.isValidCountry) {
           setError('Destination not found. Please enter a valid country.');
         } else {
@@ -47,12 +49,14 @@ export default function CountryPage() {
         }
       })
       .catch((err) => {
+        if (!active) return;
         const msg = err instanceof Error ? err.message : 'Unknown error';
         setError(msg.toLowerCase().includes('timed out')
           ? 'The request took too long. Please try again.'
           : 'Could not load travel insights. Please try again later.');
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => { if (active) setIsLoading(false); });
+    return () => { active = false; };
   }, [name]);
 
   const decoded = name ? decodeURIComponent(name) : '';
@@ -102,7 +106,7 @@ export default function CountryPage() {
           {error && !isLoading && (
             <motion.div key="error" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="px-4 py-16 min-h-[70vh] flex items-center justify-center">
-              <div className="max-w-md w-full mx-auto text-center">
+              <div role="alert" className="max-w-md w-full mx-auto text-center">
 
                 {/* Icon */}
                 <div className="w-16 h-16 rounded-2xl bg-[#b07a3a]/10 border border-[#b07a3a]/20 flex items-center justify-center mx-auto mb-6">
