@@ -3,6 +3,7 @@ import { Search, ArrowRight, Lightbulb } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WorldMap } from './ui/map';
 import { ShareButton } from './ShareButton';
+import { AccountLink } from './AccountLink';
 import { TextEffect } from './ui/text-effect';
 
 interface HeroProps {
@@ -107,6 +108,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
         <div className="flex items-center gap-2 sm:gap-5 text-sm font-medium text-[#6b5740]">
           <button onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-[#1a1208] transition-colors text-xs sm:text-sm">About</button>
           <ShareButton countryName="Voya" />
+          <AccountLink />
           <button
             onClick={() => {
               inputRef.current?.focus();

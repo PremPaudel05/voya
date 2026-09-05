@@ -1,4 +1,4 @@
-﻿import express from 'express';
+import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
@@ -15,93 +15,6 @@ import {
 import fs from 'fs';
 import path from 'path';
 import { extraCultureProfiles, extraFoodData, extraMapCategoryData } from './indexExtra.mjs';
-
-// ── Groq AI enrichment ───────────────────────────────────────────────────────
-const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
-const geminiCache = new Map(); // session cache to avoid duplicate AI calls
-
-async function geminiEnrich(countryName, capital, currencyCode) {
-  const key = countryName.toLowerCase();
-  if (geminiCache.has(key)) return geminiCache.get(key);
-
-  if (!GROQ_API_KEY) return null;
-
-  const prompt = `You are a travel data API. Return ONLY a valid JSON object (no markdown, no explanation) for the country "${countryName}" with this exact structure:
-{
-  "foods": [
-    { "name": "...", "description": "...", "famousFor": "..." }
-  ],
-  "attractions": [
-    { "name": "...", "city": "...", "famousFor": "...", "interestingFact": "...", "imageSearchQuery": "..." }
-  ],
-  "phrases": [
-    { "english": "...", "local": "...", "phonetic": "..." }
-  ],
-  "funFacts": ["...", "...", "...", "...", "..."],
-  "bestTimeToVisit": {
-    "bestMonths": "...",
-    "rainySeason": "...",
-    "cheapestSeason": "...",
-    "majorFestivals": ["...", "...", "..."]
-  },
-  "culture": {
-    "traditions": ["...", "...", "...", "...", "..."],
-    "socialNorms": ["...", "...", "...", "...", "..."],
-    "religionOverview": "...",
-    "etiquetteTips": ["...", "...", "...", "...", "..."]
-  },
-  "mapCategories": {
-    "bestBeaches": ["...", "...", "..."],
-    "bestFoodAreas": ["...", "...", "..."],
-    "nightlifeZones": ["...", "...", "..."],
-    "instagrammableSpots": ["...", "...", "...", "...", "..."],
-    "areasToAvoid": ["...", "..."]
-  },
-  "prices": {
-    "hotel": "...",
-    "meal": "...",
-    "streetFood": "...",
-    "coffee": "...",
-    "transport": "...",
-    "taxi": "..."
-  }
-}
-Rules:
-- foods: exactly 5 real traditional dishes
-- attractions: exactly 5 real famous attractions with real city names
-- phrases: exactly 10 common travel phrases in the country's primary language
-- funFacts: exactly 5 surprising, specific, true facts
-- prices: use USD with realistic ranges for ${countryName}
-- mapCategories: use real place names in ${countryName}, skip arrays if not applicable (empty array)
-- Be specific and accurate. Capital is ${capital}, currency is ${currencyCode}.`;
-
-  try {
-    const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${GROQ_API_KEY}` },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        temperature: 0.2,
-        max_tokens: 2048,
-        messages: [{ role: 'user', content: prompt }],
-      }),
-    });
-    if (!resp.ok) {
-      console.warn('Groq API error:', resp.status, await resp.text());
-      return null;
-    }
-    const json = await resp.json();
-    const raw = json?.choices?.[0]?.message?.content || '';
-    const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
-    const parsed = JSON.parse(cleaned);
-    geminiCache.set(key, parsed);
-    return parsed;
-  } catch (e) {
-    console.warn('Groq enrichment failed for', countryName, e?.message || e);
-    return null;
-  }
-}
-// ────────────────────────────────────────────────────────────────────────────
 
 const app = express();
 
@@ -120,17 +33,6 @@ const apiLimiter = rateLimit({
   message: { error: 'Too many requests, please try again later.' },
 });
 app.use('/api/', apiLimiter);
-
-// Strict limiter for AI plan generation — 5 requests per hour per IP
-const planLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  max: 5,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: 'Plan limit reached. You can generate up to 5 itineraries per hour.' },
-});
-app.use('/api/plan', planLimiter);
-app.use('/api/itinerary', planLimiter);
 
 // CORS - restrict in production
 const allowedOrigins = process.env.ALLOWED_ORIGINS
@@ -2724,17 +2626,15 @@ app.get('/api/country', async (req, res) => {
       return !!(knownPhrasesData[key]);
     })();
 
-    // AI enrichment — capped at 8s so it never blocks the response
-    const ai = await Promise.race([
-      geminiEnrich(countryName, capital, currencyCode),
-      new Promise(resolve => setTimeout(() => resolve(null), 8000)),
-    ]);
+    // Country guides use bundled data; browsing never consumes the AI allowance.
+    const ai = null;
 
     const majorCities = knownGeoData?.majorCities || await getMajorCities(countryName, capital, iso);
 
     const response = {
       isValidCountry: true,
       overview: {
+        countryName,
         flagEmoji,
         countryCode: iso,
         flagUrl: primary.flags?.svg || primary.flags?.png || `https://flagcdn.com/${iso.toLowerCase()}.svg`,
@@ -2788,153 +2688,11 @@ app.get('/api/country', async (req, res) => {
   }
 });
 
-// ── /api/itinerary — AI trip planner ────────────────────────────────────────
-// Register on both paths to handle Vercel rewrite variations
-async function handleItinerary(req, res) {
-  try {
-    const { countryName, days, budget, styles, traveler, notes } = req.body;
-    if (!countryName || !days) return res.status(400).json({ error: 'Missing required fields' });
-
-    const styleList = Array.isArray(styles) ? styles.join(', ') : styles || 'culture';
-    const prompt = `You are an expert travel planner. Create a detailed ${days}-day trip itinerary for ${countryName}.
-
-Traveler profile:
-- Group: ${traveler || 'couple'}
-- Budget: ${budget || 'mid-range'}
-- Interests: ${styleList}
-- Special requests: ${notes || 'none'}
-
-Return ONLY a valid JSON object with this exact structure (no markdown, no extra text):
-{
-  "intro": "2-3 sentence overview of the trip",
-  "days": [
-    {
-      "day": 1,
-      "title": "Catchy day title e.g. Arrival & First Impressions",
-      "morning": "Detailed morning activity (2-3 sentences with specific place names)",
-      "afternoon": "Detailed afternoon activity (2-3 sentences with specific place names)",
-      "evening": "Detailed evening activity + dinner recommendation (2-3 sentences)",
-      "tip": "One practical tip specific to this day",
-      "estimatedCost": "Estimated daily spend e.g. $50-80 per person"
-    }
-  ],
-  "packingEssentials": ["item1", "item2", "item3", "item4", "item5", "item6"],
-  "budgetSummary": "2-sentence total trip budget estimate",
-  "bestAdvice": "Single most important piece of advice for this specific trip"
-}
-
-Rules:
-- Create exactly ${days} day objects
-- Use real, specific place names in ${countryName}
-- Morning/afternoon/evening must be detailed and actionable
-- Tips must be practical and specific (not generic)
-- Budget estimates must reflect the ${budget} level
-- If family, include child-friendly options
-- If adventure, include physical activities
-- Make it genuinely useful, not generic`;
-
-    const aiResp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${GROQ_API_KEY}` },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        temperature: 0.7,
-        max_tokens: 4096,
-        messages: [{ role: 'user', content: prompt }],
-      }),
-    });
-
-    if (!aiResp.ok) {
-      const errText = await aiResp.text();
-      console.error('Groq itinerary error:', aiResp.status, errText);
-      return res.status(502).json({ error: 'AI service error' });
-    }
-
-    const json = await aiResp.json();
-    const raw = json?.choices?.[0]?.message?.content || '';
-    const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
-    const parsed = JSON.parse(cleaned);
-    return res.json(parsed);
-  } catch (err) {
-    console.error('Itinerary generation failed:', err);
-    return res.status(500).json({ error: err?.message || 'Failed to generate itinerary' });
-  }
-}
-app.post('/api/itinerary', handleItinerary);
-app.post('/itinerary', handleItinerary);
-
-// GET version — takes query params, goes through the same /api rewrite as /api/country
-app.get('/api/plan', async (req, res) => {
-  try {
-    const countryName = String(req.query.countryName || '').trim();
-    const days = parseInt(req.query.days) || 7;
-    const budget = String(req.query.budget || 'mid-range');
-    const styles = String(req.query.styles || 'culture').split(',').filter(Boolean);
-    const traveler = String(req.query.traveler || 'couple');
-    const notes = String(req.query.notes || '');
-
-    if (!countryName) return res.status(400).json({ error: 'Missing countryName' });
-    const planKey = process.env.GROQ_API_KEY || GROQ_API_KEY;
-    if (!planKey) return res.status(500).json({ error: 'Missing GROQ_API_KEY' });
-
-    const styleList = styles.join(', ');
-    const prompt = `You are an expert travel planner. Create a detailed ${days}-day trip itinerary for ${countryName}.
-
-Traveler profile:
-- Group: ${traveler}
-- Budget: ${budget}
-- Interests: ${styleList}
-- Special requests: ${notes || 'none'}
-
-Return ONLY a valid JSON object (no markdown, no extra text):
-{
-  "intro": "2-3 sentence overview of the trip",
-  "days": [
-    {
-      "day": 1,
-      "title": "Catchy day title",
-      "morning": "Detailed morning activity with specific place names (2-3 sentences)",
-      "afternoon": "Detailed afternoon activity with specific place names (2-3 sentences)",
-      "evening": "Detailed evening activity and dinner recommendation (2-3 sentences)",
-      "tip": "One practical tip specific to this day",
-      "estimatedCost": "e.g. $50-80 per person"
-    }
-  ],
-  "packingEssentials": ["item1","item2","item3","item4","item5","item6"],
-  "budgetSummary": "2-sentence total trip budget estimate",
-  "bestAdvice": "Single most important piece of advice for this trip"
-}
-Rules: exactly ${days} day objects, real place names in ${countryName}, ${budget} budget level.`;
-
-    const aiResp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${planKey}` },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        temperature: 0.7,
-        max_tokens: 4096,
-        messages: [{ role: 'user', content: prompt }],
-      }),
-    });
-
-    if (!aiResp.ok) {
-      const errText = await aiResp.text();
-      console.error('Groq plan error:', aiResp.status, errText);
-      return res.status(502).json({ error: `Groq error ${aiResp.status}` });
-    }
-
-    const json = await aiResp.json();
-    const raw = json?.choices?.[0]?.message?.content || '';
-    const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
-    const parsed = JSON.parse(cleaned);
-    if (!parsed.days?.length) throw new Error('Invalid AI response');
-    return res.json(parsed);
-  } catch (err) {
-    console.error('Plan generation failed:', err);
-    return res.status(500).json({ error: err?.message || 'Failed to generate plan' });
-  }
+// Retired routes cannot bypass the Cloudflare account service.
+app.all(['/api/plan', '/plan', '/api/itinerary', '/itinerary', '/api/chat', '/chat'], (_req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
+  return res.status(410).json({ code: 'PLANNER_MOVED', error: 'Please refresh Voya and use the signed-in trip planner.' });
 });
-// ────────────────────────────────────────────────────────────────────────────
 
 // Only start the server when running locally (not on Vercel)
 if (!process.env.VERCEL) {
@@ -2943,7 +2701,3 @@ if (!process.env.VERCEL) {
 }
 
 export default app;
-
-
-
-
