@@ -1,5 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import sharp from 'sharp';
+import { randomBytes } from 'node:crypto';
 import { resolveAttractionPhoto, photoUrl } from './attractionImages.mjs';
 import { createPhotoService, photoRevision } from './photoService.mjs';
 
@@ -75,4 +77,21 @@ test('photo revisions preserve attribution when server instances have different 
   assert.equal((await service.getImage('Example','Japan',0,photoRevision(newer.images[0]))).type,'image/jpeg');
   assert.equal(calls,1);
   assert.equal(await service.getImage('Example','Japan',0,'0000000000000000'),null);
+});
+
+test('large originals are resized below the delivery limit when thumbnails fail', async () => {
+  const source = await sharp(randomBytes(1280 * 1280 * 3), { raw: { width: 1280, height: 1280, channels: 3 } }).png({ compressionLevel: 0 }).toBuffer();
+  assert.ok(source.length > 4_000_000);
+  const service = createPhotoService({ seeds: {}, resolve: async () => photo, fetcher: async url => url === thumb ? new Response('Unavailable', { status: 503 }) : new Response(source, { headers: { 'content-type': 'image/png', 'content-length': String(source.length) } }) });
+  const result = await service.getImage('Example', 'Japan');
+  assert.equal(result.type, 'image/jpeg');
+  assert.ok(result.body.length < 4_000_000);
+  const decoded = await sharp(result.body).metadata();
+  assert.equal(decoded.width, 1280);
+  assert.equal(decoded.height, 1280);
+});
+
+test('oversized source responses are rejected before image processing', async () => {
+  const service = createPhotoService({ seeds: {}, resolve: async () => photo, fetcher: async () => new Response('too large', { headers: { 'content-type': 'image/jpeg', 'content-length': '32000001' } }) });
+  await assert.rejects(service.getImage('Example', 'Japan'), /temporarily unavailable/);
 });

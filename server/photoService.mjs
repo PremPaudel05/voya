@@ -1,9 +1,11 @@
 import manifest from './attractionPhotoManifest.json' with { type: 'json' };
 import { createHash } from 'node:crypto';
+import sharp from 'sharp';
 import { photoKey, photoUrl, resolveAttractionPhoto } from './attractionImages.mjs';
 
 const DAY = 86_400_000;
 const MAX_BYTES = 4_000_000; // Stay below Vercel's function response limit.
+const MAX_SOURCE_BYTES = 32_000_000;
 export const photoRevision = image => createHash('sha256').update(image.url).digest('hex').slice(0, 16);
 function remember(cache, key, value, limit) {
   if (cache.size >= limit) cache.delete(cache.keys().next().value);
@@ -53,8 +55,11 @@ export function createPhotoService({ fetcher = fetch, resolve = resolveAttractio
       if (!next) throw new Error('Unapproved image redirect');
       source = next;
     }
-    const type = response.headers.get('content-type')?.split(';')[0];
-    if (!response.ok || !['image/jpeg', 'image/png', 'image/webp'].includes(type) || Number(response.headers.get('content-length')) > MAX_BYTES) throw new Error('Image temporarily unavailable');
+    let type = response.headers.get('content-type')?.split(';')[0];
+    if (!response.ok || !['image/jpeg', 'image/png', 'image/webp'].includes(type) || Number(response.headers.get('content-length')) > MAX_SOURCE_BYTES) {
+      await response.body?.cancel();
+      throw new Error('Image temporarily unavailable');
+    }
     const reader = response.body.getReader();
     const chunks = []; let length = 0;
     try {
@@ -62,15 +67,26 @@ export function createPhotoService({ fetcher = fetch, resolve = resolveAttractio
         const { value, done } = await reader.read();
         if (done) break;
         length += value.byteLength;
-        if (length > MAX_BYTES) throw new Error('Image exceeds delivery limit');
+        if (length > MAX_SOURCE_BYTES) throw new Error('Image exceeds source limit');
         chunks.push(value);
       }
     } finally { await reader.cancel().catch(() => {}); }
-    const body = Buffer.concat(chunks);
+    let body = Buffer.concat(chunks);
     const valid = type === 'image/jpeg' ? body[0] === 0xff && body[1] === 0xd8 && body[2] === 0xff :
       type === 'image/png' ? body.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])) :
         body.subarray(0, 4).toString() === 'RIFF' && body.subarray(8, 12).toString() === 'WEBP';
     if (!valid) throw new Error('Invalid image response');
+    // Originals often exceed the function response limit when a thumbnail fails.
+    // Resize the same photograph locally, preserving its identity and credits.
+    if (body.length > MAX_BYTES) {
+      body = await sharp(body, { limitInputPixels: 40_000_000 })
+        .rotate()
+        .resize({ width: 1600, height: 1600, fit: 'inside', withoutEnlargement: true })
+        .jpeg({ quality: 82 })
+        .toBuffer();
+      type = 'image/jpeg';
+      if (body.length > MAX_BYTES) throw new Error('Image exceeds delivery limit');
+    }
     const result = { body, type, time: now() };
     remember(images, url, result, 24);
     return result;
