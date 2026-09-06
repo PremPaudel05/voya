@@ -57,10 +57,10 @@ export function Footer() {
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2.5">
               <span className="text-2xl font-black text-white tracking-tight">Voya</span>
-              <span className="text-[10px] font-bold tracking-[0.18em] uppercase text-[#c49050] border border-[#c49050]/30 px-2 py-0.5 rounded-full">Travel</span>
+              <span className="text-[10px] font-bold tracking-[0.18em] uppercase text-[#c49050] border border-[#c49050]/30 px-2 py-0.5 rounded-full">World</span>
             </div>
             <p className="text-[14px] leading-relaxed text-[#c8a878] max-w-[210px]">
-              Instant travel intelligence for explorers who move with intention.
+              Culture, places, and everyday life. Get to know the world with Voya.
             </p>
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-[#c49050] animate-pulse shrink-0" />
@@ -133,7 +133,7 @@ export function Footer() {
       {open === 'privacy' && (
         <Modal title="Privacy Policy" onClose={() => setOpen(null)}>
           <p><strong>Last updated:</strong> <time dateTime="2026-09-06">6 September 2026</time></p>
-          <p>Account creation and sign-in are optional for exploring Voya's country guides. Sign in to create and save personalised trip plans. Voya does not sell your personal data.</p>
+          <p>Account creation and sign-in are optional for exploring Voya's country guides. Signing in lets you revisit saved searches and use optional trip-planning features. Voya does not sell your personal data.</p>
           <p><strong>Account information:</strong> If you choose to sign in with Google, Voya stores your name, email address, travel preferences, and saved plans to provide account features. A session token is stored in your browser to keep you signed in.</p>
           <p><strong>Search history:</strong> When you are signed in and history saving is enabled, country searches are saved to your account. You can turn off history saving in Settings or clear saved searches in Search history.</p>
           <p><strong>Analytics:</strong> I may use privacy-respecting, anonymous analytics (page views only) to improve the product. No personal identifiers are collected for these analytics.</p>
@@ -169,7 +169,7 @@ export function Footer() {
 
       {open === 'contact' && (
         <Modal title="Help & Contact" onClose={() => setOpen(null)}>
-          <p>I'm building Voya to make travel more accessible and informed. I'd love to hear from you.</p>
+          <p>I'm building Voya to make discovering countries and cultures more accessible. I'd love to hear what sparked your curiosity.</p>
           <div className="bg-[#e8dfd2] rounded-xl p-4 space-y-1">
             <div className="text-[10px] font-bold uppercase tracking-widest text-[#b07a3a]">Email me</div>
             <a href="mailto:leduopprem15@gmail.com" className="text-[#1a1208] font-semibold hover:text-[#b07a3a] transition-colors">
@@ -178,7 +178,7 @@ export function Footer() {
           </div>
           <p><strong>Common questions:</strong></p>
           <ul className="list-disc pl-5 space-y-2">
-            <li><strong>Is Voya free?</strong> Yes, always. No subscription. Account creation and sign-in are optional for exploring country guides. Sign in to create and save personalised trip plans.</li>
+            <li><strong>Is Voya free?</strong> Yes, always. Country insights are free, with no subscription. Account creation and sign-in are optional for exploring. Sign in to save your search history or use the optional trip planner.</li>
             <li><strong>How accurate is the information?</strong> Generally reliable, but AI can make mistakes. See the AI Accuracy Notice for details.</li>
             <li><strong>Can I suggest a feature?</strong> Absolutely. Email me with your idea.</li>
             <li><strong>I found incorrect information.</strong> Please report it via email so I can investigate and improve.</li>

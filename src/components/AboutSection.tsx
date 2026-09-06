@@ -3,18 +3,18 @@ import { motion } from 'framer-motion';
 const steps = [
   {
     step: "01",
-    title: "Pick anywhere on Earth",
-    desc: "Type a country name. Any of the 195 countries covered. No filters, no dropdowns, just type.",
+    title: "Start with a country",
+    desc: "Choose somewhere you've always wondered about, or look up a place that's new to you.",
   },
   {
     step: "02",
-    title: "Your full brief, instantly",
-    desc: "Explore culture, food, costs, phrases, and safety without an account. Sign in for a personalised itinerary.",
+    title: "Get to know the place",
+    desc: "Explore its traditions, famous landmarks, local dishes, language, and everyday customs.",
   },
   {
     step: "03",
-    title: "Go. You're ready.",
-    desc: "Download your itinerary, brush up on local phrases, and travel knowing you're properly prepared.",
+    title: "Follow your curiosity",
+    desc: "Find a surprising fact, explore the map, or pick another country. It's free to explore, and sign-in is optional.",
   },
 ];
 
@@ -85,21 +85,21 @@ export function AboutSection() {
               transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
               className="text-2xl sm:text-3xl font-black text-[#1a1208] leading-snug tracking-tight border-l-4 border-[#b07a3a] pl-6"
             >
-              I built this out of a deep love for travel, cultural exploration, and modern technology.
+              I built Voya to explore what gives each country its character.
             </motion.div>
 
             {[
               {
                 label: "Hello.",
-                text: "My name is Prem Paudel. I'm an Information Systems Management student at the University of Akron, and Voya started as a question I kept asking myself: why is it still so hard to plan a trip well, without paying for a subscription?",
+                text: "My name is Prem Paudel. I'm an Information Systems Management student at the University of Akron. I created Voya out of a curiosity about places: the landmarks people recognise, the traditions they grow up with, the food they share, and the everyday details you might otherwise miss.",
               },
               {
-                label: "The problem I noticed.",
-                text: "Today's AI tools are genuinely powerful, but free AI tools fail at travel planning. Why not just use ChatGPT? Because staring at a giant wall of plain text isn't helpful. Without an interactive UI, planning may feel like a job — right until a usage limit cuts you off entirely. Standard AI takes away the inspiration. They leave out destination photos, interactive maps, and perhaps guides to the most Instagrammable spots. They also skip the logistical essentials, offering no guidance on local etiquette, the best months to visit, essential phrases, or realistic budget breakdowns tailored to your style.",
+                label: "What made me curious.",
+                text: "A photo or a place on a map can make you want to know more. I wanted a way to follow that curiosity: learn about a local tradition, find out why a landmark is famous, discover a popular dish, or try a few words in another language. Bringing those details together can make an unfamiliar country feel a little more familiar.",
               },
               {
                 label: "Why I built Voya.",
-                text: "Voya (short for voyage) bridges the gap between technology and authentic travel. Whether you're building a personalised, well-structured travel route or simply exploring the languages and cultures of a country you've always been curious about, Voya gives you the practical insights and context you need to travel with confidence. Explore country guides without an account. Sign in free to save your discoveries and create personalised plans.",
+                text: "Voya brings culture, famous places, local flavours, useful context, and surprising facts into one place. You can explore somewhere you've always wondered about or discover a country that's new to you. My goal is to make learning about the world feel approachable, visual, and worth coming back to. Exploring is free, and signing in is optional.",
               },
             ].map((para, i) => (
               <motion.div

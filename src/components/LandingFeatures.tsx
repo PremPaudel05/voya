@@ -1,15 +1,15 @@
 import { motion } from 'framer-motion';
-import { Map, Utensils, MessageCircle, DollarSign, Calendar, ShieldCheck, Luggage, Sparkles } from 'lucide-react';
+import { Map, Users, Landmark, Utensils, MessageCircle, DollarSign, Calendar, Sparkles } from 'lucide-react';
 
 const features = [
-  { icon: Map,           title: "Geography & Culture",     description: "History, climate, customs, and everything you need before you land.",          num: "01" },
-  { icon: Utensils,      title: "Food & Cuisine",          description: "Must-try dishes, street food gems, dining etiquette, and local flavours.",      num: "02" },
-  { icon: MessageCircle, title: "Local Phrases",           description: "Essential phrases with pronunciation so you can connect like a local.",          num: "03" },
-  { icon: DollarSign,    title: "Travel Costs",            description: "Real budget breakdowns: stay, eat, move, and experience, for every budget.",    num: "04" },
-  { icon: Calendar,      title: "Day-by-Day Itinerary",    description: "A personalised trip plan tuned to your duration, style, and budget.",           num: "05" },
-  { icon: ShieldCheck,   title: "Safety Advice",           description: "Up-to-date safety tips, health info, emergency contacts, and travel warnings.",  num: "06" },
-  { icon: Luggage,       title: "Packing Lists",           description: "Smart packing picks tailored to your destination's climate and culture.",         num: "07" },
-  { icon: Sparkles,      title: "Hidden Gems & Facts",     description: "Surprising stories and off-the-beaten-path finds that make trips unforgettable.", num: "08" },
+  { icon: Users,         title: "Culture & Everyday Life",   description: "Traditions, social customs, and etiquette that offer a window into local life.", num: "01" },
+  { icon: Landmark,      title: "Famous Places & Landmarks", description: "Recognisable sights, historic places, and what makes them worth knowing about.", num: "02" },
+  { icon: Utensils,      title: "Food & Local Flavours",      description: "Popular dishes, local specialities, and the ingredients that make them distinctive.", num: "03" },
+  { icon: MessageCircle, title: "Language & Local Phrases",   description: "Common expressions and pronunciation guides to help you try a few words.", num: "04" },
+  { icon: Map,           title: "Geography & Nature",        description: "Landscapes, climates, major cities, and natural landmarks that shape a country.", num: "05" },
+  { icon: Calendar,      title: "Seasons & Festivals",       description: "Seasonal changes and major celebrations that give each time of year its character.", num: "06" },
+  { icon: DollarSign,    title: "Local Costs & Currency",    description: "Currency information and typical prices for food, coffee, transport, and stays.", num: "07" },
+  { icon: Sparkles,      title: "Surprising Country Facts",  description: "Interesting details to spark a new question or give you something to share.", num: "08" },
 ];
 
 export function LandingFeatures() {
@@ -54,12 +54,12 @@ export function LandingFeatures() {
             <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-[#b07a3a]">What you get</span>
           </div>
           <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-[#1a1208] leading-[1.05] max-w-2xl">
-            Everything a traveller needs,<br />
+            Get to know a country,<br />
             <span style={{
               backgroundImage: 'linear-gradient(135deg, #b07a3a 0%, #d4954a 50%, #c1622c 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-            }}>in one search.</span>
+            }}>one detail at a time.</span>
           </h2>
         </motion.div>
 
