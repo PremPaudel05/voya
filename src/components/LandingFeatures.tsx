@@ -14,11 +14,11 @@ const features = [
 
 export function LandingFeatures() {
   return (
-    <section id="features" className="bg-[#F7F3EE] scroll-mt-8">
+    <section id="features" className="bg-canvas scroll-mt-8">
 
       {/* Divider rule */}
       <div className="max-w-7xl mx-auto px-6">
-        <div className="h-px bg-[#e8dfd2]" />
+        <div className="h-px bg-surface-alt" />
       </div>
 
       {/* Stats row */}
@@ -30,14 +30,14 @@ export function LandingFeatures() {
           { val: "Free", label: "Always & forever" },
         ].map(s => (
           <div key={s.label} className="flex flex-col">
-            <span className="text-4xl font-black text-[#1a1208] tracking-tight">{s.val}</span>
-            <span className="text-xs font-semibold uppercase tracking-[0.15em] text-[#9c8470] mt-1">{s.label}</span>
+            <span className="text-4xl font-black text-ink tracking-tight">{s.val}</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.15em] text-subtle mt-1">{s.label}</span>
           </div>
         ))}
       </div>
 
       <div className="max-w-7xl mx-auto px-6">
-        <div className="h-px bg-[#e8dfd2]" />
+        <div className="h-px bg-surface-alt" />
       </div>
 
       {/* Features */}
@@ -50,10 +50,10 @@ export function LandingFeatures() {
           className="mb-14"
         >
           <div className="flex items-center gap-2.5 mb-4">
-            <div className="h-px w-8 bg-[#b07a3a]" />
-            <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-[#b07a3a]">What you get</span>
+            <div className="h-px w-8 bg-brand" />
+            <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-accent">What you get</span>
           </div>
-          <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-[#1a1208] leading-[1.05] max-w-2xl">
+          <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-ink leading-[1.05] max-w-2xl">
             Get to know a country,<br />
             <span style={{
               backgroundImage: 'linear-gradient(135deg, #b07a3a 0%, #d4954a 50%, #c1622c 100%)',
@@ -75,14 +75,14 @@ export function LandingFeatures() {
               className="group flex items-start gap-6 py-6 cursor-default"
             >
               <span className="text-[11px] font-black tracking-widest text-[#c8b89a] w-6 shrink-0 pt-1">{feat.num}</span>
-              <div className="w-9 h-9 rounded-xl bg-[#1a1208] flex items-center justify-center shrink-0 group-hover:bg-[#b07a3a] transition-colors duration-300">
+              <div className="w-9 h-9 rounded-xl bg-inverse flex items-center justify-center shrink-0 group-hover:bg-brand transition-colors duration-300">
                 <feat.icon size={16} className="text-[#F7F3EE]" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-[#1a1208] mb-1 text-base">{feat.title}</h3>
-                <p className="text-[#7a6650] text-sm leading-relaxed">{feat.description}</p>
+                <h3 className="font-bold text-ink mb-1 text-base">{feat.title}</h3>
+                <p className="text-muted text-sm leading-relaxed">{feat.description}</p>
               </div>
-              <div className="hidden sm:flex items-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-[#b07a3a] text-xs font-semibold gap-1 pt-1 shrink-0">
+              <div className="hidden sm:flex items-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-accent text-xs font-semibold gap-1 pt-1 shrink-0">
                 Try it <span>→</span>
               </div>
             </motion.div>
@@ -91,16 +91,16 @@ export function LandingFeatures() {
       </div>
 
       {/* CTA strip */}
-      <div className="bg-[#F7F3EE]">
+      <div className="bg-canvas">
         <div className="max-w-7xl mx-auto px-6 py-16 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="text-2xl font-black text-[#1a1208] mb-1">Ready to explore?</h3>
-            <p className="text-[#7a6650] text-sm">Free to explore. Sign-in is optional.</p>
+            <h3 className="text-2xl font-black text-ink mb-1">Ready to explore?</h3>
+            <p className="text-muted text-sm">Free to explore. Sign-in is optional.</p>
           </div>
           <a
             href="#top"
             onClick={e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-            className="shrink-0 px-7 py-3.5 rounded-full bg-[#1a1208] text-[#F7F3EE] font-bold text-sm hover:bg-[#b07a3a] transition-colors duration-300 flex items-center gap-2"
+            className="shrink-0 px-7 py-3.5 rounded-full bg-inverse text-[#F7F3EE] font-bold text-sm hover:bg-brand transition-colors duration-300 flex items-center gap-2"
           >
             Start exploring <span>→</span>
           </a>

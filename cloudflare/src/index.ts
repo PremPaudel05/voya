@@ -1,5 +1,5 @@
 import { createRemoteJWKSet, jwtVerify } from 'jose';
-import { ApiError, DAILY_LIMIT, MAX_DAYS, MAX_TOKENS, MODEL, canonicalCountry, parsePlan, promptFor, validateInput, validateSettings } from './planner.ts';
+import { ApiError, DAILY_LIMIT, MAX_DAYS, MAX_TOKENS, MODEL, canonicalCountry, parsePlan, promptFor, storedSettings, validateInput, validateSettings } from './planner.ts';
 import type { Settings } from './planner.ts';
 import { ipKey } from './ip.ts';
 
@@ -69,11 +69,11 @@ async function authenticated(request: Request, env: Env): Promise<User> {
 }
 async function usage(env: Env, user: User) {
   const now = seconds();
-  const row = await env.DB.prepare('SELECT count(*) AS used, max(created_at) AS last FROM plan_jobs WHERE user_id=? AND day_start=?').bind(user.id, dayStart(now)).first<{ used: number; last: number | null }>();
+  const row = await env.DB.prepare('SELECT count(*) AS used, max(created_at) AS last FROM plan_usage WHERE user_id=? AND day_start=?').bind(user.id, dayStart(now)).first<{ used: number; last: number | null }>();
   return { limit: DAILY_LIMIT, used: row?.used ?? 0, remaining: Math.max(0, DAILY_LIMIT - (row?.used ?? 0)), resetsAt: (dayStart(now) + 86400) * 1000, cooldownUntil: ((row?.last ?? 0) + 60) * 1000 };
 }
 async function account(env: Env, user: User) {
-  return { user: { name: user.name, email: user.email }, settings: JSON.parse(user.settings), usage: await usage(env, user) };
+  return { user: { name: user.name, email: user.email }, settings: storedSettings(user.settings), usage: await usage(env, user) };
 }
 function quotaError(error: unknown) {
   const message = String(error);
@@ -109,9 +109,11 @@ async function generate(request: Request, env: Env, user: User, ip: string) {
     // multiply usage. Account-level Free-plan exhaustion remains a hard stop.
     const result = await env.AI.run(MODEL, { messages: [{ role: 'system', content: 'You create concise travel itineraries as valid JSON.' }, { role: 'user', content: prompt }], max_tokens: MAX_TOKENS, temperature: 0.5, response_format: { type: 'json_object' } });
     const plan = parsePlan(result.response, input.days);
-    await env.DB.prepare("UPDATE plan_jobs SET status='complete',result=? WHERE id=?").bind(JSON.stringify(plan), id).run();
+    const saved = await env.DB.prepare("UPDATE plan_jobs SET status='complete',result=? WHERE id=? RETURNING id").bind(JSON.stringify(plan), id).first();
+    if (!saved) throw new ApiError(401, 'ACCOUNT_DELETED', 'This account is no longer available.');
     return json({ plan, saved: false, usage: await usage(env, user) });
   } catch (error) {
+    if (error instanceof ApiError) throw error;
     await env.DB.prepare("UPDATE plan_jobs SET status='failed' WHERE id=?").bind(id).run();
     console.warn(JSON.stringify({ event: 'plan_failed', requestId: id, category: String(error).includes('limit') ? 'provider_limit' : 'generation_failed' }));
     throw new ApiError(503, 'GENERATION_FAILED', 'The planner could not complete this attempt. It counts toward today’s allowance. Please check Saved plans before trying again.', 60);
@@ -128,7 +130,7 @@ export async function handle(request: Request, env: Env): Promise<Response> {
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: { ...headers, 'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,Authorization', 'Access-Control-Max-Age': '600' } });
   try {
     const url = new URL(request.url); const path = url.pathname;
-    if (path === '/config' && request.method === 'GET') return json({ googleClientId: env.GOOGLE_CLIENT_ID, turnstileSiteKey: env.TURNSTILE_SITE_KEY, ready: Boolean(env.GOOGLE_CLIENT_ID && env.TURNSTILE_SITE_KEY && env.TURNSTILE_SECRET_KEY && env.IP_HASH_SECRET), dailyLimit: DAILY_LIMIT, maxDays: MAX_DAYS }, 200, headers);
+    if (path === '/config' && request.method === 'GET') return json({ googleClientId: env.GOOGLE_CLIENT_ID, turnstileSiteKey: env.TURNSTILE_SITE_KEY, ready: Boolean(env.GOOGLE_CLIENT_ID && env.TURNSTILE_SITE_KEY && env.TURNSTILE_SECRET_KEY && env.IP_HASH_SECRET), dailyLimit: DAILY_LIMIT, maxDays: MAX_DAYS, settingsVersion: 2 }, 200, headers);
     const ip = await ipHash(request, env);
     await throttle(env, `api:${ip}`, 120);
     let response: Response;
@@ -164,8 +166,21 @@ export async function handle(request: Request, env: Env): Promise<Response> {
       else if (path === '/auth/logout' && request.method === 'POST') {
         await env.DB.prepare('DELETE FROM sessions WHERE token_hash=?').bind(await digest(request.headers.get('Authorization')!.slice(7))).run();
         response = json({ ok: true });
+      } else if (path === '/account' && request.method === 'DELETE') {
+        const body = await bodyOf(request);
+        if (body.confirmation !== 'DELETE' || typeof body.email !== 'string' || body.email.trim().toLowerCase() !== user.email.toLowerCase()) {
+          throw new ApiError(400, 'CONFIRM_DELETION', 'Enter your account email and type DELETE to confirm.');
+        }
+        await env.DB.batch([
+          env.DB.prepare("UPDATE plan_usage SET status='failed' WHERE user_id=? AND status='pending'").bind(user.id),
+          env.DB.prepare('DELETE FROM sessions WHERE user_id=?').bind(user.id),
+          env.DB.prepare('DELETE FROM search_history WHERE user_id=?').bind(user.id),
+          env.DB.prepare('DELETE FROM plan_jobs WHERE user_id=?').bind(user.id),
+          env.DB.prepare('DELETE FROM users WHERE id=?').bind(user.id),
+        ]);
+        response = json({ ok: true });
       } else if (path === '/settings' && request.method === 'PUT') {
-        const settings = validateSettings(await bodyOf(request));
+        const settings = validateSettings(await bodyOf(request), storedSettings(user.settings));
         await env.DB.prepare('UPDATE users SET settings=? WHERE id=?').bind(JSON.stringify(settings), user.id).run();
         response = json({ settings });
       } else if (path === '/history' && request.method === 'GET') {
@@ -211,6 +226,7 @@ export default {
     const now = seconds();
     await env.DB.batch([
       env.DB.prepare('DELETE FROM request_limits WHERE expires_at<?').bind(now),
+      env.DB.prepare('DELETE FROM plan_usage WHERE day_start<?').bind(dayStart(now)),
       env.DB.prepare('DELETE FROM login_nonces WHERE expires_at<?').bind(now),
       env.DB.prepare('DELETE FROM sessions WHERE expires_at<?').bind(now),
       env.DB.prepare('DELETE FROM plan_jobs WHERE created_at<?').bind(now - 30 * 86400),

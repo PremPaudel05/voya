@@ -1,11 +1,13 @@
 export const ACCOUNT_API = import.meta.env.VITE_ACCOUNT_API_URL || 'https://voya-account-api.voya-prempaudel05.workers.dev';
-export interface Preferences { budget: string; traveler: string; days: number; styles: string[]; saveHistory: boolean }
+import { DEFAULT_INTERFACE } from '../../shared/preferences';
+import type { InterfacePreferences } from '../../shared/preferences';
+export interface Preferences extends InterfacePreferences { budget: string; traveler: string; days: number; styles: string[]; saveHistory: boolean }
 export interface Usage { limit: number; used: number; remaining: number; resetsAt: number; cooldownUntil: number }
 export interface Account { user: { name: string; email: string }; settings: Preferences; usage: Usage }
-export interface AccountConfig { ready: boolean; googleClientId: string; turnstileSiteKey: string }
+export interface AccountConfig { ready: boolean; googleClientId: string; turnstileSiteKey: string; settingsVersion?: number }
 export interface PlanDay { day: number; title: string; morning: string; afternoon: string; evening: string; tip: string; estimatedCost: string }
 export interface TravelPlan { intro: string; days: PlanDay[]; packingEssentials: string[]; budgetSummary: string; bestAdvice: string }
-export const DEFAULT_PREFERENCES: Preferences = { budget: 'midrange', traveler: 'couple', days: 7, styles: ['culture'], saveHistory: true };
+export const DEFAULT_PREFERENCES: Preferences = { budget: 'midrange', traveler: 'couple', days: 7, styles: ['culture'], saveHistory: true, ...DEFAULT_INTERFACE };
 const TOKEN_KEY = 'voya-session';
 export function sessionToken() { try { return localStorage.getItem(TOKEN_KEY); } catch { return null; } }
 export function storeSession(token: string | null) { if (token) localStorage.setItem(TOKEN_KEY, token); else localStorage.removeItem(TOKEN_KEY); }

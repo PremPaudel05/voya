@@ -5,6 +5,7 @@ import { WorldMap } from './ui/map';
 import { ShareButton } from './ShareButton';
 import { AccountLink } from './AccountLink';
 import { TextEffect } from './ui/text-effect';
+import { usePreferences } from '../preferences/PreferencesContext';
 
 interface HeroProps {
   onSearch: (country: string) => void;
@@ -49,6 +50,7 @@ const placeholderCountries = [
 const discoveryWords = ["explore", "discover"];
 
 export function Hero({ onSearch, isLoading }: HeroProps) {
+  const { t } = usePreferences();
   const [query, setQuery] = useState('');
   const [factIndex, setFactIndex] = useState(0);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
@@ -80,7 +82,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
   };
 
   return (
-    <div className="relative bg-[#F7F3EE] text-[#1a1208] min-h-screen flex flex-col overflow-hidden">
+    <div className="relative bg-canvas text-ink min-h-screen flex flex-col overflow-hidden">
 
       {/* Subtle grain texture overlay */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.025]"
@@ -99,14 +101,14 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
         style={{ background: 'radial-gradient(circle, rgba(185,90,60,0.12) 0%, transparent 70%)' }} />
 
       {/* Top nav strip */}
-      <div className="sticky top-0 z-50 bg-[#F7F3EE]/95 backdrop-blur border-b border-[#e8dfd2] w-full">
+      <div className="sticky top-0 z-50 bg-canvas/95 backdrop-blur border-b border-line w-full">
       <div className="w-full max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-xl font-black tracking-tight text-[#1a1208]">Voya</span>
-          <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#b07a3a] bg-[#b07a3a]/10 px-2 py-0.5 rounded-full">World</span>
+          <span className="text-xl font-black tracking-tight text-ink">Voya</span>
+          <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-accent bg-brand/10 px-2 py-0.5 rounded-full">World</span>
         </div>
-        <div className="flex items-center gap-2 sm:gap-5 text-sm font-medium text-[#6b5740]">
-          <button onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-[#1a1208] transition-colors text-xs sm:text-sm">About</button>
+        <div className="flex items-center gap-2 sm:gap-5 text-sm font-medium text-muted">
+          <button onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-ink transition-colors text-xs sm:text-sm">{t('About')}</button>
           <ShareButton countryName="Voya" />
           <AccountLink />
           <button
@@ -114,10 +116,9 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
               inputRef.current?.focus();
               inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }}
-            className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-[#1a1208] text-[#F7F3EE] text-xs font-semibold hover:bg-[#2d1f0e] transition-colors whitespace-nowrap"
+            className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-inverse text-[#F7F3EE] text-xs font-semibold hover:bg-[#2d1f0e] transition-colors whitespace-nowrap"
           >
-            <span className="hidden sm:inline">Start exploring →</span>
-            <span className="sm:hidden">Explore →</span>
+            <span>{t('Explore')} →</span>
           </button>
         </div>
       </div>
@@ -136,8 +137,8 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
           >
             {/* Eyebrow */}
             <div className="flex items-center gap-2.5 mb-7">
-              <div className="h-px w-8 bg-[#b07a3a]" />
-              <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-[#b07a3a]">
+              <div className="h-px w-8 bg-brand" />
+              <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-accent">
                 Country insights & culture
               </span>
             </div>
@@ -170,15 +171,15 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
               </span>
             </h1>
 
-            <p className="text-[#6b5740] text-lg leading-relaxed mb-9 max-w-[480px]">
+            <p className="text-muted text-lg leading-relaxed mb-9 max-w-[480px]">
               Get to know a country through its culture, famous places, food, language, and the everyday details that make it distinctive.
             </p>
 
             {/* Search */}
             <form onSubmit={handleSubmit} className="w-full max-w-lg mb-5">
-              <div className="flex items-center gap-0 bg-white border border-[#ddd4c4] rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.07)] overflow-hidden transition-shadow focus-within:shadow-[0_4px_32px_rgba(176,122,58,0.18)] focus-within:border-[#b07a3a]/50">
+              <div className="flex items-center gap-0 bg-surface border border-line rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.07)] overflow-hidden transition-shadow focus-within:shadow-[0_4px_32px_rgba(176,122,58,0.18)] focus-within:border-accent/50">
                 <div className="flex items-center gap-3 flex-1 px-4 h-[54px]">
-                  <Search size={16} className="text-[#b07a3a] shrink-0" />
+                  <Search size={16} className="text-accent shrink-0" />
                   <div className="relative flex-1 h-full flex items-center overflow-hidden">
                     {!query && (
                       <div className="absolute inset-0 flex items-center pointer-events-none overflow-hidden">
@@ -195,7 +196,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                               per="char"
                               preset="blur"
                               delay={placeholderCountries[placeholderIndex].prefix.length * 0.03}
-                              className="text-[#b07a3a]/80 text-sm font-semibold whitespace-nowrap"
+                              className="text-accent/80 text-sm font-semibold whitespace-nowrap"
                             >
                               {placeholderCountries[placeholderIndex].country + '?'}
                             </TextEffect>
@@ -206,9 +207,10 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                     <input
                       ref={inputRef}
                       type="text"
+                      aria-label={t('Explore a country')}
                       value={query}
                       onChange={e => setQuery(e.target.value)}
-                      className="relative z-10 w-full h-full bg-transparent text-[#1a1208] text-sm font-medium focus:outline-none"
+                      className="relative z-10 w-full h-full bg-transparent text-ink text-sm font-medium focus:outline-none"
                       disabled={isLoading}
                       autoComplete="off"
                     />
@@ -217,11 +219,11 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                 <button
                   type="submit"
                   disabled={isLoading || !query.trim()}
-                  className="shrink-0 h-[54px] px-6 bg-[#1a1208] hover:bg-[#2d1f0e] text-[#F7F3EE] font-semibold text-sm flex items-center gap-2 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="shrink-0 h-[54px] px-6 bg-inverse hover:bg-[#2d1f0e] text-[#F7F3EE] font-semibold text-sm flex items-center gap-2 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   {isLoading
                     ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    : <><span>Explore</span><ArrowRight size={14} /></>
+                    : <><span>{t('Explore')}</span><ArrowRight size={14} /></>
                   }
                 </button>
               </div>
@@ -234,7 +236,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                   key={dest.name}
                   onClick={() => { setQuery(dest.name); onSearch(dest.name); }}
                   disabled={isLoading}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white border border-[#e8dfd2] text-[#6b5740] hover:bg-[#1a1208] hover:text-[#F7F3EE] hover:border-[#1a1208] transition-all duration-200 shadow-sm disabled:opacity-40"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-surface border border-line text-muted hover:bg-inverse hover:text-[#F7F3EE] hover:border-[#1a1208] transition-all duration-200 shadow-sm disabled:opacity-40"
                 >
                   <img src={`https://flagcdn.com/w20/${dest.code}.png`} alt={dest.name} className="w-4 h-3 object-cover rounded-sm shrink-0" />
                   {dest.name}
@@ -243,20 +245,20 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
             </div>
 
             {/* Social proof strip */}
-            <div className="flex items-center gap-5 border-t border-[#e8dfd2] pt-6">
+            <div className="flex items-center gap-5 border-t border-line pt-6">
               <div className="text-center">
-                <div className="text-2xl font-black text-[#1a1208]">195+</div>
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-[#9c8470]">Countries</div>
+                <div className="text-2xl font-black text-ink">195+</div>
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-subtle">Countries</div>
               </div>
-              <div className="w-px h-8 bg-[#e8dfd2]" />
+              <div className="w-px h-8 bg-surface-alt" />
               <div className="text-center">
-                <div className="text-2xl font-black text-[#1a1208]">8</div>
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-[#9c8470]">Insight types</div>
+                <div className="text-2xl font-black text-ink">8</div>
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-subtle">Insight types</div>
               </div>
-              <div className="w-px h-8 bg-[#e8dfd2]" />
+              <div className="w-px h-8 bg-surface-alt" />
               <div className="text-center">
-                <div className="text-2xl font-black text-[#1a1208]">Free</div>
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-[#9c8470]">Always</div>
+                <div className="text-2xl font-black text-ink">Free</div>
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-subtle">Always</div>
               </div>
             </div>
 
@@ -269,16 +271,16 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                   exit={{ opacity: 0, y: 10, height: 0 }}
                   className="mt-5 overflow-hidden"
                 >
-                  <div className="bg-[#b07a3a]/10 border border-[#b07a3a]/25 rounded-2xl p-4 flex items-start gap-3">
-                    <Lightbulb className="w-4 h-4 text-[#b07a3a] shrink-0 mt-0.5" />
+                  <div className="bg-brand/10 border border-accent/25 rounded-2xl p-4 flex items-start gap-3">
+                    <Lightbulb className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                     <div className="flex-1">
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-[#b07a3a] mb-1">Did you know?</div>
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-accent mb-1">Did you know?</div>
                       <div className="relative h-10">
                         <AnimatePresence mode="wait">
                           <motion.p key={factIndex}
                             initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
                             transition={{ duration: 0.3 }}
-                            className="absolute inset-0 text-[#6b5740] text-sm line-clamp-2"
+                            className="absolute inset-0 text-muted text-sm line-clamp-2"
                           >
                             <span className="mr-1.5" style={{ fontFamily: '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Twemoji Mozilla",sans-serif' }}>{funFacts[factIndex].flag}</span>
                             {funFacts[factIndex].fact}
@@ -301,8 +303,8 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
           >
             {/* Subtle top label */}
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#b07a3a] animate-pulse" />
-              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#b07a3a]">Live routes</span>
+              <div className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-accent">Live routes</span>
             </div>
             <div className="lg:max-h-none max-h-[260px] overflow-hidden">
               <WorldMap

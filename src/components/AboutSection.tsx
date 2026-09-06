@@ -22,9 +22,9 @@ export function AboutSection() {
   return (
     <>
       {/* ── Story Section ── */}
-      <section id="about" className="bg-[#F7F3EE] overflow-hidden scroll-mt-8">
+      <section id="about" className="bg-canvas overflow-hidden scroll-mt-8">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="h-px bg-[#e8dfd2]" />
+          <div className="h-px bg-surface-alt" />
         </div>
 
         <div className="max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 lg:grid-cols-[1fr_1.5fr] gap-16 items-start">
@@ -38,25 +38,25 @@ export function AboutSection() {
             className="lg:sticky lg:top-24 flex flex-col gap-5"
           >
             <div className="flex items-center gap-2.5">
-              <div className="h-px w-8 bg-[#b07a3a]" />
-              <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-[#b07a3a]">The story</span>
+              <div className="h-px w-8 bg-brand" />
+              <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-accent">The story</span>
             </div>
 
-            <div className="w-16 h-16 rounded-2xl bg-[#1a1208] flex items-center justify-center">
-              <span className="text-xl font-black text-[#b07a3a]">PP</span>
+            <div className="w-16 h-16 rounded-2xl bg-inverse flex items-center justify-center">
+              <span className="text-xl font-black text-accent">PP</span>
             </div>
 
             <div>
-              <h2 className="text-2xl font-black text-[#1a1208] tracking-tight leading-tight mb-1">Prem Paudel</h2>
-              <p className="text-sm text-[#9c8470] font-medium leading-relaxed">
+              <h2 className="text-2xl font-black text-ink tracking-tight leading-tight mb-1">Prem Paudel</h2>
+              <p className="text-sm text-subtle font-medium leading-relaxed">
                 Information Systems Management<br />
                 University of Akron
               </p>
             </div>
 
             {/* How it works — nested in sticky left panel on desktop */}
-            <div className="mt-4 flex flex-col gap-6 border-t border-[#e8dfd2] pt-6">
-              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#b07a3a]">How it works</span>
+            <div className="mt-4 flex flex-col gap-6 border-t border-line pt-6">
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-accent">How it works</span>
               {steps.map((s, i) => (
                 <motion.div
                   key={s.step}
@@ -66,10 +66,10 @@ export function AboutSection() {
                   transition={{ duration: 0.5, delay: i * 0.15, ease: [0.22, 1, 0.36, 1] }}
                   className="flex gap-4 items-start"
                 >
-                  <span className="text-2xl font-black text-[#b07a3a]/25 leading-none shrink-0 w-8">{s.step}</span>
+                  <span className="text-2xl font-black text-accent/25 leading-none shrink-0 w-8">{s.step}</span>
                   <div>
-                    <div className="font-bold text-[#1a1208] text-sm mb-0.5">{s.title}</div>
-                    <div className="text-xs text-[#9c8470] leading-relaxed">{s.desc}</div>
+                    <div className="font-bold text-ink text-sm mb-0.5">{s.title}</div>
+                    <div className="text-xs text-subtle leading-relaxed">{s.desc}</div>
                   </div>
                 </motion.div>
               ))}
@@ -83,7 +83,7 @@ export function AboutSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-              className="text-2xl sm:text-3xl font-black text-[#1a1208] leading-snug tracking-tight border-l-4 border-[#b07a3a] pl-6"
+              className="text-2xl sm:text-3xl font-black text-ink leading-snug tracking-tight border-l-4 border-accent pl-6"
             >
               I built Voya to explore what gives each country its character.
             </motion.div>
@@ -110,8 +110,8 @@ export function AboutSection() {
                 transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
                 className="flex flex-col gap-2"
               >
-                <span className="text-[11px] font-bold tracking-[0.18em] uppercase text-[#b07a3a]">{para.label}</span>
-                <p className="text-[#4a3828] text-base leading-relaxed">{para.text}</p>
+                <span className="text-[11px] font-bold tracking-[0.18em] uppercase text-accent">{para.label}</span>
+                <p className="text-muted text-base leading-relaxed">{para.text}</p>
               </motion.div>
             ))}
 
@@ -121,13 +121,13 @@ export function AboutSection() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex items-center gap-4 pt-5 border-t border-[#e8dfd2]"
+              className="flex items-center gap-4 pt-5 border-t border-line"
             >
               <div className="flex flex-col">
-                <span className="font-black text-[#1a1208] text-sm">Prem Paudel</span>
-                <span className="text-xs text-[#9c8470]">Founder · Voya</span>
+                <span className="font-black text-ink text-sm">Prem Paudel</span>
+                <span className="text-xs text-subtle">Founder · Voya</span>
               </div>
-              <div className="flex-1 h-px bg-[#e8dfd2]" />
+              <div className="flex-1 h-px bg-surface-alt" />
               <div className="flex items-center gap-4">
               </div>
             </motion.div>

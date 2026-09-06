@@ -6,6 +6,7 @@ import jsPDF from 'jspdf';
 import { useNavigate } from 'react-router-dom';
 import { useAccount } from '../account/AccountContext';
 import { AccountError, accountRequest } from '../services/accountService';
+import { usePreferences } from '../preferences/PreferencesContext';
 import { SecurityCheck } from './SecurityCheck';
 
 interface TripPlannerModalProps {
@@ -55,6 +56,7 @@ interface GeneratedPlan {
 export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
   const navigate = useNavigate();
   const { account, config, refresh } = useAccount();
+  const { notify } = usePreferences();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<'form' | 'generating' | 'result'>('form');
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
@@ -120,6 +122,7 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
       const parsed = result.plan;
       if (!parsed.days?.length) throw new Error('Invalid response from AI');
       setPlan(parsed);
+      notify({ type: 'plan', country: countryName });
       setSavedResult(result.saved);
       requestRef.current = null;
       setStep('result');
@@ -336,11 +339,11 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
                       style={{ background: 'rgba(176,122,58,0.2)', border: '1px solid rgba(176,122,58,0.3)' }}>
-                      <Sparkles size={16} className="text-[#b07a3a]" />
+                      <Sparkles size={16} className="text-accent" />
                     </div>
                     <div>
                       <h2 className="text-white font-black text-base tracking-tight">Plan My Trip</h2>
-                      <p className="text-[#9c8470] text-xs mt-0.5">{countryName} — AI-generated itinerary</p>
+                      <p className="text-subtle text-xs mt-0.5">{countryName} — AI-generated itinerary</p>
                     </div>
                   </div>
                   <button
@@ -362,9 +365,9 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                         <div className="flex items-center gap-1.5">
                           <div className="w-5 h-5 rounded-full text-[9px] font-black flex items-center justify-center"
                             style={{ background: '#1a1208', color: '#b07a3a' }}>{i + 1}</div>
-                          <span className="text-[9px] font-semibold text-[#9c8470] uppercase tracking-wide hidden sm:block">{label}</span>
+                          <span className="text-[9px] font-semibold text-subtle uppercase tracking-wide hidden sm:block">{label}</span>
                         </div>
-                        {i < 3 && <div className="flex-1 h-px bg-[#e8dfd2]" />}
+                        {i < 3 && <div className="flex-1 h-px bg-surface-alt" />}
                       </div>
                     ))}
                   </div>
@@ -376,16 +379,16 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                   {/* ── FORM ── */}
                   {step === 'form' && (
                     <div className="px-6 py-5 space-y-6">
-                      <div className="rounded-xl bg-white border border-[#e8dfd2] p-3 text-xs text-[#6b5740]">
+                      <div className="rounded-xl bg-surface border border-line p-3 text-xs text-muted">
                         {account ? `${account.usage.remaining} of ${account.usage.limit} daily attempts remaining. Resets ${new Date(account.usage.resetsAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}.` : 'Sign in to create up to 3 plans daily and save your itineraries.'}
                         <p className="mt-1">Wait 60 seconds between new plans. Failed attempts count; saved results can be reused.</p>
                       </div>
 
                       {/* Travel style */}
                       <div>
-                        <label className="flex items-center gap-2 text-[10px] font-black text-[#9c8470] uppercase tracking-widest mb-3">
-                          <Heart size={11} className="text-[#b07a3a]" /> Travel Style
-                          <span className="text-[#b07a3a] font-semibold normal-case tracking-normal">· pick multiple</span>
+                        <label className="flex items-center gap-2 text-[10px] font-black text-subtle uppercase tracking-widest mb-3">
+                          <Heart size={11} className="text-accent" /> Travel Style
+                          <span className="text-accent font-semibold normal-case tracking-normal">· pick multiple</span>
                         </label>
                         <div className="grid grid-cols-3 gap-2">
                           {STYLE_OPTIONS.map(opt => {
@@ -409,8 +412,8 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
 
                       {/* Who's traveling */}
                       <div>
-                        <label className="flex items-center gap-2 text-[10px] font-black text-[#9c8470] uppercase tracking-widest mb-3">
-                          <Users size={11} className="text-[#b07a3a]" /> Who's Traveling?
+                        <label className="flex items-center gap-2 text-[10px] font-black text-subtle uppercase tracking-widest mb-3">
+                          <Users size={11} className="text-accent" /> Who's Traveling?
                         </label>
                         <div className="grid grid-cols-4 gap-2">
                           {TRAVELER_OPTIONS.map(opt => (
@@ -433,23 +436,23 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                       <div className="grid grid-cols-2 gap-4">
                         {/* Days */}
                         <div>
-                          <label className="flex items-center gap-2 text-[10px] font-black text-[#9c8470] uppercase tracking-widest mb-3">
-                            <Calendar size={11} className="text-[#b07a3a]" /> Duration
+                          <label className="flex items-center gap-2 text-[10px] font-black text-subtle uppercase tracking-widest mb-3">
+                            <Calendar size={11} className="text-accent" /> Duration
                           </label>
-                          <div className="flex items-center gap-2 bg-white border border-[#e8dfd2] rounded-xl px-3 py-2.5">
+                          <div className="flex items-center gap-2 bg-surface border border-line rounded-xl px-3 py-2.5">
                             <button onClick={() => setDays(d => Math.max(1, d - 1))}
-                              className="w-7 h-7 rounded-lg bg-[#f5f0e8] hover:bg-[#1a1208] hover:text-white text-[#1a1208] font-bold text-base transition-all flex items-center justify-center">−</button>
-                            <span className="text-xl font-black text-[#1a1208] flex-1 text-center">{days}</span>
+                              className="w-7 h-7 rounded-lg bg-surface-alt hover:bg-inverse hover:text-white text-ink font-bold text-base transition-all flex items-center justify-center">−</button>
+                            <span className="text-xl font-black text-ink flex-1 text-center">{days}</span>
                             <button onClick={() => setDays(d => Math.min(7, d + 1))}
-                              className="w-7 h-7 rounded-lg bg-[#f5f0e8] hover:bg-[#1a1208] hover:text-white text-[#1a1208] font-bold text-base transition-all flex items-center justify-center">+</button>
+                              className="w-7 h-7 rounded-lg bg-surface-alt hover:bg-inverse hover:text-white text-ink font-bold text-base transition-all flex items-center justify-center">+</button>
                           </div>
-                          <p className="text-[9px] text-[#9c8470] text-center mt-1.5">days (max 7)</p>
+                          <p className="text-[9px] text-subtle text-center mt-1.5">days (max 7)</p>
                         </div>
 
                         {/* Budget */}
                         <div>
-                          <label className="flex items-center gap-2 text-[10px] font-black text-[#9c8470] uppercase tracking-widest mb-3">
-                            <Wallet size={11} className="text-[#b07a3a]" /> Budget
+                          <label className="flex items-center gap-2 text-[10px] font-black text-subtle uppercase tracking-widest mb-3">
+                            <Wallet size={11} className="text-accent" /> Budget
                           </label>
                           <div className="flex flex-col gap-1.5">
                             {BUDGET_OPTIONS.map(opt => (
@@ -470,8 +473,8 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
 
                       {/* Notes */}
                       <div>
-                        <label className="flex items-center gap-2 text-[10px] font-black text-[#9c8470] uppercase tracking-widest mb-3">
-                          <MapPin size={11} className="text-[#b07a3a]" /> Special Requests
+                        <label className="flex items-center gap-2 text-[10px] font-black text-subtle uppercase tracking-widest mb-3">
+                          <MapPin size={11} className="text-accent" /> Special Requests
                           <span className="font-normal normal-case tracking-normal text-[#c8b89a]">· optional</span>
                         </label>
                         <textarea
@@ -480,12 +483,12 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                           onChange={e => setNotes(e.target.value)}
                           placeholder="e.g. We love hiking, avoid crowded tourist spots, interested in local markets..."
                           rows={3}
-                          className="w-full px-4 py-3 bg-white border border-[#e8dfd2] rounded-xl text-sm text-[#1a1208] placeholder-[#c8b89a] focus:outline-none focus:border-[#b07a3a]/60 resize-none transition-colors"
+                          className="w-full px-4 py-3 bg-surface border border-line rounded-xl text-sm text-ink placeholder-[#c8b89a] focus:outline-none focus:border-accent/60 resize-none transition-colors"
                         />
                       </div>
 
                       {account && config?.ready && <SecurityCheck key={botAttempt} siteKey={config.turnstileSiteKey} action="plan" onToken={setBotToken} />}
-                      {account && !config?.ready && <p className="text-xs text-[#9c8470]">Trip planning is temporarily unavailable. Please try again shortly.</p>}
+                      {account && !config?.ready && <p className="text-xs text-subtle">Trip planning is temporarily unavailable. Please try again shortly.</p>}
                       {error && (
                         <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
                           <p className="text-red-600 text-xs font-medium">{error}</p>
@@ -500,19 +503,19 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                       <div className="relative">
                         <div className="w-20 h-20 rounded-2xl flex items-center justify-center"
                           style={{ background: 'rgba(176,122,58,0.1)', border: '1px solid rgba(176,122,58,0.2)' }}>
-                          <Loader2 size={32} className="text-[#b07a3a] animate-spin" />
+                          <Loader2 size={32} className="text-accent animate-spin" />
                         </div>
-                        <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#b07a3a] flex items-center justify-center">
+                        <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-brand flex items-center justify-center">
                           <Sparkles size={10} className="text-white" />
                         </div>
                       </div>
                       <div className="text-center">
-                        <p className="font-black text-[#1a1208] text-lg">Crafting your itinerary…</p>
-                        <p className="text-[#9c8470] text-sm mt-1.5">Building a personalised {days}-day plan for {countryName}</p>
+                        <p className="font-black text-ink text-lg">Crafting your itinerary…</p>
+                        <p className="text-subtle text-sm mt-1.5">Building a personalised {days}-day plan for {countryName}</p>
                       </div>
                       <div className="flex gap-2 mt-1">
                         {[0, 1, 2, 3].map(i => (
-                          <motion.div key={i} className="w-1.5 h-1.5 rounded-full bg-[#b07a3a]"
+                          <motion.div key={i} className="w-1.5 h-1.5 rounded-full bg-brand"
                             animate={{ opacity: [0.2, 1, 0.2], scale: [0.8, 1.2, 0.8] }}
                             transition={{ duration: 1.4, repeat: Infinity, delay: i * 0.18 }} />
                         ))}
@@ -523,12 +526,12 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                   {/* ── RESULT ── */}
                   {step === 'result' && plan && (
                     <div className="px-6 py-5 space-y-4">
-                      <p role="status" className="text-xs text-[#6b5740]">{savedResult ? 'Loaded your saved result without another AI call.' : 'Saved to your account for 30 days.'} Costs and opening hours should be checked before travel.</p>
+                      <p role="status" className="text-xs text-muted">{savedResult ? 'Loaded your saved result without another AI call.' : 'Saved to your account for 30 days.'} Costs and opening hours should be checked before travel.</p>
                       {/* Intro */}
                       <div className="rounded-2xl p-4 relative overflow-hidden"
                         style={{ background: 'linear-gradient(135deg, rgba(176,122,58,0.08) 0%, rgba(176,122,58,0.03) 100%)', border: '1px solid rgba(176,122,58,0.2)' }}>
                         <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl" style={{ background: '#b07a3a' }} />
-                        <p className="text-sm text-[#4a3828] leading-relaxed italic pl-2">{plan.intro}</p>
+                        <p className="text-sm text-muted leading-relaxed italic pl-2">{plan.intro}</p>
                       </div>
 
                       {/* Day cards */}
@@ -546,10 +549,10 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                                   {d.day}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <p className="font-bold text-[#1a1208] text-sm truncate">{d.title}</p>
-                                  <p className="text-[10px] text-[#9c8470] mt-0.5">{d.estimatedCost}</p>
+                                  <p className="font-bold text-ink text-sm truncate">{d.title}</p>
+                                  <p className="text-[10px] text-subtle mt-0.5">{d.estimatedCost}</p>
                                 </div>
-                                <ChevronDown size={15} className="text-[#9c8470] shrink-0 transition-transform duration-200"
+                                <ChevronDown size={15} className="text-subtle shrink-0 transition-transform duration-200"
                                   style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }} />
                               </button>
 
@@ -568,13 +571,13 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                                         { label: '🌙 Evening',   text: d.evening,   bg: '#f5f0e8' },
                                       ].map(block => (
                                         <div key={block.label} className="rounded-xl p-3" style={{ background: block.bg }}>
-                                          <p className="text-[10px] font-black text-[#b07a3a] uppercase tracking-wider mb-1.5">{block.label}</p>
-                                          <p className="text-sm text-[#4a3828] leading-relaxed">{block.text}</p>
+                                          <p className="text-[10px] font-black text-accent uppercase tracking-wider mb-1.5">{block.label}</p>
+                                          <p className="text-sm text-muted leading-relaxed">{block.text}</p>
                                         </div>
                                       ))}
                                       <div className="flex gap-2.5 rounded-xl px-3 py-2.5" style={{ background: '#fdf6ec', border: '1px solid rgba(176,122,58,0.2)' }}>
-                                        <span className="text-[10px] font-black text-[#b07a3a] shrink-0 mt-0.5">TIP</span>
-                                        <span className="text-xs text-[#6b5740] leading-relaxed">{d.tip}</span>
+                                        <span className="text-[10px] font-black text-accent shrink-0 mt-0.5">TIP</span>
+                                        <span className="text-xs text-muted leading-relaxed">{d.tip}</span>
                                       </div>
                                     </div>
                                   </motion.div>
@@ -587,17 +590,17 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
 
                       {/* Best advice */}
                       <div className="rounded-2xl p-4" style={{ background: 'linear-gradient(135deg, #1a1208 0%, #2d1f0e 100%)' }}>
-                        <p className="text-[10px] font-black text-[#b07a3a] uppercase tracking-widest mb-2">Best Advice</p>
+                        <p className="text-[10px] font-black text-accent uppercase tracking-widest mb-2">Best Advice</p>
                         <p className="text-sm text-[#c8b89a] leading-relaxed">{plan.bestAdvice}</p>
                       </div>
 
                       {/* Packing */}
                       <div className="rounded-2xl p-4" style={{ background: '#fff', border: '1.5px solid #e8dfd2' }}>
-                        <p className="text-[10px] font-black text-[#9c8470] uppercase tracking-widest mb-3">Packing Essentials</p>
+                        <p className="text-[10px] font-black text-subtle uppercase tracking-widest mb-3">Packing Essentials</p>
                         <div className="grid grid-cols-2 gap-1.5">
                           {plan.packingEssentials.map(item => (
-                            <div key={item} className="flex items-center gap-2 text-xs text-[#4a3828]">
-                              <span className="w-4 h-4 rounded-full bg-[#b07a3a]/10 text-[#b07a3a] flex items-center justify-center text-[8px] font-black shrink-0">✓</span>
+                            <div key={item} className="flex items-center gap-2 text-xs text-muted">
+                              <span className="w-4 h-4 rounded-full bg-brand/10 text-accent flex items-center justify-center text-[8px] font-black shrink-0">✓</span>
                               {item}
                             </div>
                           ))}
@@ -605,7 +608,7 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                       </div>
 
                       {/* Budget summary */}
-                      <p className="text-xs text-[#9c8470] italic text-center pb-1">{plan.budgetSummary}</p>
+                      <p className="text-xs text-subtle italic text-center pb-1">{plan.budgetSummary}</p>
                     </div>
                   )}
                 </div>
@@ -615,7 +618,7 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                   {step === 'result' ? (
                     <>
                       <button onClick={reset}
-                        className="text-xs font-semibold text-[#9c8470] hover:text-[#1a1208] transition-colors flex items-center gap-1">
+                        className="text-xs font-semibold text-subtle hover:text-ink transition-colors flex items-center gap-1">
                         ← Regenerate
                       </button>
                       <button onClick={downloadPDF}
@@ -628,13 +631,13 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
                     </>
                   ) : step === 'form' ? (
                     <>
-                      <span className="text-xs text-[#9c8470]">{days} days · {[...styles].length} interest{styles.size !== 1 ? 's' : ''}</span>
+                      <span className="text-xs text-subtle">{days} days · {[...styles].length} interest{styles.size !== 1 ? 's' : ''}</span>
                       <button onClick={generate} disabled={styles.size === 0 || Boolean(account && (!botToken || !config?.ready))}
                         className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
                         style={{ background: '#1a1208' }}
                         onMouseEnter={e => { if (styles.size > 0) e.currentTarget.style.background = '#2d1f0e'; }}
                         onMouseLeave={e => (e.currentTarget.style.background = '#1a1208')}>
-                        <Sparkles size={14} className="text-[#b07a3a]" /> {account ? 'Generate Plan' : 'Sign in to plan'}
+                        <Sparkles size={14} className="text-accent" /> {account ? 'Generate Plan' : 'Sign in to plan'}
                       </button>
                     </>
                   ) : null}
@@ -653,9 +656,9 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
           if (account) { setDays(account.settings.days); setBudget(account.settings.budget); setTraveler(account.settings.traveler); setStyles(new Set(account.settings.styles)); }
           setOpen(true); reset(); setBotToken(''); setBotAttempt(a => a + 1);
         }}
-        className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#1a1208] hover:bg-[#2d1f0e] text-[#F7F3EE] text-xs font-semibold transition-colors shadow-sm"
+        className="flex items-center gap-2 px-4 py-2 rounded-full bg-inverse hover:bg-[#2d1f0e] text-[#F7F3EE] text-xs font-semibold transition-colors shadow-sm"
       >
-        <Sparkles size={13} className="text-[#b07a3a]" />
+        <Sparkles size={13} className="text-accent" />
         Plan My Trip
       </button>
       {createPortal(modalContent, document.body)}

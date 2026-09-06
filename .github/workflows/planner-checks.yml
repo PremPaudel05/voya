@@ -19,7 +19,7 @@ jobs:
             cloudflare/package-lock.json
       - run: npm ci
       - run: npm run build
-      - run: node --test --test-isolation=none server/*.test.mjs
+      - run: node --test --test-isolation=none server/*.test.mjs test/*.test.mjs
       - run: npm ci
         working-directory: cloudflare
       - run: cp .dev.vars.example .dev.vars && npm run types && npm run check && npm test

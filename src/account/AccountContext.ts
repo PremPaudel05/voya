@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { Account, AccountConfig } from '../services/accountService';
+import type { Account, AccountConfig, Preferences } from '../services/accountService';
 export interface AccountState {
   account: Account | null;
   config: AccountConfig | null;
@@ -8,6 +8,8 @@ export interface AccountState {
   refresh: () => Promise<void>;
   login: (credential: string, turnstileToken: string) => Promise<void>;
   logout: () => Promise<void>;
+  saveSettings: (settings: Preferences) => Promise<void>;
+  deleteAccount: (email: string, confirmation: string) => Promise<void>;
   recordSearch: (countryName: string) => Promise<void>;
 }
 export const AccountContext = createContext<AccountState | null>(null);

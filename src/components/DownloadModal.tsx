@@ -340,7 +340,7 @@ export function DownloadModal({ data, countryName }: DownloadModalProps) {
       {/* Trigger button */}
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#b07a3a] hover:bg-[#8f6030] text-white text-xs font-semibold transition-colors shadow-sm"
+        className="flex items-center gap-2 px-4 py-2 rounded-full bg-brand hover:bg-[#8f6030] text-white text-xs font-semibold transition-colors shadow-sm"
       >
         <Download size={13} />
         Save Guide
@@ -363,20 +363,20 @@ export function DownloadModal({ data, countryName }: DownloadModalProps) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 40, scale: 0.96 }}
               transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-              className="fixed inset-x-4 bottom-0 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-[480px] z-50 bg-[#F7F3EE] rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden"
+              className="fixed inset-x-4 bottom-0 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-[480px] z-50 bg-canvas rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden"
             >
               {/* Header */}
-              <div className="bg-[#1a1208] px-6 py-5 flex items-center justify-between">
+              <div className="bg-inverse px-6 py-5 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-[#b07a3a]/20 rounded-xl">
-                    <FileText size={16} className="text-[#b07a3a]" />
+                  <div className="p-2 bg-brand/20 rounded-xl">
+                    <FileText size={16} className="text-accent" />
                   </div>
                   <div>
                     <h2 className="text-white font-black text-base">Download Travel Guide</h2>
-                    <p className="text-[#9c8470] text-xs mt-0.5">{countryName} — choose what to include</p>
+                    <p className="text-subtle text-xs mt-0.5">{countryName} — choose what to include</p>
                   </div>
                 </div>
-                <button onClick={() => setOpen(false)} className="text-[#9c8470] hover:text-white transition-colors">
+                <button onClick={() => setOpen(false)} className="text-subtle hover:text-white transition-colors">
                   <X size={18} />
                 </button>
               </div>
@@ -384,10 +384,10 @@ export function DownloadModal({ data, countryName }: DownloadModalProps) {
               {/* Section checkboxes */}
               <div className="px-6 pt-4 pb-2">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-bold text-[#9c8470] uppercase tracking-wider">Select sections</span>
+                  <span className="text-xs font-bold text-subtle uppercase tracking-wider">Select sections</span>
                   <div className="flex gap-3 text-xs font-semibold">
-                    <button onClick={selectAll} className="text-[#b07a3a] hover:underline">All</button>
-                    <button onClick={clearAll} className="text-[#9c8470] hover:underline">None</button>
+                    <button onClick={selectAll} className="text-accent hover:underline">All</button>
+                    <button onClick={clearAll} className="text-subtle hover:underline">None</button>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
@@ -399,18 +399,18 @@ export function DownloadModal({ data, countryName }: DownloadModalProps) {
                         onClick={() => toggle(s.id)}
                         className={`flex items-start gap-2.5 p-3 rounded-xl border text-left transition-all ${
                           checked
-                            ? 'bg-[#b07a3a]/10 border-[#b07a3a]/40'
-                            : 'bg-white border-[#e8dfd2] opacity-60'
+                            ? 'bg-brand/10 border-accent/40'
+                            : 'bg-surface border-line opacity-60'
                         }`}
                       >
                         <div className={`w-4 h-4 rounded shrink-0 mt-0.5 flex items-center justify-center border transition-colors ${
-                          checked ? 'bg-[#b07a3a] border-[#b07a3a]' : 'border-[#c8b89a] bg-white'
+                          checked ? 'bg-brand border-accent' : 'border-[#c8b89a] bg-surface'
                         }`}>
                           {checked && <Check size={10} className="text-white" strokeWidth={3} />}
                         </div>
                         <div>
-                          <div className="text-xs font-bold text-[#1a1208]">{s.label}</div>
-                          <div className="text-[10px] text-[#9c8470] leading-tight mt-0.5">{s.desc}</div>
+                          <div className="text-xs font-bold text-ink">{s.label}</div>
+                          <div className="text-[10px] text-subtle leading-tight mt-0.5">{s.desc}</div>
                         </div>
                       </button>
                     );
@@ -419,14 +419,14 @@ export function DownloadModal({ data, countryName }: DownloadModalProps) {
               </div>
 
               {/* Footer */}
-              <div className="px-6 py-4 border-t border-[#e8dfd2] flex items-center justify-between">
-                <span className="text-xs text-[#9c8470]">
+              <div className="px-6 py-4 border-t border-line flex items-center justify-between">
+                <span className="text-xs text-subtle">
                   {selected.size} of {SECTIONS.length} sections
                 </span>
                 <button
                   onClick={generatePDF}
                   disabled={generating || selected.size === 0 || done}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#1a1208] hover:bg-[#2d1f0e] text-white text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-inverse hover:bg-[#2d1f0e] text-white text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {done ? (
                     <><Check size={14} className="text-green-400" /> Saved!</>

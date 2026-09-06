@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import fs from 'node:fs';
 import { handle, digest } from '../src/index.ts';
-import { validateInput, parsePlan, promptFor } from '../src/planner.ts';
+import { validateInput, parsePlan, promptFor, DEFAULT_SETTINGS } from '../src/planner.ts';
 import { ipKey } from '../src/ip.ts';
 import { generateKeyPair, exportJWK, SignJWT } from 'jose';
 
@@ -13,7 +13,10 @@ const resultFor = days => ({ intro: 'Explore Nepal.', days: Array.from({ length:
 
 function database() {
   const sql = new DatabaseSync(':memory:');
-  sql.exec(fs.readFileSync(new URL('../migrations/0001_accounts.sql', import.meta.url), 'utf8'));
+  sql.exec('PRAGMA foreign_keys=ON');
+  for (const file of fs.readdirSync(new URL('../migrations/', import.meta.url)).filter(file => file.endsWith('.sql')).sort()) {
+    sql.exec(fs.readFileSync(new URL('../migrations/'+file, import.meta.url), 'utf8'));
+  }
   const wrap = (query, params = []) => ({
     bind: (...values) => wrap(query, values),
     first: async () => sql.prepare(query).get(...params) || null,
@@ -54,7 +57,7 @@ test('atomic reservation prevents concurrent and daily quota overspend', async (
   const outcomes = await Promise.allSettled(Array.from({length:20},(_,i) => Promise.resolve().then(() => insertJob(DB,{id:`race${i}`}))));
   assert.equal(outcomes.filter(x => x.status==='fulfilled').length,1);
   assert.equal(DB.sql.prepare('SELECT count(*) AS n FROM plan_jobs').get().n,1);
-  DB.sql.exec('DELETE FROM plan_jobs');
+  DB.sql.exec('DELETE FROM plan_jobs; DELETE FROM plan_usage');
   const start = Math.floor(Date.now()/86400000)*86400;
   for(let i=0;i<3;i++) insertJob(DB,{id:`daily${i}`,when:start+i*61});
   assert.throws(()=>insertJob(DB,{id:'fourth',when:start+500}),/USER_DAILY_LIMIT/);
@@ -125,6 +128,80 @@ test('oversized streaming bodies and invalid content types are rejected', async 
   const {env,req}=await fixture();
   assert.equal((await handle(req('/plan','POST',{...trip,notes:'x'.repeat(5000)}),env)).status,413);
   assert.equal((await handle(req('/plan','POST',trip,{'Content-Type':'text/plain'}),env)).status,415);
+});
+
+test('appearance, language and notifications persist; legacy saves preserve new settings', async () => {
+  const { env, req } = await fixture();
+  const initial = await (await handle(req('/me'),env)).json();
+  assert.equal(initial.settings.theme,'system');
+  assert.deepEqual(initial.settings.notifications,{inApp:true,browser:false});
+  const chosen = {...DEFAULT_SETTINGS,theme:'dark',contrast:'high',language:'fr',reducedMotion:true,notifications:{inApp:false,browser:true}};
+  assert.equal((await handle(req('/settings','PUT',chosen),env)).status,200);
+  const stored = await (await handle(req('/me'),env)).json();
+  assert.deepEqual(stored.settings,chosen);
+  assert.equal((await handle(req('/settings','PUT',{days:2,budget:'budget',traveler:'solo',styles:['food'],saveHistory:false}),env)).status,200);
+  const legacy = await (await handle(req('/me'),env)).json();
+  assert.equal(legacy.settings.days,2);
+  assert.equal(legacy.settings.theme,'dark');
+  assert.equal(legacy.settings.language,'fr');
+  assert.equal(legacy.settings.notifications.browser,true);
+  for(const invalid of [{theme:'auto'}, {language:'unavailable'}, {contrast:'extreme'}, {reducedMotion:'false'}, {notifications:null}, {notifications:[]}, {notifications:{browser:'yes'}}]) {
+    assert.equal((await handle(req('/settings','PUT',invalid),env)).status,400,JSON.stringify(invalid));
+  }
+  const after = await (await handle(req('/me'),env)).json();
+  assert.deepEqual(after.settings,legacy.settings);
+  assert.deepEqual(validateInput({...trip,...chosen,days:trip.days}),{...trip,budget:chosen.budget,traveler:chosen.traveler,styles:chosen.styles});
+  assert.throws(()=>validateInput({countryName:'Nepal',notes:''}));
+});
+
+test('account deletion requires confirmation and removes only the authenticated account on every device', async () => {
+  const { env, req, DB } = await fixture();
+  const now = Math.floor(Date.now()/1000), day=now-now%86400;
+  DB.sql.prepare('INSERT INTO users(id,name,email,created_at) VALUES(?,?,?,?)').run('other','Other','other@example.com',now);
+  DB.sql.prepare('INSERT INTO sessions(token_hash,user_id,expires_at) VALUES(?,?,?)').run(await digest('b'.repeat(64)),'user1',now+600);
+  await handle(req('/history','POST',{countryName:'Nepal'}),env);
+  for(let i=0;i<3;i++) insertJob(DB,{id:'delete'+i,when:day+i*61});
+  const confirm={email:'traveler@example.com',confirmation:'DELETE',userId:'other'};
+  assert.equal((await handle(req('/account','DELETE',confirm,{Authorization:''}),env)).status,401);
+  assert.equal((await handle(req('/account','DELETE',confirm,{Origin:'https://attacker.example'}),env)).status,403);
+  for(const invalid of [{...confirm,email:'other@example.com'},{...confirm,confirmation:'delete'}]) assert.equal((await handle(req('/account','DELETE',invalid),env)).status,400);
+  assert.equal(DB.sql.prepare('SELECT count(*) AS n FROM users WHERE id=?').get('user1').n,1);
+  assert.equal((await handle(req('/account','DELETE',confirm),env)).status,200);
+  for(const table of ['sessions','search_history','plan_jobs']) assert.equal(DB.sql.prepare(`SELECT count(*) AS n FROM ${table} WHERE user_id=?`).get('user1').n,0);
+  assert.equal(DB.sql.prepare('SELECT count(*) AS n FROM users WHERE id=?').get('user1').n,0);
+  assert.equal(DB.sql.prepare('SELECT email FROM users WHERE id=?').get('other').email,'other@example.com');
+  for(const token of ['a'.repeat(64),'b'.repeat(64)]) assert.equal((await handle(req('/me','GET',undefined,{Authorization:'Bearer '+token}),env)).status,401);
+  assert.equal(DB.sql.prepare('SELECT count(*) AS n FROM plan_usage WHERE user_id=?').get('user1').n,3);
+  // Re-registering the same identity cannot buy another batch of AI calls.
+  DB.sql.prepare('INSERT INTO users(id,name,email,created_at) VALUES(?,?,?,?)').run('user1','New','traveler@example.com',now);
+  assert.throws(()=>insertJob(DB,{id:'after-recreate',when:day+600}),/USER_DAILY_LIMIT/);
+  insertJob(DB,{id:'next-day',when:day+86400});
+});
+
+test('failed deletion rolls back the whole transaction', async () => {
+  const { env, req, DB } = await fixture();
+  await handle(req('/history','POST',{countryName:'Nepal'}),env);
+  DB.sql.exec("CREATE TRIGGER simulate_failure BEFORE DELETE ON users BEGIN SELECT RAISE(ABORT,'storage-failed'); END");
+  const res=await handle(req('/account','DELETE',{email:'traveler@example.com',confirmation:'DELETE'}),env);
+  assert.equal(res.status,503);
+  assert.equal((await handle(req('/me'),env)).status,200);
+  assert.equal(DB.sql.prepare('SELECT count(*) AS n FROM search_history').get().n,1);
+});
+
+test('deletion during generation never recreates or returns the removed content', async () => {
+  const { env, req, DB } = await fixture(); const original=globalThis.fetch;
+  globalThis.fetch=async()=>Response.json({success:true,hostname:'voyatravel.vercel.app',action:'plan'});
+  try {
+    env.AI.run=async()=>{
+      assert.equal((await handle(req('/account','DELETE',{email:'traveler@example.com',confirmation:'DELETE'}),env)).status,200);
+      return {response:JSON.stringify(resultFor(2))};
+    };
+    const res=await handle(req('/plan','POST',{...trip,requestId:crypto.randomUUID(),turnstileToken:'token'}),env);
+    assert.equal(res.status,401);
+    assert.equal(DB.sql.prepare('SELECT count(*) AS n FROM plan_jobs').get().n,0);
+    assert.equal(DB.sql.prepare('SELECT count(*) AS n FROM users').get().n,0);
+    assert.equal(DB.sql.prepare('SELECT status FROM plan_usage').get().status,'failed');
+  } finally {globalThis.fetch=original;}
 });
 
 test('Google signatures, audience, issuer, expiry and single-use nonce are enforced', async () => {
