@@ -1,4 +1,52 @@
 @import "tailwindcss";
+@import "./account.css";
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-brand: var(--brand);
+  --color-inverse: var(--inverse);
+}
+
+:root {
+  color-scheme: light;
+  --canvas: #f7f3ee; --surface: #ffffff; --surface-alt: #eee7dc;
+  --ink: #21170f; --muted: #695747; --subtle: #76614e; --line: #d5c7b5;
+  --accent: #8f5524; --brand: #8f5524; --inverse: #1a1208;
+  --danger: #a92323; --danger-surface: #fff3f1; --success: #246346;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --canvas: #141b21; --surface: #1d272f; --surface-alt: #283640;
+  --ink: #f4f0e9; --muted: #c6c9ca; --subtle: #b2babe; --line: #50606c;
+  --accent: #efb879; --brand: #94581e; --inverse: #0b1116;
+  --danger: #ffb0a6; --danger-surface: #3b2426; --success: #9dd6b6;
+}
+:root[data-contrast="high"] {
+  --ink: #100b06; --muted: #35291e; --subtle: #493727; --line: #7c654d; --accent: #66390e;
+}
+:root[data-theme="dark"][data-contrast="high"] {
+  --canvas: #0b1014; --surface: #121b22; --surface-alt: #1b2934;
+  --ink: #ffffff; --muted: #eef1f2; --subtle: #e0e5e8; --line: #a3b3bf; --accent: #ffd49a;
+}
+html, body { background: var(--canvas); color: var(--ink); }
+.bg-inverse { --ink: #f4f0e9; --muted: #c6c9ca; --subtle: #b2babe; --accent: #efb879; }
+html[data-contrast="high"] .bg-inverse { --ink: #ffffff; --muted: #eef1f2; --subtle: #e0e5e8; --accent: #ffd49a; }
+button, a, input, select, summary { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+html[data-motion="reduced"] *, html[data-motion="reduced"] *::before, html[data-motion="reduced"] *::after {
+  animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+  transition-duration: .01ms !important; scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
 
 @keyframes float {
   0%, 100% { transform: translateY(0px); }

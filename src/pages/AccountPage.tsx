@@ -1,17 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, Bookmark, Clock3, LogOut, MapPin, Settings2, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Bookmark, Compass, Globe2, LogOut, MapPin, Settings2, Shield, Sparkles } from 'lucide-react';
 import { useAccount } from '../account/AccountContext';
+import { usePreferences } from '../preferences/PreferencesContext';
 import { accountRequest, DEFAULT_PREFERENCES, loadScript } from '../services/accountService';
-import type { Preferences, TravelPlan } from '../services/accountService';
+import type { Account, Preferences, TravelPlan } from '../services/accountService';
 import { SecurityCheck } from '../components/SecurityCheck';
+import { AccountDialog, AccountSettings } from '../components/AccountSettings';
+
 type HistoryEntry = { countryName: string; searchedAt: number };
 type SavedPlan = { id: string; countryName: string; createdAt: number; input: Preferences };
-const field = 'w-full rounded-xl border border-[#e8dfd2] bg-white px-3 py-2.5 text-sm';
-const button = 'rounded-full bg-[#1a1208] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-40';
+type Tab = 'overview' | 'history' | 'plans' | 'settings';
 
 function GoogleSignIn() {
   const { config, login } = useAccount();
+  const { t, preferences } = usePreferences();
   const container = useRef<HTMLDivElement>(null);
   const tokenRef = useRef('');
   const [token, setToken] = useState('');
@@ -25,63 +28,78 @@ function GoogleSignIn() {
     Promise.all([loadScript('https://accounts.google.com/gsi/client'), accountRequest<{ nonce: string }>('/auth/challenge', { method: 'POST' })]).then(([, challenge]) => {
       if (!active || !container.current || !window.google) return;
       window.google.accounts.id.initialize({ client_id: config.googleClientId, nonce: challenge.nonce, auto_select: false, callback: response => {
-        if (!tokenRef.current) { setError('Complete the security check before signing in.'); return; }
+        if (!tokenRef.current) { setError(t('Complete the security check before signing in.')); return; }
         setBusy(true); setError('');
-        void login(response.credential, tokenRef.current).catch(e => { setError(e.message); setToken(''); setAttempt(a => a + 1); }).finally(() => setBusy(false));
+        void login(response.credential, tokenRef.current).catch(e => { if (active) { setError(e.message); setToken(''); setAttempt(a => a + 1); } }).finally(() => { if (active) setBusy(false); });
       } });
-      window.google.accounts.id.renderButton(container.current, { theme: 'outline', size: 'large', text: 'continue_with', width: 280 });
+      window.google.accounts.id.renderButton(container.current, { theme: 'outline', size: 'large', text: 'continue_with', width: Math.max(200, Math.min(280, container.current.clientWidth)), locale: preferences.language });
     }).catch(e => { if (active) setError(e.message); });
     return () => { active = false; };
-  }, [config, login, attempt]);
-  if (!config?.ready) return <p role="status" className="rounded-xl bg-[#f5f0e8] p-4 text-sm">Sign-in is being prepared. You can still explore every country guide.</p>;
+  }, [config, login, attempt, preferences.language, t]);
+  if (!config?.ready) return <p role="status" className="account-banner">{t('Sign-in is being prepared. You can still explore every country guide.')}</p>;
   return <div className="space-y-5">
     <SecurityCheck key={attempt} siteKey={config.turnstileSiteKey} action="login" onToken={setToken} />
     <div ref={container} className={!token || busy ? 'pointer-events-none opacity-50' : ''} inert={!token || busy} />
-    {busy && <p role="status" className="text-sm">Signing you in…</p>}
-    {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
-    <p className="text-xs text-[#9c8470]">Your Google name and email identify your Voya account. No password is shared with Voya.</p>
+    {busy && <p role="status">{t('Signing you in…')}</p>}
+    {error && <p role="alert" className="account-error">{error}</p>}
+    <p className="settings-help">{t('Google shares your name and email with Voya, never your password.')}</p>
   </div>;
 }
 
-export default function AccountPage() {
-  const { account, loading, error: accountError, refresh, logout } = useAccount();
-  const [params] = useSearchParams();
-  const [tab, setTab] = useState('overview');
-  const [preferences, setPreferences] = useState<Preferences>(DEFAULT_PREFERENCES);
+function SignedInAccount({ account, onDeleted }: { account: Account; onDeleted: () => void }) {
+  const { error: accountError, refresh, logout } = useAccount();
+  const { t, preferences } = usePreferences();
+  const [params, setParams] = useSearchParams();
+  const requestedTab = params.get('tab');
+  const tab: Tab = requestedTab === 'history' || requestedTab === 'plans' || requestedTab === 'settings' ? requestedTab : 'overview';
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [plans, setPlans] = useState<SavedPlan[]>([]);
+  const [fetching, setFetching] = useState(true);
   const [selected, setSelected] = useState<TravelPlan | null>(null);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [clearConfirm, setClearConfirm] = useState(false);
+  useEffect(() => {
+    let active = true;
+    Promise.all([accountRequest<{ history: HistoryEntry[] }>('/history'), accountRequest<{ plans: SavedPlan[] }>('/plans')])
+      .then(([h, p]) => { if (active) { setHistory(h.history); setPlans(p.plans); } })
+      .catch(e => { if (active) setError(e.message); }).finally(() => { if (active) setFetching(false); });
+    return () => { active = false; };
+  }, [account.user.email]);
+  const date = (value: number) => new Date(value).toLocaleDateString(preferences.language, { month: 'short', day: 'numeric' });
+  const selectTab = (next: Tab) => { const updated = new URLSearchParams(params); updated.set('tab',next); setParams(updated); setSelected(null); setMessage(''); setError(''); };
+  const run = async (action: () => Promise<void>) => { setBusy(true); setError(''); setMessage(''); try { await action(); } catch (e) { setError(e instanceof Error ? e.message : t('Could not save changes. Please try again.')); } finally { setBusy(false); } };
+  return <>
+    <div className="account-welcome"><div><p className="account-eyebrow">{t('Your discovery space')}</p><h1>{t('Welcome, {name}.', { name: account.user.name.split(' ')[0] })}</h1><p>{t('Your countries, your preferences.')}</p></div><button disabled={busy} onClick={() => void run(logout)} className="account-link"><LogOut size={16} />{t('Sign out')}</button></div>
+    <nav aria-label={t('My account')} className="account-tabs">{([['overview','Overview',Compass],['history','Search history',MapPin],['plans','Saved plans',Bookmark],['settings','Settings',Settings2]] as const).map(([id,label,Icon]) => <button key={id} onClick={() => selectTab(id)} aria-current={tab === id ? 'page' : undefined}><Icon size={17} /><span>{t(label)}</span></button>)}</nav>
+    {(error || accountError) && !clearConfirm && <p role="alert" className="account-error">{error || accountError}</p>}
+    {message && <p role="status" className="account-success">{message}</p>}
+    {tab === 'overview' && <div className="account-overview">
+      <section className="discovery-card"><div><Compass size={26} /><h2>{t('Continue exploring')}</h2><p>{t('Country guides are free to explore, whenever curiosity strikes.')}</p><Link to="/" className="account-button">{t('Explore a country')}<ArrowRight size={16} /></Link></div><div className="discovery-orbit" aria-hidden="true"><Globe2 /></div></section>
+      <div className="account-two-columns"><section className="settings-card"><div className="settings-heading"><MapPin size={21} /><h2>{t('Your recent discoveries')}</h2></div>{fetching ? <p role="status">{t('Loading your account…')}</p> : history.length ? <div className="recent-list">{history.slice(0,4).map(item => <Link key={item.countryName} to={`/country/${encodeURIComponent(item.countryName)}`}><span>{item.countryName}</span><span>{date(item.searchedAt)}<ArrowRight size={15} /></span></Link>)}</div> : <p className="settings-help">{t('No searches yet. Pick a country to get started.')}</p>}</section>
+        <section className="settings-card"><div className="settings-heading"><Settings2 size={21} /><h2>{t('Make Voya yours')}</h2></div><p className="settings-help">{t('Choose your appearance, language, and notifications.')}</p><button className="account-button secondary" onClick={() => selectTab('settings')}>{t('Open settings')}<ArrowRight size={16} /></button></section></div>
+      <section className="optional-planning"><div><Sparkles size={20} /><div><h2>{t('Optional trip planning')}</h2><p>{t('{remaining} of {limit} attempts left today', { remaining: account.usage.remaining, limit: account.usage.limit })}</p></div></div><details><summary>{t('How the allowance works')}</summary><p>{t('Create plans of up to 7 days. Wait a minute between attempts. Unfinished attempts also count, and deleting a plan or account does not reset the daily allowance.')}</p><p>{t('Resets {date}', { date: new Date(account.usage.resetsAt).toLocaleString(preferences.language) })}</p><button className="account-link" disabled={busy} onClick={() => void run(refresh)}>{t('Refresh')}</button></details></section>
+    </div>}
+    {tab === 'history' && <section className="account-section"><div className="section-title"><h2>{t('Search history')}</h2>{history.length > 0 && <button className="account-link" onClick={() => setClearConfirm(true)}>{t('Clear history')}</button>}</div>{!account.settings.saveHistory && <p className="account-banner">{t('Search history is off. New searches will not be saved.')}</p>}{fetching ? <p role="status">{t('Loading your account…')}</p> : history.length ? <div className="country-history">{history.map(item => <Link className="settings-card" key={item.countryName} to={`/country/${encodeURIComponent(item.countryName)}`}><MapPin size={20} /><div><strong>{item.countryName}</strong><span>{date(item.searchedAt)}</span></div><ArrowRight size={17} /></Link>)}</div> : <div className="account-empty"><Compass size={30} /><p>{t('No searches yet. Pick a country to get started.')}</p><Link className="account-button" to="/">{t('Explore a country')}</Link></div>}</section>}
+    {tab === 'plans' && <section className="account-section"><h2>{t('Saved plans')}</h2>{selected ? <div className="saved-plan"><button className="account-link" onClick={() => setSelected(null)}><ArrowLeft size={16} />{t('All saved plans')}</button><p>{selected.intro}</p>{selected.days.map(day => <article key={day.day} className="settings-card"><h3>{day.day}. {day.title}</h3>{[['Morning',day.morning],['Afternoon',day.afternoon],['Evening',day.evening],['Tip',day.tip]].map(([label,text]) => <p key={label}><strong>{t(label)}: </strong>{text}</p>)}<p>{day.estimatedCost}</p></article>)}<p>{t('Packing essentials')}: {selected.packingEssentials.join(', ')}</p><p>{selected.budgetSummary}</p><p>{selected.bestAdvice}</p></div> : fetching ? <p role="status">{t('Loading your account…')}</p> : plans.length ? <div className="country-history">{plans.map(plan => <article key={plan.id} className="settings-card"><h3>{plan.countryName}</h3><p className="settings-help">{plan.input.days} {t('days')} · {date(plan.createdAt)}</p><div className="plan-actions"><button disabled={busy} className="account-link" onClick={() => void run(async () => setSelected((await accountRequest<{ plan: TravelPlan }>(`/plans/${plan.id}`)).plan))}>{t('View itinerary')}<ArrowRight size={15} /></button><button disabled={busy} className="account-link" onClick={() => void run(async () => { await accountRequest(`/plans/${plan.id}`, { method: 'DELETE' }); setPlans(previous => previous.filter(item => item.id !== plan.id)); })}>{t('Remove')}</button></div></article>)}</div> : <div className="account-empty"><Bookmark size={30} /><h3>{t('No saved plans yet.')}</h3><p>{t('Plans you create are saved here for 30 days.')}</p></div>}</section>}
+    {tab === 'settings' && <AccountSettings initial={{ ...DEFAULT_PREFERENCES, ...account.settings }} onDeleted={onDeleted} onClearHistory={() => setClearConfirm(true)} />}
+    <AccountDialog open={clearConfirm} title={t('Clear your saved searches?')} busy={busy} onClose={() => { if (!busy) setClearConfirm(false); }}><p>{t('This removes your saved country searches. You can keep exploring.')}</p>{error && <p role="alert" className="account-error">{error}</p>}<div className="dialog-actions"><button className="account-button secondary" autoFocus disabled={busy} onClick={() => setClearConfirm(false)}>{t('Cancel')}</button><button className="account-button" disabled={busy} onClick={() => void run(async () => { await accountRequest('/history', { method: 'DELETE' }); setHistory([]); setClearConfirm(false); setMessage(t('Search history cleared.')); })}>{t('Clear searches')}</button></div></AccountDialog>
+  </>;
+}
+
+export default function AccountPage() {
+  const { account, loading, error } = useAccount();
+  const { t } = usePreferences();
+  const [params] = useSearchParams();
+  const [deleted, setDeleted] = useState(false);
   const returnTo = params.get('returnTo');
   const safeReturn = returnTo?.startsWith('/country/') && !returnTo.includes('\\') ? returnTo : '/';
-  useEffect(() => { if (account) setPreferences(account.settings); }, [account]);
-  useEffect(() => {
-    if (!account) return;
-    let active = true;
-    setError('');
-    Promise.all([accountRequest<{ history: HistoryEntry[] }>('/history'), accountRequest<{ plans: SavedPlan[] }>('/plans')]).then(([h, p]) => { if (active) { setHistory(h.history); setPlans(p.plans); } }).catch(e => { if (active) setError(e.message); });
-    return () => { active = false; };
-  }, [account]);
-  const run = async (action: () => Promise<void>) => { setBusy(true); setError(''); setMessage(''); try { await action(); } catch (e) { setError(e instanceof Error ? e.message : 'Could not save changes.'); } finally { setBusy(false); } };
-  return <div className="min-h-screen bg-[#F7F3EE] text-[#1a1208]">
-    <header className="border-b border-[#e8dfd2] px-5 py-4"><div className="mx-auto flex max-w-5xl items-center justify-between"><Link to={safeReturn} className="flex items-center gap-2 text-sm text-[#6b5740]"><ArrowLeft size={16} />Back to exploring</Link><Link to="/" className="text-xl font-black">Voya <span className="text-[#b07a3a]">Travel</span></Link></div></header>
-    <main className="mx-auto max-w-5xl px-5 py-10 sm:py-14">
-      {loading ? <p role="status">Loading your account…</p> : !account ? <div className="grid gap-10 md:grid-cols-2 md:items-center">
-        <div><span className="text-xs font-bold uppercase tracking-[0.2em] text-[#b07a3a]">Your next chapter</span><h1 className="mt-4 text-4xl font-black leading-tight">A home for your<br />travel ideas.</h1><p className="mt-5 max-w-sm text-[#6b5740] leading-relaxed">Sign in or create your free account with Google. Keep your discoveries together and pick up where you left off.</p><div className="mt-8 space-y-4 text-sm">{[[MapPin, 'Revisit your recent country searches'], [Bookmark, 'Keep your personalised trip plans'], [Settings2, 'Save your travel preferences'], [Sparkles, 'Track your 3 daily plan attempts']].map(([Icon, text]) => { const I = Icon as typeof MapPin; return <p key={String(text)} className="flex items-center gap-3"><I size={18} className="text-[#b07a3a]" />{String(text)}</p>; })}</div></div>
-        <section className="rounded-3xl border border-[#e8dfd2] bg-white p-7 sm:p-9 shadow-sm"><h2 className="text-2xl font-black">Welcome to Voya</h2><p className="mt-2 mb-7 text-sm text-[#9c8470]">New here? Your first sign-in creates your account.</p><GoogleSignIn />{accountError && <p role="alert" className="mt-4 text-sm text-red-700">{accountError}</p>}<p className="mt-6 text-xs text-[#9c8470] leading-relaxed">Search history is saved for up to 90 days and plans for 30 days. You can turn history off or clear it in Settings.</p></section>
-      </div> : <>
-        <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-xs uppercase font-bold tracking-[0.2em] text-[#b07a3a]">Your travel space</p><h1 className="mt-3 text-3xl sm:text-4xl font-black">Welcome, {account.user.name.split(' ')[0]}.</h1><p className="mt-2 text-sm text-[#9c8470]">{account.user.email}</p></div><button disabled={busy} onClick={() => void run(logout)} className="flex items-center gap-2 text-sm text-[#6b5740]"><LogOut size={15} />Sign out</button></div>
-        <nav aria-label="Account sections" className="mt-8 flex gap-1 overflow-x-auto border-b border-[#e8dfd2]">{[['overview','Usage'],['history','Search history'],['plans','Saved plans'],['settings','Settings']].map(([id,label]) => <button key={id} onClick={() => { setTab(id); setSelected(null); setMessage(''); setError(''); }} aria-current={tab === id ? 'page' : undefined} className={`whitespace-nowrap px-4 py-3 text-sm font-semibold border-b-2 ${tab === id ? 'border-[#b07a3a] text-[#1a1208]' : 'border-transparent text-[#9c8470]'}`}>{label}</button>)}</nav>
-        {(error || accountError) && <p role="alert" className="mt-5 rounded-xl bg-red-50 p-3 text-sm text-red-700">{error || accountError}</p>}
-        {message && <p role="status" className="mt-5 text-sm text-green-800">{message}</p>}
-        {tab === 'overview' && <div className="mt-7 grid gap-5 md:grid-cols-2"><section className="rounded-3xl bg-[#1a1208] p-7 text-[#F7F3EE]"><Sparkles className="text-[#b07a3a]" /><h2 className="mt-5 text-lg font-bold">Your daily planning allowance</h2><p className="mt-4 text-5xl font-black">{account.usage.remaining}<span className="ml-2 text-base font-normal text-[#c8b89a]">of {account.usage.limit} remaining</span></p><div className="mt-5 h-2 rounded-full bg-white/15"><div className="h-full rounded-full bg-[#b07a3a]" style={{ width: `${account.usage.remaining / account.usage.limit * 100}%` }} /></div><p className="mt-4 text-xs text-[#c8b89a]">Resets {new Date(account.usage.resetsAt).toLocaleString()} (midnight UTC).</p><button onClick={() => void refresh()} className="mt-5 text-xs underline">Refresh usage</button></section><section className="rounded-3xl border border-[#e8dfd2] bg-white p-7"><Clock3 size={22} className="text-[#b07a3a]" /><h2 className="mt-5 text-lg font-bold">Make every plan count</h2><ul className="mt-4 space-y-3 text-sm text-[#6b5740]"><li>New plans include 1–7 days. Wait 60 seconds between attempts.</li><li>Matching saved results from the last 7 days are reused without another AI call.</li><li>Attempts count even when the AI cannot finish. Deleting a plan does not reset usage.</li><li>Shared network and sitewide limits keep planning free. There is no paid upgrade.</li></ul></section></div>}
-        {tab === 'history' && <section className="mt-7"><div className="mb-5 flex items-center justify-between"><h2 className="text-xl font-bold">Recent discoveries</h2>{history.length > 0 && <button onClick={() => setClearConfirm(true)} className="text-sm text-[#9c8470]">Clear history</button>}</div>{clearConfirm && <div className="mb-4 rounded-xl bg-white p-4 text-sm">Clear all saved country searches? <button disabled={busy} className="ml-3 text-red-700 underline" onClick={() => void run(async () => { await accountRequest('/history', { method: 'DELETE' }); setHistory([]); setClearConfirm(false); })}>Clear searches</button><button className="ml-3 underline" onClick={() => setClearConfirm(false)}>Cancel</button></div>}{history.length ? <div className="grid gap-3 sm:grid-cols-2">{history.map(item => <Link key={item.countryName} to={`/country/${encodeURIComponent(item.countryName)}`} className="flex items-center justify-between rounded-2xl border border-[#e8dfd2] bg-white p-5 hover:border-[#b07a3a]"><span className="font-bold">{item.countryName}</span><span className="text-xs text-[#9c8470]">{new Date(item.searchedAt).toLocaleDateString()} →</span></Link>)}</div> : <p className="rounded-2xl bg-white p-6 text-sm text-[#9c8470]">Your country discoveries will appear here. <Link to="/" className="text-[#b07a3a] underline">Explore a country</Link></p>}</section>}
-        {tab === 'plans' && <section className="mt-7"><h2 className="mb-5 text-xl font-bold">Saved plans</h2>{selected ? <div className="space-y-4"><button className="text-sm underline" onClick={() => setSelected(null)}>← All saved plans</button><p className="rounded-2xl bg-white p-5">{selected.intro}</p>{selected.days.map(day => <article key={day.day} className="rounded-2xl border border-[#e8dfd2] bg-white p-5"><h3 className="font-bold">Day {day.day}: {day.title}</h3>{[['Morning',day.morning],['Afternoon',day.afternoon],['Evening',day.evening],['Tip',day.tip]].map(([label,text]) => <p key={label} className="mt-3 text-sm leading-relaxed"><strong className="text-[#b07a3a]">{label}: </strong>{text}</p>)}<p className="mt-3 text-xs text-[#9c8470]">{day.estimatedCost}</p></article>)}<p className="text-sm">Pack: {selected.packingEssentials.join(', ')}</p><p className="text-sm">{selected.budgetSummary}</p><p className="text-sm">{selected.bestAdvice}</p></div> : plans.length ? <div className="grid gap-4 sm:grid-cols-2">{plans.map(plan => <article key={plan.id} className="rounded-2xl border border-[#e8dfd2] bg-white p-5"><h3 className="text-lg font-bold">{plan.countryName}</h3><p className="mt-1 text-xs text-[#9c8470]">{plan.input.days} days · {plan.input.budget} · {new Date(plan.createdAt).toLocaleDateString()}</p><div className="mt-5 flex items-center justify-between"><button disabled={busy} className="text-sm font-semibold text-[#b07a3a]" onClick={() => void run(async () => setSelected((await accountRequest<{ plan: TravelPlan }>(`/plans/${plan.id}`)).plan))}>View itinerary →</button><button disabled={busy} className="text-xs text-[#9c8470]" onClick={() => void run(async () => { await accountRequest(`/plans/${plan.id}`, { method: 'DELETE' }); setPlans(p => p.filter(x => x.id !== plan.id)); })}>Remove</button></div></article>)}</div> : <p className="rounded-2xl bg-white p-6 text-sm text-[#9c8470]">Your next itinerary will be saved here automatically for 30 days.</p>}</section>}
-        {tab === 'settings' && <form className="mt-7 max-w-2xl rounded-3xl border border-[#e8dfd2] bg-white p-6 sm:p-8 space-y-5" onSubmit={e => { e.preventDefault(); void run(async () => { await accountRequest('/settings', { method: 'PUT', body: JSON.stringify(preferences) }); await refresh(); setMessage('Travel preferences saved. They will be used for your next plan.'); }); }}><h2 className="text-xl font-bold">Travel preferences</h2><div className="grid gap-4 sm:grid-cols-2"><label className="text-sm">Default budget<select className={`${field} mt-2`} value={preferences.budget} onChange={e => setPreferences(p => ({ ...p, budget: e.target.value }))}><option value="budget">Budget</option><option value="midrange">Mid-range</option><option value="luxury">Luxury</option></select></label><label className="text-sm">Travel group<select className={`${field} mt-2`} value={preferences.traveler} onChange={e => setPreferences(p => ({ ...p, traveler: e.target.value }))}>{['solo','couple','family','friends'].map(t => <option key={t} value={t}>{t}</option>)}</select></label><label className="text-sm">Default trip length<input type="number" min={1} max={7} className={`${field} mt-2`} value={preferences.days} onChange={e => setPreferences(p => ({ ...p, days: Number(e.target.value) }))} /></label></div><fieldset><legend className="mb-3 text-sm">Travel interests</legend><div className="flex flex-wrap gap-2">{['culture','adventure','food','relaxation','nature','nightlife'].map(style => <label key={style} className="rounded-full border border-[#e8dfd2] px-3 py-2 text-xs"><input type="checkbox" className="mr-2 accent-[#b07a3a]" checked={preferences.styles.includes(style)} onChange={e => setPreferences(p => ({ ...p, styles: e.target.checked ? [...p.styles,style] : p.styles.filter(s => s !== style) }))} />{style}</label>)}</div></fieldset><label className="flex gap-3 text-sm"><input type="checkbox" className="accent-[#b07a3a]" checked={preferences.saveHistory} onChange={e => setPreferences(p => ({ ...p, saveHistory: e.target.checked }))} /><span>Save my country search history<span className="mt-1 block text-xs text-[#9c8470]">Turning this off stops future saves. Clear existing searches in Search history.</span></span></label><p className="text-xs text-[#9c8470]">The free daily allowance is fixed at 3 attempts per account. Your settings cannot increase or reset it.</p><button disabled={busy || preferences.styles.length === 0} className={button}>Save preferences</button></form>}
-      </>}
-    </main>
+  return <div className="account-page">
+    <header className="account-header"><div><Link to={safeReturn}><ArrowLeft size={16} />{t('Back to exploring')}</Link><Link to="/" className="account-brand">Voya<span>World</span></Link></div></header>
+    <main className="account-main">{loading ? <p role="status">{t('Loading your account…')}</p> : account ? <SignedInAccount key={account.user.email} account={account} onDeleted={() => setDeleted(true)} /> : <>
+      {deleted && <p role="status" className="account-success">{t('Your Voya account has been deleted.')}</p>}
+      <div className="account-signin"><div><p className="account-eyebrow">{t('Your discovery space')}</p><h1>{t('A home for your discoveries.')}</h1><p>{t('Sign in with Google to revisit countries and make Voya feel like yours. Exploring is always free and sign-in is optional.')}</p><ul>{[[MapPin,'Revisit your recent country searches'],[Settings2,'Personalise appearance and language'],[Shield,'Manage your privacy and notifications']].map(([Icon,label]) => { const I = Icon as typeof MapPin; return <li key={String(label)}><I size={18} />{t(String(label))}</li>; })}</ul></div><section className="settings-card"><h2>{t('Welcome to Voya')}</h2><p>{t('Your first Google sign-in creates a free account.')}</p><GoogleSignIn />{error && <p role="alert" className="account-error">{error}</p>}</section></div>
+    </>}</main>
   </div>;
 }

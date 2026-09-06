@@ -58,13 +58,13 @@ export function MapSection({ mapData }: MapSectionProps) {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-6">
-      <div className="p-6 border-b border-slate-100">
-        <h2 className="text-xl font-semibold text-slate-800 flex items-center gap-2">
-          <MapPin className="text-blue-600" />
+    <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden mb-6">
+      <div className="p-6 border-b border-line">
+        <h2 className="text-xl font-semibold text-ink flex items-center gap-2">
+          <MapPin className="text-accent" />
           Interactive Map
         </h2>
-        <p className="text-slate-500 text-sm mt-1">Explore major cities and regions.</p>
+        <p className="text-subtle text-sm mt-1">Explore major cities and regions.</p>
       </div>
 
       <div className="p-6 flex flex-col lg:flex-row gap-6">
@@ -74,7 +74,7 @@ export function MapSection({ mapData }: MapSectionProps) {
             className={`text-left px-4 py-3 rounded-xl transition-all ${
               activeCity === null
                 ? 'bg-blue-600 text-white shadow-md'
-                : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
+                : 'bg-surface-alt text-muted hover:bg-surface-alt'
             }`}
           >
             <div className="font-medium">Country View</div>
@@ -87,7 +87,7 @@ export function MapSection({ mapData }: MapSectionProps) {
               className={`text-left px-4 py-3 rounded-xl transition-all ${
                 activeCity === city.name
                   ? 'bg-blue-600 text-white shadow-md'
-                  : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
+                  : 'bg-surface-alt text-muted hover:bg-surface-alt'
               }`}
             >
               <div className="font-medium">{city.name}</div>
@@ -107,7 +107,7 @@ export function MapSection({ mapData }: MapSectionProps) {
         </div>
 
         <div className="w-full lg:w-2/3 flex flex-col gap-4">
-          <div className="h-[400px] rounded-xl overflow-hidden bg-slate-100 relative shadow-inner">
+          <div className="h-[400px] rounded-xl overflow-hidden bg-surface-alt relative shadow-inner">
             <iframe
               width="100%"
               height="100%"
@@ -132,7 +132,7 @@ export function MapSection({ mapData }: MapSectionProps) {
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   activeCategory === cat.id
                     ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    : 'bg-surface-alt text-muted hover:bg-surface-alt'
                 }`}
               >
                 {cat.label}
@@ -144,9 +144,9 @@ export function MapSection({ mapData }: MapSectionProps) {
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-blue-50 p-4 rounded-xl border border-blue-100 mt-2"
+              className="bg-surface-alt p-4 rounded-xl border border-line mt-2"
             >
-              <h4 className="font-medium text-blue-900 mb-2 capitalize">
+              <h4 className="font-medium text-ink mb-2 capitalize">
                 {activeCategory.replace(/([A-Z])/g, ' $1').trim()}
               </h4>
               <ul className="text-sm text-blue-800 space-y-1">

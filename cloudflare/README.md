@@ -106,3 +106,14 @@ Sources: [Workers AI pricing](https://developers.cloudflare.com/workers-ai/platf
 [Google setup](https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid),
 [Google token verification](https://developers.google.com/identity/gsi/web/guides/verify-google-id-token),
 [Turnstile validation](https://developers.cloudflare.com/turnstile/get-started/server-side-validation/).
+# Account settings deployment
+
+The account UI supports appearance, contrast, reduced motion, English/Spanish/French navigation, notification preferences, and account deletion. Apply `0002_account_deletion.sql` before deploying the new Worker. The frontend checks `settingsVersion: 2` before allowing account deletion or syncing new settings, so an older backend cannot silently discard them.
+
+The **Deploy Voya account API** GitHub Actions workflow runs after relevant changes reach `main`, and can also be started manually. Configure repository Actions secrets `CLOUDFLARE_API_TOKEN` (Workers Scripts:Edit and D1:Edit, scoped to the Voya account) and `CLOUDFLARE_ACCOUNT_ID`. Existing Google and Turnstile secrets stay in the Worker. The workflow verifies the backend, applies migrations, deploys, and checks `/config`. Vercel continues to deploy the frontend through its existing GitHub integration.
+
+For a local authenticated Cloudflare CLI, run `npx wrangler d1 migrations apply voya-accounts --remote` followed by `npm run deploy` from `cloudflare/` after the checks pass.
+
+Deletion atomically removes the profile, sessions, search history, and plan content. Today's minimal usage ledger has no foreign key to the profile and is retained until the next daily cleanup; deleting and recreating an account cannot reset any AI quota. No deleted content is returned if generation was in flight. Notification preferences control in-app notices and foreground-site browser alerts, not email or background push. Language selection covers account UI and navigation; editorial country content remains English.
+
+Local UI fixture (Node 24, no real user data or provider calls): run `node cloudflare/test/ui-server.mjs` from the repository root. In another terminal run `VITE_ACCOUNT_API_URL=/__ui_api npx vite --config test/ui.vite.config.ts --host 127.0.0.1`. Open `/test/preview.html` on that local Vite server. The fixture uses an isolated in-memory database and is not included in production builds.

@@ -68,10 +68,10 @@ export function CountryProfile({ data }: CountryProfileProps) {
   const flagUrl = data.overview.flagUrl;
 
   return (
-    <div className="min-h-screen bg-[#F7F3EE] font-sans">
+    <div className="min-h-screen bg-canvas font-sans">
 
       {/* ── Hero Banner ── */}
-      <div className="relative overflow-hidden bg-[#1a1208]">
+      <div className="relative overflow-hidden bg-inverse">
         {/* Dark gradient overlay so text stays readable */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#1a1208]/90 via-[#1a1208]/70 to-[#1a1208]/40" />
         {/* Amber glow */}
@@ -87,7 +87,7 @@ export function CountryProfile({ data }: CountryProfileProps) {
             transition={{ type: 'spring', stiffness: 200, damping: 18 }}
             className="shrink-0"
           >
-            <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/10 bg-white/5 flex items-center justify-center select-none">
+            <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/10 bg-surface/5 flex items-center justify-center select-none">
               {flagUrl && failedFlag !== flagUrl ? (
                 <img
                   src={flagUrl}
@@ -110,8 +110,8 @@ export function CountryProfile({ data }: CountryProfileProps) {
               animate={{ opacity: 1, y: 0 }}
               className="flex items-center gap-2 justify-center md:justify-start mb-3"
             >
-              <div className="h-px w-6 bg-[#b07a3a]" />
-              <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-[#b07a3a]">Travel Guide</span>
+              <div className="h-px w-6 bg-brand" />
+              <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-accent">Travel Guide</span>
             </motion.div>
 
             <motion.h1
@@ -131,10 +131,10 @@ export function CountryProfile({ data }: CountryProfileProps) {
               className="flex flex-wrap gap-2 justify-center md:justify-start mb-6"
             >
               {[
-                { Icon: Map,   label: data.overview.capital,      color: 'bg-white/8 text-[#c8b89a] border-white/10' },
-                { Icon: Users, label: data.overview.population,   color: 'bg-white/8 text-[#c8b89a] border-white/10' },
-                { Icon: Coins, label: data.overview.currencyCode, color: 'bg-[#b07a3a]/20 text-[#d4954a] border-[#b07a3a]/25' },
-                { Icon: Clock, label: data.overview.timeZone,     color: 'bg-white/8 text-[#c8b89a] border-white/10' },
+                { Icon: Map,   label: data.overview.capital,      color: 'bg-surface/8 text-[#c8b89a] border-white/10' },
+                { Icon: Users, label: data.overview.population,   color: 'bg-surface/8 text-[#c8b89a] border-white/10' },
+                { Icon: Coins, label: data.overview.currencyCode, color: 'bg-brand/20 text-[#d4954a] border-accent/25' },
+                { Icon: Clock, label: data.overview.timeZone,     color: 'bg-surface/8 text-[#c8b89a] border-white/10' },
               ].map(({ Icon, label, color }) => (
                 <span key={label} className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border ${color}`}>
                   <Icon size={11} /> {label}
@@ -148,9 +148,9 @@ export function CountryProfile({ data }: CountryProfileProps) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.24 }}
-                className="inline-flex items-start gap-2.5 bg-white/6 border border-white/10 rounded-2xl px-4 py-3 max-w-lg"
+                className="inline-flex items-start gap-2.5 bg-surface/6 border border-white/10 rounded-2xl px-4 py-3 max-w-lg"
               >
-                <Sparkles size={13} className="text-[#b07a3a] mt-0.5 shrink-0" />
+                <Sparkles size={13} className="text-accent mt-0.5 shrink-0" />
                 <AnimatePresence mode="wait">
                   <motion.p
                     key={factIdx}
@@ -170,14 +170,14 @@ export function CountryProfile({ data }: CountryProfileProps) {
       </div>
 
       {/* ── Sticky Tab Bar ── */}
-      <div className="sticky top-[49px] z-40 bg-[#F7F3EE]/95 backdrop-blur border-b border-[#e8dfd2] shadow-sm">
+      <div className="sticky top-[49px] z-40 bg-canvas/95 backdrop-blur border-b border-line shadow-sm">
         <div className="max-w-5xl mx-auto px-4 flex items-center gap-0.5 overflow-x-auto scrollbar-none py-2">
           {TABS.map(({ id, label, icon: Icon }) => (
             <button key={id} onClick={() => scrollToTab(id)}
               className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all
                 ${activeTab === id
-                  ? 'bg-[#1a1208] text-[#F7F3EE] shadow-sm'
-                  : 'text-[#7a6650] hover:text-[#1a1208] hover:bg-[#eee7dc]'}`}
+                  ? 'bg-inverse text-[#F7F3EE] shadow-sm'
+                  : 'text-muted hover:text-ink hover:bg-surface-alt'}`}
             >
               <Icon size={12} />
               {label}
@@ -198,34 +198,34 @@ export function CountryProfile({ data }: CountryProfileProps) {
 
             {/* Currency Converter */}
             {data.overview.exchangeRateToUSD > 0 && (
-              <div className="bg-white rounded-2xl border border-[#e8dfd2] shadow-sm p-6">
+              <div className="bg-surface rounded-2xl border border-line shadow-sm p-6">
                 <div className="flex items-center gap-2.5 mb-4">
-                  <div className="p-2 bg-[#b07a3a]/10 rounded-xl"><ArrowRightLeft size={16} className="text-[#b07a3a]" /></div>
+                  <div className="p-2 bg-brand/10 rounded-xl"><ArrowRightLeft size={16} className="text-accent" /></div>
                   <div>
-                    <h3 className="font-bold text-[#1a1208] text-sm">Currency Converter</h3>
-                    <p className="text-xs text-[#9c8470]">1 USD = <span className="font-semibold text-[#b07a3a]">{data.overview.exchangeRateToUSD.toFixed(2)} {data.overview.currencyCode}</span></p>
+                    <h3 className="font-bold text-ink text-sm">Currency Converter</h3>
+                    <p className="text-xs text-subtle">1 USD = <span className="font-semibold text-accent">{data.overview.exchangeRateToUSD.toFixed(2)} {data.overview.currencyCode}</span></p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2.5">
-                  <div className="flex items-center bg-[#F7F3EE] border border-[#ddd4c4] rounded-xl overflow-hidden flex-1">
-                    <span className="px-3 text-[#9c8470] font-bold text-sm border-r border-[#ddd4c4] py-3">$</span>
+                  <div className="flex items-center bg-canvas border border-line rounded-xl overflow-hidden flex-1">
+                    <span className="px-3 text-subtle font-bold text-sm border-r border-line py-3">$</span>
                     <input type="number" value={usdAmount} onChange={e => setUsdAmount(e.target.value)} min="0"
-                      className="flex-1 px-3 py-3 bg-transparent text-[#1a1208] font-semibold focus:outline-none text-sm" />
+                      className="flex-1 px-3 py-3 bg-transparent text-ink font-semibold focus:outline-none text-sm" />
                   </div>
                   <ChevronRight size={16} className="text-[#c8b89a] shrink-0" />
-                  <div className="bg-[#b07a3a]/10 border border-[#b07a3a]/20 px-4 py-3 rounded-xl flex-1 text-sm">
-                    <span className="font-bold text-[#b07a3a]">{converted}</span>
-                    <span className="text-[#b07a3a]/70 ml-1 font-medium">{data.overview.currencyCode}</span>
+                  <div className="bg-brand/10 border border-accent/20 px-4 py-3 rounded-xl flex-1 text-sm">
+                    <span className="font-bold text-accent">{converted}</span>
+                    <span className="text-accent/70 ml-1 font-medium">{data.overview.currencyCode}</span>
                   </div>
                 </div>
               </div>
             )}
 
             {/* Best time to visit */}
-            <div className="bg-white rounded-2xl border border-[#e8dfd2] shadow-sm p-6">
+            <div className="bg-surface rounded-2xl border border-line shadow-sm p-6">
               <div className="flex items-center gap-2.5 mb-4">
                 <div className="p-2 bg-emerald-50 rounded-xl"><Calendar size={16} className="text-emerald-600" /></div>
-                <h3 className="font-bold text-[#1a1208] text-sm">Best Time to Visit</h3>
+                <h3 className="font-bold text-ink text-sm">Best Time to Visit</h3>
               </div>
               <div className="space-y-3">
                 <InfoRow icon="☀️" label="Best Months" value={data.bestTimeToVisit.bestMonths} />
@@ -236,14 +236,14 @@ export function CountryProfile({ data }: CountryProfileProps) {
 
             {/* Festivals */}
             {data.bestTimeToVisit.majorFestivals?.length > 0 && (
-              <div className="md:col-span-2 bg-white rounded-2xl border border-[#e8dfd2] shadow-sm p-6">
+              <div className="md:col-span-2 bg-surface rounded-2xl border border-line shadow-sm p-6">
                 <div className="flex items-center gap-2.5 mb-4">
-                  <Star size={16} className="text-[#b07a3a]" />
-                  <h3 className="font-bold text-[#1a1208] text-sm">Major Festivals & Events</h3>
+                  <Star size={16} className="text-accent" />
+                  <h3 className="font-bold text-ink text-sm">Major Festivals & Events</h3>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {data.bestTimeToVisit.majorFestivals.map((f, i) => (
-                    <span key={i} className="px-3 py-1.5 bg-[#b07a3a]/10 border border-[#b07a3a]/20 text-[#7a4f1a] rounded-full text-xs font-semibold">
+                    <span key={i} className="px-3 py-1.5 bg-brand/10 border border-accent/20 text-accent rounded-full text-xs font-semibold">
                       🎉 {f}
                     </span>
                   ))}
@@ -258,18 +258,18 @@ export function CountryProfile({ data }: CountryProfileProps) {
           <div className="grid md:grid-cols-2 gap-5">
             <Card>
               <CardLabel icon={<Thermometer size={14} className="text-sky-500" />} label="Climate" />
-              <p className="text-[#4a3828] text-sm leading-relaxed">{data.geography.climate}</p>
+              <p className="text-muted text-sm leading-relaxed">{data.geography.climate}</p>
             </Card>
             <Card>
               <CardLabel icon={<Mountain size={14} className="text-emerald-600" />} label="Landscape" />
-              <p className="text-[#4a3828] text-sm leading-relaxed">{data.geography.landscape}</p>
+              <p className="text-muted text-sm leading-relaxed">{data.geography.landscape}</p>
             </Card>
             <Card>
               <CardLabel icon={<span className="text-base">🏙️</span>} label="Major Cities" />
               <div className="space-y-2">
                 {data.geography.majorCities.map((c, i) => (
-                  <div key={i} className="flex items-center gap-2 text-[#4a3828] text-sm">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#b07a3a] shrink-0" /> {c}
+                  <div key={i} className="flex items-center gap-2 text-muted text-sm">
+                    <div className="w-1.5 h-1.5 rounded-full bg-brand shrink-0" /> {c}
                   </div>
                 ))}
               </div>
@@ -278,7 +278,7 @@ export function CountryProfile({ data }: CountryProfileProps) {
               <CardLabel icon={<span className="text-base">⛰️</span>} label="Natural Landmarks" />
               <div className="space-y-2">
                 {data.geography.naturalLandmarks.map((l, i) => (
-                  <div key={i} className="flex items-center gap-2 text-[#4a3828] text-sm">
+                  <div key={i} className="flex items-center gap-2 text-muted text-sm">
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" /> {l}
                   </div>
                 ))}
@@ -294,8 +294,8 @@ export function CountryProfile({ data }: CountryProfileProps) {
               <CardLabel icon={<span className="text-base">🎭</span>} label="Traditions" />
               <ul className="space-y-3">
                 {data.culture.traditions.map((t, i) => (
-                  <li key={i} className="flex items-start gap-2 text-[#4a3828] text-sm">
-                    <span className="text-[#b07a3a] font-bold mt-0.5 shrink-0">✓</span> {t}
+                  <li key={i} className="flex items-start gap-2 text-muted text-sm">
+                    <span className="text-accent font-bold mt-0.5 shrink-0">✓</span> {t}
                   </li>
                 ))}
               </ul>
@@ -304,27 +304,27 @@ export function CountryProfile({ data }: CountryProfileProps) {
               <CardLabel icon={<span className="text-base">🤝</span>} label="Social Norms" />
               <ul className="space-y-3">
                 {data.culture.socialNorms.map((n, i) => (
-                  <li key={i} className="flex items-start gap-2 text-[#4a3828] text-sm">
-                    <span className="text-[#9c8470] mt-0.5 shrink-0 font-bold">•</span> {n}
+                  <li key={i} className="flex items-start gap-2 text-muted text-sm">
+                    <span className="text-subtle mt-0.5 shrink-0 font-bold">•</span> {n}
                   </li>
                 ))}
               </ul>
             </Card>
             <div className="space-y-4">
-              <div className="bg-white rounded-2xl border border-[#e8dfd2] shadow-sm p-5">
+              <div className="bg-surface rounded-2xl border border-line shadow-sm p-5">
                 <CardLabel icon={<span className="text-base">📍</span>} label="Tourist Tips" />
                 <ol className="space-y-3">
                   {data.culture.etiquetteTips.map((tip, i) => (
-                    <li key={i} className="flex items-start gap-3 text-[#4a3828] text-sm">
-                      <span className="bg-[#1a1208] text-[#F7F3EE] rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">{i + 1}</span>
+                    <li key={i} className="flex items-start gap-3 text-muted text-sm">
+                      <span className="bg-inverse text-[#F7F3EE] rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">{i + 1}</span>
                       {tip}
                     </li>
                   ))}
                 </ol>
               </div>
-              <div className="bg-[#b07a3a]/8 border border-[#b07a3a]/20 rounded-2xl p-5">
+              <div className="bg-brand/8 border border-accent/20 rounded-2xl p-5">
                 <CardLabel icon={<span className="text-base">🙏</span>} label="Religion" />
-                <p className="text-[#4a3828] text-sm leading-relaxed">{data.culture.religionOverview}</p>
+                <p className="text-muted text-sm leading-relaxed">{data.culture.religionOverview}</p>
               </div>
             </div>
           </div>
@@ -335,13 +335,13 @@ export function CountryProfile({ data }: CountryProfileProps) {
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
             {data.foods.map((food, i) => (
               <motion.div key={i} whileHover={{ y: -4 }} transition={{ type: 'spring', stiffness: 300 }}
-                className="bg-white rounded-2xl border border-[#e8dfd2] shadow-sm p-5 hover:shadow-md hover:border-[#b07a3a]/30 transition-all cursor-default">
+                className="bg-surface rounded-2xl border border-line shadow-sm p-5 hover:shadow-md hover:border-accent/30 transition-all cursor-default">
                 <div className="text-3xl mb-3">
                   {['🍜','🥘','🍛','🥗','🍲','🫕','🥩','🍱','🌮','🥙'][i % 10]}
                 </div>
-                <h3 className="font-bold text-[#1a1208] mb-1.5 text-sm">{food.name}</h3>
-                <p className="text-[#7a6650] text-xs leading-relaxed mb-3">{food.description}</p>
-                <span className="inline-block text-[#7a4f1a] text-xs font-semibold bg-[#b07a3a]/10 border border-[#b07a3a]/20 px-2.5 py-1 rounded-full">
+                <h3 className="font-bold text-ink mb-1.5 text-sm">{food.name}</h3>
+                <p className="text-muted text-xs leading-relaxed mb-3">{food.description}</p>
+                <span className="inline-block text-accent text-xs font-semibold bg-brand/10 border border-accent/20 px-2.5 py-1 rounded-full">
                   ✨ {food.famousFor}
                 </span>
               </motion.div>
@@ -360,23 +360,23 @@ export function CountryProfile({ data }: CountryProfileProps) {
               ))}
             </div>
           ) : (
-            <p className="text-[#9c8470] italic text-sm">No attraction data available.</p>
+            <p className="text-subtle italic text-sm">No attraction data available.</p>
           )}
         </Section>
 
         {/* MAP */}
         <Section id="map" refs={sectionRefs} title="Interactive Map" icon={<Map size={17} />}>
-          <div className="rounded-2xl overflow-hidden border border-[#e8dfd2] shadow-sm">
+          <div className="rounded-2xl overflow-hidden border border-line shadow-sm">
             <MapSection mapData={data.mapData} />
           </div>
         </Section>
 
         {/* PHRASES */}
         <Section id="phrases" refs={sectionRefs} title="Essential Travel Phrases" icon={<MessageCircle size={17} />}>
-          <div className="bg-white rounded-2xl border border-[#e8dfd2] shadow-sm overflow-hidden">
+          <div className="bg-surface rounded-2xl border border-line shadow-sm overflow-hidden">
             {data.phrases?.length > 0
               ? <PhraseTable phrases={data.phrases} languageCode={data.languageCode} />
-              : <p className="text-[#9c8470] italic text-sm p-6">No phrase data available.</p>}
+              : <p className="text-subtle italic text-sm p-6">No phrase data available.</p>}
           </div>
         </Section>
 
@@ -446,11 +446,11 @@ function BudgetSection({ prices }: { prices: CountryData['prices'] }) {
           className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
           {cards.map(({ label, price, icon, sub }) => (
             <motion.div key={label} whileHover={{ y: -3 }} transition={{ type: 'spring', stiffness: 300 }}
-              className="bg-white border border-[#e8dfd2] rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:border-[#b07a3a]/30 hover:shadow-md transition-all">
-              <div className="w-10 h-10 rounded-xl bg-[#F7F3EE] flex items-center justify-center text-xl shrink-0">{icon}</div>
+              className="bg-surface border border-line rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:border-accent/30 hover:shadow-md transition-all">
+              <div className="w-10 h-10 rounded-xl bg-canvas flex items-center justify-center text-xl shrink-0">{icon}</div>
               <div className="min-w-0">
-                <div className="text-[9px] font-bold uppercase tracking-wider text-[#9c8470] mb-0.5">{label}</div>
-                <div className="font-extrabold text-[#1a1208] text-sm leading-tight">{scalePrice(price, active.mult)}</div>
+                <div className="text-[9px] font-bold uppercase tracking-wider text-subtle mb-0.5">{label}</div>
+                <div className="font-extrabold text-ink text-sm leading-tight">{scalePrice(price, active.mult)}</div>
                 <div className="text-[9px] text-[#b8a898] mt-0.5">{sub}</div>
               </div>
             </motion.div>
@@ -459,10 +459,10 @@ function BudgetSection({ prices }: { prices: CountryData['prices'] }) {
       </AnimatePresence>
 
       {/* Disclaimer */}
-      <div className="flex items-start gap-3 bg-[#fffbf5] border border-[#f0e4cc] rounded-xl px-4 py-3">
+      <div className="flex items-start gap-3 bg-surface-alt border border-line rounded-xl px-4 py-3">
         <span className="text-base shrink-0 mt-0.5">💡</span>
-        <p className="text-xs text-[#6b5740] leading-relaxed">
-          <span className="font-bold text-[#b07a3a]">Heads up:</span> Prices are estimates and may vary by season, location, and exchange rates. Always verify current costs before you travel.
+        <p className="text-xs text-muted leading-relaxed">
+          <span className="font-bold text-accent">Heads up:</span> Prices are estimates and may vary by season, location, and exchange rates. Always verify current costs before you travel.
         </p>
       </div>
     </div>
@@ -487,9 +487,9 @@ function Section({ id, refs, title, icon, children }: {
       transition={{ duration: 0.5, ease: 'easeOut' }}
     >
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-[#1a1208] rounded-xl text-[#F7F3EE]">{icon}</div>
-        <h2 className="text-xl font-black text-[#1a1208] tracking-tight">{title}</h2>
-        <div className="flex-1 h-px bg-[#e8dfd2]" />
+        <div className="p-2 bg-inverse rounded-xl text-[#F7F3EE]">{icon}</div>
+        <h2 className="text-xl font-black text-ink tracking-tight">{title}</h2>
+        <div className="flex-1 h-px bg-surface-alt" />
       </div>
       {children}
     </motion.div>
@@ -498,7 +498,7 @@ function Section({ id, refs, title, icon, children }: {
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-2xl border border-[#e8dfd2] shadow-sm p-5">
+    <div className="bg-surface rounded-2xl border border-line shadow-sm p-5">
       {children}
     </div>
   );
@@ -508,7 +508,7 @@ function CardLabel({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
     <div className="flex items-center gap-2 mb-3">
       {icon}
-      <span className="text-xs font-bold text-[#9c8470] uppercase tracking-wider">{label}</span>
+      <span className="text-xs font-bold text-subtle uppercase tracking-wider">{label}</span>
     </div>
   );
 }
@@ -518,8 +518,8 @@ function InfoRow({ icon, label, value }: { icon: string; label: string; value: s
     <div className="flex items-start gap-2.5">
       <span className="text-base mt-0.5 shrink-0">{icon}</span>
       <div>
-        <p className="text-[10px] font-bold text-[#9c8470] uppercase tracking-wider">{label}</p>
-        <p className="text-[#1a1208] text-sm font-medium">{value}</p>
+        <p className="text-[10px] font-bold text-subtle uppercase tracking-wider">{label}</p>
+        <p className="text-ink text-sm font-medium">{value}</p>
       </div>
     </div>
   );

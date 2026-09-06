@@ -36,7 +36,7 @@ export function PhraseTable({ phrases, languageCode }: PhraseTableProps) {
       {/* Header */}
       <div className="grid grid-cols-[1fr_1fr_1fr_44px] gap-3 px-4 pb-2">
         {['English', 'Local', 'Pronunciation', ''].map(h => (
-          <span key={h} className="text-[10px] font-black uppercase tracking-widest text-[#9c8470]">{h}</span>
+          <span key={h} className="text-[10px] font-black uppercase tracking-widest text-subtle">{h}</span>
         ))}
       </div>
 
@@ -58,9 +58,9 @@ export function PhraseTable({ phrases, languageCode }: PhraseTableProps) {
             <div
               className="grid grid-cols-[1fr_1fr_1fr_44px] gap-3 items-center px-4 py-3.5 cursor-pointer"
               onClick={() => setExpanded(isExpanded ? null : idx)}>
-              <span className="text-sm font-semibold text-[#1a1208]">{phrase.english}</span>
-              <span className="text-sm font-bold text-[#b07a3a]">{phrase.local}</span>
-              <span className="text-sm italic text-[#9c8470]">{phrase.phonetic}</span>
+              <span className="text-sm font-semibold text-ink">{phrase.english}</span>
+              <span className="text-sm font-bold text-accent">{phrase.local}</span>
+              <span className="text-sm italic text-subtle">{phrase.phonetic}</span>
               <button
                 onClick={e => { e.stopPropagation(); playAudio(phrase.local, idx); }}
                 className="w-9 h-9 rounded-xl flex items-center justify-center transition-all shrink-0"
@@ -86,11 +86,11 @@ export function PhraseTable({ phrases, languageCode }: PhraseTableProps) {
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.2 }}>
                   <div className="px-4 pb-3.5 pt-1 flex items-start gap-2.5" style={{ borderTop: '1px dashed #e8dfd2' }}>
-                    <ChevronRight size={12} className="text-[#b07a3a] mt-0.5 shrink-0" />
+                    <ChevronRight size={12} className="text-accent mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-[#b07a3a] mb-1">How to say it</p>
-                      <p className="text-xs text-[#6b5740] leading-relaxed">
-                        Say <span className="font-bold text-[#1a1208]">"{phrase.local}"</span> — pronounced <span className="italic">"{phrase.phonetic}"</span>. Tap the speaker to hear it aloud.
+                      <p className="text-[10px] font-black uppercase tracking-widest text-accent mb-1">How to say it</p>
+                      <p className="text-xs text-muted leading-relaxed">
+                        Say <span className="font-bold text-ink">"{phrase.local}"</span> — pronounced <span className="italic">"{phrase.phonetic}"</span>. Tap the speaker to hear it aloud.
                       </p>
                     </div>
                   </div>
@@ -103,8 +103,8 @@ export function PhraseTable({ phrases, languageCode }: PhraseTableProps) {
 
       {/* Footer tip */}
       <div className="flex items-center gap-2 pt-2 px-1">
-        <Volume2 size={12} className="text-[#b07a3a] shrink-0" />
-        <p className="text-[11px] text-[#9c8470]">Tap any row to expand · Tap <span className="text-[#b07a3a] font-semibold">listen</span> to hear the local pronunciation</p>
+        <Volume2 size={12} className="text-accent shrink-0" />
+        <p className="text-[11px] text-subtle">Tap any row to expand · Tap <span className="text-accent font-semibold">listen</span> to hear the local pronunciation</p>
       </div>
     </div>
   );

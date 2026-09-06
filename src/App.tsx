@@ -15,7 +15,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F3EE] font-sans text-[#1a1208]">
+    <div className="min-h-screen bg-canvas font-sans text-ink">
       <Hero onSearch={handleSearch} isLoading={false} />
       <LandingFeatures />
       <AboutSection />

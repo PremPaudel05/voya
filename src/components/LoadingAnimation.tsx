@@ -64,19 +64,19 @@ export function LoadingAnimation() {
         </div>
 
         <div>
-          <h2 className="text-xl font-black text-[#1a1208] tracking-tight">Gathering travel intelligence</h2>
+          <h2 className="text-xl font-black text-ink tracking-tight">Gathering travel intelligence</h2>
           <AnimatePresence mode="wait">
             <motion.p key={stepIndex}
               initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }}
               transition={{ duration: 0.25 }}
-              className="text-xs font-medium text-[#9c8470] mt-1">
+              className="text-xs font-medium text-subtle mt-1">
               {STEPS[stepIndex]}
             </motion.p>
           </AnimatePresence>
         </div>
 
         {/* Progress bar */}
-        <div className="w-48 h-1 bg-[#e8dfd2] rounded-full overflow-hidden">
+        <div className="w-48 h-1 bg-surface-alt rounded-full overflow-hidden">
           <motion.div className="h-full rounded-full"
             style={{ background: 'linear-gradient(90deg, #b07a3a, #d4a05a)' }}
             animate={{ width: `${Math.min(progress, 92)}%` }}
@@ -86,7 +86,7 @@ export function LoadingAnimation() {
 
       {/* Fun fact card — fixed height to prevent layout shift */}
       <div className="w-full">
-        <p className="text-[10px] font-black text-[#b07a3a] uppercase tracking-widest mb-3">Did you know?</p>
+        <p className="text-[10px] font-black text-accent uppercase tracking-widest mb-3">Did you know?</p>
         <div className="relative" style={{ height: 110 }}>
           <AnimatePresence mode="wait">
             <motion.div key={factIndex}
@@ -97,7 +97,7 @@ export function LoadingAnimation() {
               <div className="w-1 self-stretch rounded-full shrink-0" style={{ background: '#b07a3a' }} />
               <div>
                 <span className="text-xl block mb-1">{fact.emoji}</span>
-                <p className="text-xs text-[#4a3828] leading-relaxed">{fact.fact}</p>
+                <p className="text-xs text-muted leading-relaxed">{fact.fact}</p>
               </div>
             </motion.div>
           </AnimatePresence>

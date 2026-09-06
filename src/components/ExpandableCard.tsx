@@ -16,11 +16,11 @@ export function ExpandableCard({ title, icon, children, defaultExpanded = false 
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-6"
+      className="bg-surface rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-6"
     >
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full px-6 py-5 flex items-center justify-between bg-white hover:bg-slate-50 transition-colors"
+        className="w-full px-6 py-5 flex items-center justify-between bg-surface hover:bg-slate-50 transition-colors"
       >
         <div className="flex items-center gap-3 text-slate-800">
           {icon && <div className="text-blue-600">{icon}</div>}

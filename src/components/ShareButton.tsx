@@ -2,6 +2,7 @@ import { useState, useRef, useId } from 'react';
 import { Check, Copy, Mail } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { usePreferences } from '../preferences/PreferencesContext';
 
 interface ShareButtonProps {
   countryName: string;
@@ -32,6 +33,7 @@ const IconTikTok = () => (
 );
 
 export function ShareButton({ countryName }: ShareButtonProps) {
+  const { t } = usePreferences();
   const id = useId();
   const [copied, setCopied] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -84,13 +86,13 @@ export function ShareButton({ countryName }: ShareButtonProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button className="hover:text-[#1a1208] transition-colors text-xs sm:text-sm font-medium text-[#6b5740]">
-          Share
+        <button className="hover:text-ink transition-colors text-xs sm:text-sm font-medium text-muted">
+          {t('Share')}
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-64" align="center" showArrow>
         <div className="flex flex-col gap-3">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#b07a3a]">
+          <p className="text-xs font-bold uppercase tracking-widest text-accent">
             {isHomepage ? 'Share Voya' : `Share ${countryName}`}
           </p>
 
@@ -102,7 +104,7 @@ export function ShareButton({ countryName }: ShareButtonProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                className="flex items-center justify-center w-9 h-9 rounded-lg border border-[#e8dfd2] bg-white text-[#6b5740] hover:bg-[#b07a3a] hover:text-white hover:border-[#b07a3a] transition-all"
+                className="flex items-center justify-center w-9 h-9 rounded-lg border border-line bg-surface text-muted hover:bg-brand hover:text-white hover:border-accent transition-all"
               >
                 {icon}
               </a>
@@ -117,13 +119,13 @@ export function ShareButton({ countryName }: ShareButtonProps) {
               readOnly
               value={shareUrl}
               aria-label="Share link"
-              className="w-full h-9 rounded-lg border border-[#e8dfd2] bg-white px-3 pr-10 text-xs text-[#6b5740] outline-none focus:border-[#b07a3a]"
+              className="w-full h-9 rounded-lg border border-line bg-surface px-3 pr-10 text-xs text-muted outline-none focus:border-accent"
             />
             <button
               onClick={handleCopy}
               disabled={copied}
               aria-label={copied ? 'Copied' : 'Copy link'}
-              className="absolute inset-y-0 right-0 flex items-center justify-center w-9 text-[#9c8470] hover:text-[#b07a3a] transition-colors disabled:pointer-events-none"
+              className="absolute inset-y-0 right-0 flex items-center justify-center w-9 text-subtle hover:text-accent transition-colors disabled:pointer-events-none"
             >
               <div className={cn('transition-all absolute', copied ? 'scale-100 opacity-100' : 'scale-0 opacity-0')}>
                 <Check size={14} className="stroke-emerald-500" />
