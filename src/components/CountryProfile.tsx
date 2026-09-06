@@ -289,9 +289,15 @@ export function CountryProfile({ data }: CountryProfileProps) {
 
         {/* CULTURE */}
         <Section id="culture" refs={sectionRefs} title="Culture & Etiquette" icon={<Users size={17} />}>
+          <p className="text-muted text-sm leading-relaxed mb-5">
+            {data.culture.note || 'A glimpse of local traditions and everyday customs. Practices vary by region, community, and household.'}
+          </p>
           <div className="grid md:grid-cols-3 gap-5">
             <Card>
-              <CardLabel icon={<span className="text-base">🎭</span>} label="Traditions" />
+              <CardLabel icon={<span className="text-base">🎭</span>} label={data.culture.note ? 'Community & Heritage' : 'Traditions'} />
+              {data.culture.traditions.length === 0 && (
+                <p className="text-muted text-sm leading-relaxed">There is no permanent community with a shared set of local traditions here.</p>
+              )}
               <ul className="space-y-3">
                 {data.culture.traditions.map((t, i) => (
                   <li key={i} className="flex items-start gap-2 text-muted text-sm">
@@ -312,7 +318,7 @@ export function CountryProfile({ data }: CountryProfileProps) {
             </Card>
             <div className="space-y-4">
               <div className="bg-surface rounded-2xl border border-line shadow-sm p-5">
-                <CardLabel icon={<span className="text-base">📍</span>} label="Tourist Tips" />
+                <CardLabel icon={<span className="text-base">📍</span>} label="Everyday Etiquette" />
                 <ol className="space-y-3">
                   {data.culture.etiquetteTips.map((tip, i) => (
                     <li key={i} className="flex items-start gap-3 text-muted text-sm">
@@ -328,16 +334,20 @@ export function CountryProfile({ data }: CountryProfileProps) {
               </div>
             </div>
           </div>
+          <ContentReferences sources={data.contentSources?.culture} label="Culture references" />
         </Section>
 
         {/* FOOD */}
         <Section id="food" refs={sectionRefs} title="Popular Foods" icon={<Utensils size={17} />}>
+          <p className="text-muted text-sm leading-relaxed mb-5">
+            {data.foodsNote || 'Discover well-known dishes and regional favourites. Recipes vary, and many food traditions are shared across borders.'}
+          </p>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
             {data.foods.map((food, i) => (
               <motion.div key={i} whileHover={{ y: -4 }} transition={{ type: 'spring', stiffness: 300 }}
                 className="bg-surface rounded-2xl border border-line shadow-sm p-5 hover:shadow-md hover:border-accent/30 transition-all cursor-default">
-                <div className="text-3xl mb-3">
-                  {['🍜','🥘','🍛','🥗','🍲','🫕','🥩','🍱','🌮','🥙'][i % 10]}
+                <div className="text-accent mb-3" aria-hidden="true">
+                  <Utensils size={24} strokeWidth={1.5} />
                 </div>
                 <h3 className="font-bold text-ink mb-1.5 text-sm">{food.name}</h3>
                 <p className="text-muted text-xs leading-relaxed mb-3">{food.description}</p>
@@ -347,6 +357,7 @@ export function CountryProfile({ data }: CountryProfileProps) {
               </motion.div>
             ))}
           </div>
+          <ContentReferences sources={data.contentSources?.food} label="Food references" />
         </Section>
 
         {/* ATTRACTIONS */}
@@ -470,6 +481,27 @@ function BudgetSection({ prices }: { prices: CountryData['prices'] }) {
 }
 
 /* ── Helpers ── */
+
+function ContentReferences({ sources, label }: {
+  sources?: { title: string; url: string }[];
+  label: string;
+}) {
+  if (!sources?.length) return null;
+  return (
+    <details className="mt-5 text-sm text-muted">
+      <summary className="cursor-pointer w-fit rounded text-accent font-semibold focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">{label}</summary>
+      <ul className="mt-3 space-y-2">
+        {sources.map(source => (
+          <li key={source.url}>
+            <a href={source.url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-accent">
+              {source.title}<span className="sr-only"> (opens in a new tab)</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </details>
+  );
+}
 
 function Section({ id, refs, title, icon, children }: {
   id: string;
