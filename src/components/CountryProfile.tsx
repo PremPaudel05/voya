@@ -360,7 +360,7 @@ export function CountryProfile({ data }: CountryProfileProps) {
               ))}
             </div>
           ) : (
-            <p className="text-subtle italic text-sm">No attraction data available.</p>
+            <p className="text-subtle text-sm">We’re still adding verified attractions for this country.</p>
           )}
         </Section>
 

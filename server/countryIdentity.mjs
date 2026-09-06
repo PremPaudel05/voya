@@ -16,6 +16,7 @@ for (const [alias, code] of Object.entries({
   tanzania: 'TZ', moldova: 'MD', 'czech republic': 'CZ',
   turkey: 'TR', 'ivory coast': 'CI', 'cape verde': 'CV',
   palestine: 'PS', 'vatican city': 'VA', 'east timor': 'TL',
+  'congo (brazzaville)': 'CG', 'congo (kinshasa)': 'CD', 'eswatini (swaziland)': 'SZ',
 })) countries.set(normalize(alias), code);
 
 // Deliberately no fuzzy matching or automatic spelling correction.

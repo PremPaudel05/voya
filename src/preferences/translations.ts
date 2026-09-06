@@ -4,6 +4,11 @@ export const languageNames = { en: 'English', es: 'Español', fr: 'Français' };
 // Editorial country content has its own source language. These translations cover
 // account controls and navigation, without silently translating country facts.
 const messages = [
+  ['Saving settings to your account is temporarily unavailable. Appearance and language still work on this device.', 'Guardar los ajustes en tu cuenta no está disponible temporalmente. La apariencia y el idioma siguen funcionando en este dispositivo.', 'L’enregistrement des paramètres du compte est temporairement indisponible. L’apparence et la langue fonctionnent toujours sur cet appareil.'],
+  ['Account deletion is temporarily unavailable. Your account has not been deleted.', 'La eliminación de cuentas no está disponible temporalmente. Tu cuenta no se ha eliminado.', 'La suppression du compte est temporairement indisponible. Votre compte n’a pas été supprimé.'],
+  ['Check availability', 'Comprobar disponibilidad', 'Vérifier la disponibilité'],
+  ['Checking…', 'Comprobando…', 'Vérification…'],
+  ['Could not check availability. Please try again.', 'No se pudo comprobar la disponibilidad. Inténtalo de nuevo.', 'Impossible de vérifier la disponibilité. Réessayez.'],
   ['Back to exploring', 'Volver a explorar', 'Retour à la découverte'],
   ['About', 'Acerca de', 'À propos'], ['Share', 'Compartir', 'Partager'],
   ['Resources', 'Recursos', 'Ressources'], ['Privacy Policy', 'Política de privacidad', 'Politique de confidentialité'],

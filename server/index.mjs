@@ -4,7 +4,8 @@ import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { resolveCountry, resolveCountryCode } from './countryIdentity.mjs';
-import { findAttractionImage } from './attractionImages.mjs';
+import { photoRevision, photoService } from './photoService.mjs';
+import { additionalAttractions, correctAttraction } from './attractionCorrections.mjs';
 import {
   knownAttractionsData,
   knownPhrasesData,
@@ -57,22 +58,33 @@ app.get('/api/health', (_req, res) => {
   res.json({ ok: true, message: 'Server is up' });
 });
 
-// Return only images matched to the named landmark; never random travel photos.
-const imageCache = new Map();
-app.get('/api/image', async (req, res) => {
+// One country-aware resolver and recoverable delivery path for every attraction.
+app.get(['/api/image', '/api/attraction-photo'], async (req, res) => {
+  res.set('Cache-Control', 'no-store'); // Never cache failures at the CDN or browser.
   const name = String(req.query.name || '').trim();
   const country = String(req.query.country || '').trim();
   if (!name || name.length > 200 || !resolveCountryCode(country)) {
     return res.status(400).send('Invalid attraction or country');
   }
-  const key = JSON.stringify([name, country]);
-  if (imageCache.has(key)) return res.redirect(imageCache.get(key));
+  const refresh = req.query.refresh === '1';
+  const index = Number(req.query.photo || 0);
+  const revision = String(req.query.rev || '');
+  if (!Number.isInteger(index) || index < 0 || index > 2) return res.status(400).send('Invalid photo');
+  if (revision && !/^[a-f0-9]{16}$/.test(revision)) return res.status(400).send('Invalid photo version');
   try {
-    const image = await findAttractionImage(name, country);
-    if (!image) return res.status(404).send('Matching photo unavailable');
-    if (imageCache.size >= 500) imageCache.delete(imageCache.keys().next().value);
-    imageCache.set(key, image);
-    return res.redirect(image);
+    if (req.path === '/api/attraction-photo') {
+      const photo = await photoService.getPhoto(name, country, refresh);
+      if (!photo) return res.status(404).json({ error: 'A matching landmark photo could not be found.' });
+      if (!refresh) res.set('Cache-Control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800');
+      return res.json({ articleTitle: photo.articleTitle, images: photo.images.map((image, i) => ({
+        imageUrl: `/api/image?${new URLSearchParams({ name, country, photo: String(i), rev: photoRevision(image), v: '2' })}`,
+        sourceUrl: image.sourceUrl, author: image.author, license: image.license,
+      })) });
+    }
+    const image = await photoService.getImage(name, country, index, revision);
+    if (!image) return res.status(404).send('Matching landmark photo unavailable');
+    res.set('Cache-Control', 'public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000');
+    return res.type(image.type).send(image.body);
   } catch {
     return res.status(502).send('Photo service unavailable');
   }
@@ -1315,9 +1327,8 @@ const countryAliases = {
 };
 
 function getGeographyData(countryName) {
-  const normalizedName = normalizeCountryName(countryName);
-  const keyedName = countryAliases[normalizedName] || normalizedName;
-  return knownGeographyData[keyedName] || null;
+  const code = resolveCountryCode(countryName);
+  return Object.entries(knownGeographyData).find(([name]) => resolveCountryCode(name) === code)?.[1] || null;
 }
 
 function getCultureData(countryName) {
@@ -1326,13 +1337,14 @@ function getCultureData(countryName) {
   return knownCultureProfiles[keyedName] || null;
 }
 
-function getAttractionsData(countryName, capital) {
-  const normalizedName = normalizeCountryName(countryName);
-  const keyedName = countryAliases[normalizedName] || normalizedName;
-  if (knownAttractionsData[keyedName]) return knownAttractionsData[keyedName];
+export function getAttractionsData(countryName, capital) {
+  const code = resolveCountryCode(countryName);
+  if (additionalAttractions[code]) return additionalAttractions[code].map(attraction => ({ ...attraction, interestingFact: '', imageSearchQuery: attraction.name }));
+  const curated = Object.entries(knownAttractionsData).find(([name]) => resolveCountryCode(name) === code)?.[1];
+  if (curated) return curated.map(attraction => correctAttraction(attraction, code));
 
   // Use geography natural landmarks as better fallback
-  const geo = knownGeographyData[keyedName] || knownGeographyData[normalizedName];
+  const geo = getGeographyData(countryName);
   if (geo && geo.naturalLandmarks && geo.naturalLandmarks.length > 0) {
     return geo.naturalLandmarks.slice(0, 5).map((landmark, i) => ({
       name: landmark,
@@ -1343,13 +1355,8 @@ function getAttractionsData(countryName, capital) {
     }));
   }
 
-  return [
-    { name: `${countryName} National Museum`, city: capital, famousFor: "Cultural and historical exhibits", interestingFact: "A must-visit for understanding local heritage", imageSearchQuery: `${countryName} national museum` },
-    { name: `${countryName} Historic Center`, city: capital, famousFor: "Architecture and historical landmarks", interestingFact: "The heart of the country's cultural identity", imageSearchQuery: `${countryName} historic center ${capital}` },
-    { name: `${countryName} Nature Reserve`, city: capital, famousFor: "Natural beauty and biodiversity", interestingFact: "Home to unique flora and fauna", imageSearchQuery: `${countryName} nature reserve landscape` },
-    { name: `${countryName} Central Market`, city: capital, famousFor: "Local goods, crafts, and street food", interestingFact: "A vibrant hub of daily local life", imageSearchQuery: `${countryName} central market ${capital}` },
-    { name: `${countryName} Cultural Site`, city: capital, famousFor: "Traditional arts and cultural performances", interestingFact: "Showcases centuries of tradition", imageSearchQuery: `${countryName} cultural site` },
-  ];
+  // A fabricated landmark cannot have an accurate photograph.
+  return [];
 }
 
 // Language phrase sets mapped by language group
