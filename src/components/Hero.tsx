@@ -94,11 +94,9 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
       />
 
       {/* Warm ink accent — top left */}
-      <div className="absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(214,165,95,0.18) 0%, transparent 70%)' }} />
+      <div className="hero-glow absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full pointer-events-none" />
       {/* Rust accent — bottom right */}
-      <div className="absolute -bottom-24 -right-24 w-[440px] h-[440px] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(185,90,60,0.12) 0%, transparent 70%)' }} />
+      <div className="hero-rust absolute -bottom-24 -right-24 w-[440px] h-[440px] rounded-full pointer-events-none" />
 
       {/* Top nav strip */}
       <div className="sticky top-0 z-50 bg-canvas/95 backdrop-blur border-b border-line w-full">
@@ -116,7 +114,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
               inputRef.current?.focus();
               inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }}
-            className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-inverse text-[#F7F3EE] text-xs font-semibold hover:bg-[#2d1f0e] transition-colors whitespace-nowrap"
+            className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-action text-action-ink text-xs font-semibold hover:bg-action-hover transition-colors whitespace-nowrap"
           >
             <span>{t('Explore')} →</span>
           </button>
@@ -156,12 +154,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                     animate={{ opacity: 1, y: 0, rotateX: 0 }}
                     exit={{ opacity: 0, y: -16, rotateX: 20 }}
                     transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                    className="absolute left-0 whitespace-nowrap"
-                    style={{
-                      backgroundImage: 'linear-gradient(135deg, #b07a3a 0%, #d4954a 40%, #c1622c 100%)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                    }}
+                    className="discovery-gradient absolute left-0 whitespace-nowrap"
                   >
                     {discoveryWords[wordIndex]}
                   </motion.span>
@@ -188,7 +181,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                             <TextEffect
                               per="char"
                               preset="blur"
-                              className="text-[#c9b89a] text-sm whitespace-nowrap"
+                              className="text-subtle text-sm whitespace-nowrap"
                             >
                               {placeholderCountries[placeholderIndex].prefix}
                             </TextEffect>
@@ -196,7 +189,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                               per="char"
                               preset="blur"
                               delay={placeholderCountries[placeholderIndex].prefix.length * 0.03}
-                              className="text-accent/80 text-sm font-semibold whitespace-nowrap"
+                              className="text-accent text-sm font-semibold whitespace-nowrap"
                             >
                               {placeholderCountries[placeholderIndex].country + '?'}
                             </TextEffect>
@@ -219,7 +212,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                 <button
                   type="submit"
                   disabled={isLoading || !query.trim()}
-                  className="shrink-0 h-[54px] px-6 bg-inverse hover:bg-[#2d1f0e] text-[#F7F3EE] font-semibold text-sm flex items-center gap-2 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="shrink-0 h-[54px] px-6 bg-action hover:bg-action-hover text-action-ink font-semibold text-sm flex items-center gap-2 transition-colors disabled:bg-surface-alt disabled:text-subtle disabled:cursor-not-allowed"
                 >
                   {isLoading
                     ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -236,7 +229,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                   key={dest.name}
                   onClick={() => { setQuery(dest.name); onSearch(dest.name); }}
                   disabled={isLoading}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-surface border border-line text-muted hover:bg-inverse hover:text-[#F7F3EE] hover:border-[#1a1208] transition-all duration-200 shadow-sm disabled:opacity-40"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-surface border border-line text-muted hover:bg-surface-alt hover:text-ink hover:border-accent transition-all duration-200 shadow-sm disabled:opacity-40"
                 >
                   <img src={`https://flagcdn.com/w20/${dest.code}.png`} alt={dest.name} className="w-4 h-3 object-cover rounded-sm shrink-0" />
                   {dest.name}
@@ -308,7 +301,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
             </div>
             <div className="lg:max-h-none max-h-[260px] overflow-hidden">
               <WorldMap
-                lineColor="#b07a3a"
+                lineColor="var(--accent)"
                 showLabels={true}
                 dots={[
                   { start: { lat: 48.85, lng: 2.35,   label: "Paris" },      end: { lat: 35.68,  lng: 139.69, label: "Tokyo" } },
@@ -326,8 +319,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
       </div>
 
       {/* Section transition */}
-      <div className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none"
-        style={{ background: 'linear-gradient(to bottom, transparent, #F7F3EE)' }} />
+      <div className="hero-transition absolute bottom-0 left-0 right-0 h-20 pointer-events-none" />
     </div>
   );
 }

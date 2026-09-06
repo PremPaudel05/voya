@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Bookmark, Compass, Globe2, LogOut, MapPin, Settings2, Shield, Sparkles } from 'lucide-react';
 import { useAccount } from '../account/AccountContext';
+import { useTimeOfDayGreeting } from '../account/useTimeOfDayGreeting';
 import { usePreferences } from '../preferences/PreferencesContext';
 import { accountRequest, DEFAULT_PREFERENCES, loadScript } from '../services/accountService';
 import type { Account, Preferences, TravelPlan } from '../services/accountService';
@@ -49,6 +50,7 @@ function GoogleSignIn() {
 function SignedInAccount({ account, onDeleted }: { account: Account; onDeleted: () => void }) {
   const { error: accountError, refresh, logout } = useAccount();
   const { t, preferences } = usePreferences();
+  const greeting = useTimeOfDayGreeting();
   const [params, setParams] = useSearchParams();
   const requestedTab = params.get('tab');
   const tab: Tab = requestedTab === 'history' || requestedTab === 'plans' || requestedTab === 'settings' ? requestedTab : 'overview';
@@ -71,7 +73,7 @@ function SignedInAccount({ account, onDeleted }: { account: Account; onDeleted: 
   const selectTab = (next: Tab) => { const updated = new URLSearchParams(params); updated.set('tab',next); setParams(updated); setSelected(null); setMessage(''); setError(''); };
   const run = async (action: () => Promise<void>) => { setBusy(true); setError(''); setMessage(''); try { await action(); } catch (e) { setError(e instanceof Error ? e.message : t('Could not save changes. Please try again.')); } finally { setBusy(false); } };
   return <>
-    <div className="account-welcome"><div><p className="account-eyebrow">{t('Your discovery space')}</p><h1>{t('Welcome, {name}.', { name: account.user.name.split(' ')[0] })}</h1><p>{t('Your countries, your preferences.')}</p></div><button disabled={busy} onClick={() => void run(logout)} className="account-link"><LogOut size={16} />{t('Sign out')}</button></div>
+    <div className="account-welcome"><div><p className="account-eyebrow">{t('Your discovery space')}</p><h1>{t(greeting, { name: account.user.name.trim().split(/\s+/)[0] })}</h1><p>{t('Your countries, your preferences.')}</p></div><button disabled={busy} onClick={() => void run(logout)} className="account-link"><LogOut size={16} />{t('Sign out')}</button></div>
     <nav aria-label={t('My account')} className="account-tabs">{([['overview','Overview',Compass],['history','Search history',MapPin],['plans','Saved plans',Bookmark],['settings','Settings',Settings2]] as const).map(([id,label,Icon]) => <button key={id} onClick={() => selectTab(id)} aria-current={tab === id ? 'page' : undefined}><Icon size={17} /><span>{t(label)}</span></button>)}</nav>
     {(error || accountError) && !clearConfirm && <p role="alert" className="account-error">{error || accountError}</p>}
     {message && <p role="status" className="account-success">{message}</p>}

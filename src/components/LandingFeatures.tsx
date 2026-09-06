@@ -55,16 +55,12 @@ export function LandingFeatures() {
           </div>
           <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-ink leading-[1.05] max-w-2xl">
             Get to know a country,<br />
-            <span style={{
-              backgroundImage: 'linear-gradient(135deg, #b07a3a 0%, #d4954a 50%, #c1622c 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}>one detail at a time.</span>
+            <span className="discovery-gradient">one detail at a time.</span>
           </h2>
         </motion.div>
 
         {/* Feature list — editorial rows */}
-        <div className="divide-y divide-[#e8dfd2]">
+        <div className="divide-y divide-line">
           {features.map((feat, i) => (
             <motion.div
               key={feat.title}
@@ -74,7 +70,7 @@ export function LandingFeatures() {
               transition={{ duration: 0.45, delay: i * 0.04 }}
               className="group flex items-start gap-6 py-6 cursor-default"
             >
-              <span className="text-[11px] font-black tracking-widest text-[#c8b89a] w-6 shrink-0 pt-1">{feat.num}</span>
+              <span className="text-[11px] font-black tracking-widest text-subtle w-6 shrink-0 pt-1">{feat.num}</span>
               <div className="w-9 h-9 rounded-xl bg-inverse flex items-center justify-center shrink-0 group-hover:bg-brand transition-colors duration-300">
                 <feat.icon size={16} className="text-[#F7F3EE]" />
               </div>
@@ -100,7 +96,7 @@ export function LandingFeatures() {
           <a
             href="#top"
             onClick={e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-            className="shrink-0 px-7 py-3.5 rounded-full bg-inverse text-[#F7F3EE] font-bold text-sm hover:bg-brand transition-colors duration-300 flex items-center gap-2"
+            className="shrink-0 px-7 py-3.5 rounded-full bg-action text-action-ink font-bold text-sm hover:bg-action-hover transition-colors duration-300 flex items-center gap-2"
           >
             Start exploring <span>→</span>
           </a>
