@@ -6,6 +6,7 @@ export interface AccountState {
   loading: boolean;
   error: string;
   refresh: () => Promise<void>;
+  refreshConfig: () => Promise<void>;
   login: (credential: string, turnstileToken: string) => Promise<void>;
   logout: () => Promise<void>;
   saveSettings: (settings: Preferences) => Promise<void>;

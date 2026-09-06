@@ -23,7 +23,7 @@ function Toggle({ checked, onChange, title, description, disabled = false }: { c
 }
 
 export function AccountSettings({ initial, onDeleted, onClearHistory }: { initial: Preferences; onDeleted: () => void; onClearHistory: () => void }) {
-  const { account, config, saveSettings, deleteAccount } = useAccount();
+  const { account, config, saveSettings, deleteAccount, refreshConfig } = useAccount();
   const { preferences, update, t } = usePreferences();
   const [trip, setTrip] = useState(initial);
   const [busy, setBusy] = useState(false);
@@ -34,6 +34,7 @@ export function AccountSettings({ initial, onDeleted, onClearHistory }: { initia
   const [confirmation, setConfirmation] = useState('');
   const [permission, setPermission] = useState(() => 'Notification' in window ? Notification.permission : 'unsupported');
   const [permissionBusy, setPermissionBusy] = useState(false);
+  const [checking, setChecking] = useState(false);
   const backendReady = (config?.settingsVersion ?? 0) >= 2;
   useEffect(() => {
     const refresh = () => setPermission('Notification' in window ? Notification.permission : 'unsupported');
@@ -65,7 +66,7 @@ export function AccountSettings({ initial, onDeleted, onClearHistory }: { initia
   return <>
     <form className="account-settings" onSubmit={event => { event.preventDefault(); void save(); }}>
       <div className="settings-intro"><h2>{t('Make Voya yours')}</h2><p>{t('Choose your appearance, language, and notifications.')}</p></div>
-      {!backendReady && <p role="status" className="account-banner">{t('Account settings are being updated. Please try again shortly.')}</p>}
+      {!backendReady && <p role="status" className="account-banner">{t('Saving settings to your account is temporarily unavailable. Appearance and language still work on this device.')}</p>}
       <section className="settings-card" aria-labelledby="appearance-title">
         <div className="settings-heading"><Sun size={21} /><div><h3 id="appearance-title">{t('Appearance')}</h3><p>{t('Choose a comfortable look for the whole site.')}</p></div></div>
         <fieldset className="theme-options"><legend className="sr-only">{t('Appearance')}</legend>{THEMES.map(theme => {
@@ -107,7 +108,7 @@ export function AccountSettings({ initial, onDeleted, onClearHistory }: { initia
       {message && <p role="status" className="account-success">{message}</p>}
       {error && !deleting && <p role="alert" className="account-error">{error}</p>}
     </form>
-    <section className="settings-card account-danger" aria-labelledby="account-title"><div className="settings-heading"><UserRound size={21} /><div><h3 id="account-title">{t('Account')}</h3><p>{t('Signed in with Google')} · {account?.user.email}</p></div></div><h4>{t('Delete account')}</h4><p className="settings-help">{t('Permanently delete your Voya profile, preferences, saved searches, and plans. All devices will be signed out.')}</p><button type="button" className="account-button danger" disabled={!backendReady || busy} onClick={() => { setDeleting(true); setEmail(''); setConfirmation(''); setError(''); }}><Trash2 size={16} />{t('Delete account')}</button></section>
+    <section className="settings-card account-danger" aria-labelledby="account-title"><div className="settings-heading"><UserRound size={21} /><div><h3 id="account-title">{t('Account')}</h3><p>{t('Signed in with Google')} · {account?.user.email}</p></div></div><h4>{t('Delete account')}</h4><p className="settings-help">{t('Permanently delete your Voya profile, preferences, saved searches, and plans. All devices will be signed out.')}</p>{!backendReady && <div className="account-banner" role="status"><p>{t('Account deletion is temporarily unavailable. Your account has not been deleted.')}</p><button type="button" className="account-link" disabled={checking} onClick={async () => { setChecking(true); try { await refreshConfig(); } catch { setError(t('Could not check availability. Please try again.')); } finally { setChecking(false); } }}>{t(checking ? 'Checking…' : 'Check availability')}</button></div>}<button type="button" className="account-button danger" disabled={!backendReady || busy} onClick={() => { setDeleting(true); setEmail(''); setConfirmation(''); setError(''); }}><Trash2 size={16} />{t('Delete account')}</button></section>
     <AccountDialog open={deleting} title={t('Delete your Voya account?')} busy={busy} onClose={() => { if (!busy) setDeleting(false); }}>
       <p>{t('Permanently delete your Voya profile, preferences, saved searches, and plans. All devices will be signed out.')}</p><p className="settings-help">{t('This cannot be undone. Your Google account is unaffected. Minimal usage records without your name, email, or saved content remain until the next daily cleanup to prevent limit resets.')}</p>
       <form onSubmit={event => { event.preventDefault(); void removeAccount(); }}><label className="settings-field">{t('Account email')}<input type="email" required autoComplete="email" value={email} onChange={event => setEmail(event.target.value)} disabled={busy} /></label><label className="settings-field">{t('Type DELETE to confirm')}<input autoComplete="off" spellCheck={false} value={confirmation} onChange={event => setConfirmation(event.target.value)} disabled={busy} /></label>

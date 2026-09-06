@@ -9,6 +9,10 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   const [config, setConfig] = useState<AccountConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const refreshConfig = useCallback(async () => {
+    const value = await accountRequest<AccountConfig>('/config', { cache: 'no-store', signal: AbortSignal.timeout(10000) });
+    setConfig(value);
+  }, []);
   const refresh = useCallback(async () => {
     if (!sessionToken()) { setAccount(null); return; }
     try { setAccount(await accountRequest<Account>('/me')); setError(''); }
@@ -24,9 +28,11 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     }
     const sync = (event: StorageEvent) => { if (event.key === 'voya-session' || event.key === null) void refresh(); };
     const expire = () => setAccount(null);
+    const checkAvailability = () => { void refreshConfig().catch(() => {}); };
     window.addEventListener('storage', sync); window.addEventListener('voya-session-expired', expire);
-    return () => { active = false; window.removeEventListener('storage', sync); window.removeEventListener('voya-session-expired', expire); };
-  }, [refresh]);
+    window.addEventListener('focus', checkAvailability);
+    return () => { active = false; window.removeEventListener('storage', sync); window.removeEventListener('voya-session-expired', expire); window.removeEventListener('focus', checkAvailability); };
+  }, [refresh, refreshConfig]);
   const login = useCallback(async (credential: string, turnstileToken: string) => {
     const result = await accountRequest<Account & { token: string }>('/auth/google', { method: 'POST', body: JSON.stringify({ credential, turnstileToken }) });
     storeSession(result.token); setAccount(result); setError('');
@@ -50,5 +56,5 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     if (!sessionToken()) return;
     await accountRequest('/history', { method: 'POST', body: JSON.stringify({ countryName }) });
   }, []);
-  return <AccountContext.Provider value={{ account, config, loading, error, refresh, login, logout, saveSettings, deleteAccount, recordSearch }}>{children}</AccountContext.Provider>;
+  return <AccountContext.Provider value={{ account, config, loading, error, refresh, refreshConfig, login, logout, saveSettings, deleteAccount, recordSearch }}>{children}</AccountContext.Provider>;
 }
