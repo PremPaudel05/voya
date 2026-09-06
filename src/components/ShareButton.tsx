@@ -43,8 +43,8 @@ export function ShareButton({ countryName }: ShareButtonProps) {
   const encodedUrl = encodeURIComponent(shareUrl);
   const isHomepage = countryName === 'Voya';
   const shareText = isHomepage
-    ? 'Voya — your free AI travel guide for every country on Earth'
-    : `Explore ${countryName} with Voya — your free AI travel guide`;
+    ? 'Discover countries, cultures, famous places, and everyday life with Voya'
+    : `Get to know ${countryName} with Voya — culture, famous places, food, and local insights`;
   const encodedText = encodeURIComponent(shareText);
 
   const handleCopy = () => {
@@ -77,7 +77,7 @@ export function ShareButton({ countryName }: ShareButtonProps) {
     {
       label: 'Email',
       icon: <Mail size={15} />,
-      href: `mailto:?subject=Check out Voya Travel&body=${encodedText}%0A${encodedUrl}`,
+      href: `mailto:?subject=Discover the world with Voya&body=${encodedText}%0A${encodedUrl}`,
     },
   ];
 

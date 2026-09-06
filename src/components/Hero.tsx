@@ -36,17 +36,17 @@ const topDestinations = [
 ];
 
 const placeholderCountries = [
-  { prefix: "Dreaming of",   country: "Japan" },
-  { prefix: "Planning a trip to", country: "Morocco" },
+  { prefix: "Curious about", country: "Japan" },
+  { prefix: "Discovering",   country: "Morocco" },
   { prefix: "Curious about", country: "Iceland" },
   { prefix: "Exploring",     country: "Peru" },
-  { prefix: "Heading to",    country: "Italy" },
-  { prefix: "Wandering",     country: "Portugal" },
-  { prefix: "Adventuring in",country: "Kenya" },
+  { prefix: "Getting to know", country: "Italy" },
+  { prefix: "Learning about", country: "Portugal" },
+  { prefix: "Exploring",     country: "Kenya" },
   { prefix: "Discovering",   country: "Thailand" },
 ];
 
-const travelWords = ["wander", "explore", "discover", "roam"];
+const discoveryWords = ["explore", "discover"];
 
 export function Hero({ onSearch, isLoading }: HeroProps) {
   const [query, setQuery] = useState('');
@@ -70,7 +70,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
   }, []);
 
   useEffect(() => {
-    const t = setInterval(() => setWordIndex(i => (i + 1) % travelWords.length), 3200);
+    const t = setInterval(() => setWordIndex(i => (i + 1) % discoveryWords.length), 3200);
     return () => clearInterval(t);
   }, []);
 
@@ -103,7 +103,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
       <div className="w-full max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-xl font-black tracking-tight text-[#1a1208]">Voya</span>
-          <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#b07a3a] bg-[#b07a3a]/10 px-2 py-0.5 rounded-full">Travel</span>
+          <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#b07a3a] bg-[#b07a3a]/10 px-2 py-0.5 rounded-full">World</span>
         </div>
         <div className="flex items-center gap-2 sm:gap-5 text-sm font-medium text-[#6b5740]">
           <button onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-[#1a1208] transition-colors text-xs sm:text-sm">About</button>
@@ -138,7 +138,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
             <div className="flex items-center gap-2.5 mb-7">
               <div className="h-px w-8 bg-[#b07a3a]" />
               <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-[#b07a3a]">
-                Instant travel intelligence
+                Country insights & culture
               </span>
             </div>
 
@@ -162,16 +162,16 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                       WebkitTextFillColor: 'transparent',
                     }}
                   >
-                    {travelWords[wordIndex]}
+                    {discoveryWords[wordIndex]}
                   </motion.span>
                 </AnimatePresence>
                 {/* spacer to hold width */}
-                <span className="invisible">{travelWords.reduce((a, b) => a.length > b.length ? a : b)}</span>
+                <span className="invisible">{discoveryWords.reduce((a, b) => a.length > b.length ? a : b)}</span>
               </span>
             </h1>
 
             <p className="text-[#6b5740] text-lg leading-relaxed mb-9 max-w-[480px]">
-              Type any country. Get instant, curated insights: culture, food, phrases, costs, and a day-by-day itinerary built just for you.
+              Get to know a country through its culture, famous places, food, language, and the everyday details that make it distinctive.
             </p>
 
             {/* Search */}
