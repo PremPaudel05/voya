@@ -132,11 +132,12 @@ export function Footer() {
       {/* Modals */}
       {open === 'privacy' && (
         <Modal title="Privacy Policy" onClose={() => setOpen(null)}>
-          <p><strong>Last updated:</strong> {new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-          <p>Voya does not collect, store, or sell any personal data. No account creation is required and no tracking cookies are used.</p>
-          <p><strong>Search queries:</strong> Country names you type are sent to an AI provider to generate travel content. They are not linked to your identity and are not retained after the response is delivered.</p>
-          <p><strong>Analytics:</strong> I may use privacy-respecting, anonymous analytics (page views only) to improve the product. No personal identifiers are collected.</p>
-          <p><strong>Third-party services:</strong> Voya uses an AI language model to generate travel insights. Please review the AI provider's own privacy policy for details on how prompts are handled on their end.</p>
+          <p><strong>Last updated:</strong> <time dateTime="2026-09-06">6 September 2026</time></p>
+          <p>Account creation and sign-in are optional for exploring Voya's country guides. Sign in to create and save personalised trip plans. Voya does not sell your personal data.</p>
+          <p><strong>Account information:</strong> If you choose to sign in with Google, Voya stores your name, email address, travel preferences, and saved plans to provide account features. A session token is stored in your browser to keep you signed in.</p>
+          <p><strong>Search history:</strong> When you are signed in and history saving is enabled, country searches are saved to your account. You can turn off history saving in Settings or clear saved searches in Search history.</p>
+          <p><strong>Analytics:</strong> I may use privacy-respecting, anonymous analytics (page views only) to improve the product. No personal identifiers are collected for these analytics.</p>
+          <p><strong>Third-party services:</strong> Voya uses Google for sign-in, Cloudflare for account services and security checks, and AI services for personalised trip plans. When you generate a plan, your destination and travel preferences are sent to the AI provider. Please review these providers' privacy policies for details on how they handle data.</p>
           <p>For any privacy concerns, reach me at <a href="mailto:leduopprem15@gmail.com" className="text-[#b07a3a] underline">leduopprem15@gmail.com</a>.</p>
         </Modal>
       )}
@@ -177,7 +178,7 @@ export function Footer() {
           </div>
           <p><strong>Common questions:</strong></p>
           <ul className="list-disc pl-5 space-y-2">
-            <li><strong>Is Voya free?</strong> Yes, always. No subscription, no account required.</li>
+            <li><strong>Is Voya free?</strong> Yes, always. No subscription. Account creation and sign-in are optional for exploring country guides. Sign in to create and save personalised trip plans.</li>
             <li><strong>How accurate is the information?</strong> Generally reliable, but AI can make mistakes. See the AI Accuracy Notice for details.</li>
             <li><strong>Can I suggest a feature?</strong> Absolutely. Email me with your idea.</li>
             <li><strong>I found incorrect information.</strong> Please report it via email so I can investigate and improve.</li>
