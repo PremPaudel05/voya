@@ -23,12 +23,19 @@ export interface CountryData {
     socialNorms: string[];
     religionOverview: string;
     etiquetteTips: string[];
+    note?: string;
   };
   foods: {
     name: string;
     description: string;
     famousFor: string;
   }[];
+  foodsNote?: string;
+  contentVersion?: string;
+  contentSources?: {
+    food: { title: string; url: string }[];
+    culture: { title: string; url: string }[];
+  };
   attractions: {
     name: string;
     city: string;

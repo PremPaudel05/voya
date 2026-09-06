@@ -15,7 +15,8 @@ import {
 } from './countryData.mjs';
 import fs from 'fs';
 import path from 'path';
-import { extraCultureProfiles, extraFoodData, extraMapCategoryData } from './indexExtra.mjs';
+import { extraMapCategoryData } from './indexExtra.mjs';
+import { getCountryContent } from './content/index.mjs';
 
 const app = express();
 
@@ -1331,12 +1332,6 @@ function getGeographyData(countryName) {
   return Object.entries(knownGeographyData).find(([name]) => resolveCountryCode(name) === code)?.[1] || null;
 }
 
-function getCultureData(countryName) {
-  const normalizedName = normalizeCountryName(countryName);
-  const keyedName = countryAliases[normalizedName] || normalizedName;
-  return knownCultureProfiles[keyedName] || null;
-}
-
 export function getAttractionsData(countryName, capital) {
   const code = resolveCountryCode(countryName);
   if (additionalAttractions[code]) return additionalAttractions[code].map(attraction => ({ ...attraction, interestingFact: '', imageSearchQuery: attraction.name }));
@@ -1992,278 +1987,6 @@ function getMapCategoryData(countryName) {
   return knownMapCategoryData[keyedName] || null;
 }
 
-const knownCultureProfiles = {
-  nepal: {
-    traditions: ["Dashain (major Hindu festival)", "Tihar (festival of lights)", "Holi (festival of colors)", "Teej (women's festival)", "Bisket Jatra (Nepali New Year celebration)"],
-    socialNorms: ["Greet with Namaste (palms together)", "Respect elders and take off shoes before entering homes", "Public displays of affection are usually frowned upon", "Eating with the right hand is customary", "Modesty in dress and behavior is expected"],
-    religionOverview: "Predominantly Hindu (~80%) with significant Buddhist community (~10%), plus Islam and Christianity in smaller numbers. Many cultural practices blend Hindu and Buddhist traditions.",
-    etiquetteTips: ["Remove shoes before entering temples, monasteries, and homes", "Do not touch people's heads (especially children), it is considered sacred", "Use your right hand for eating and exchanging items", "Ask permission before taking photographs in religious/cultural sites", "Respect local dress codes at temples and sacred areas"],
-  },
-  japan: {
-    traditions: ["Cherry blossom viewing (Hanami) in spring", "Obon festival (honoring ancestors)", "Matsuri (local shrine festivals with parades and fireworks)", "Shogatsu (New Year celebrations with temple visits)", "Tea ceremony (Chado) as a cultural art form"],
-    socialNorms: ["Remove shoes before entering homes and certain venues", "Bowing is the standard greeting, with depth showing respect level", "Avoid eating or drinking while walking", "Respect for elders and hierarchy is deeply ingrained", "Punctuality is extremely important in all settings"],
-    religionOverview: "A syncretic blend of Shintoism and Buddhism practiced by most of the population. Many Japanese observe traditions from both religions, visiting Shinto shrines for New Year and Buddhist temples for funerals.",
-    etiquetteTips: ["Bow when greeting or showing respect, especially to elders", "Do not tip at restaurants or hotels — it can be considered rude", "Remove shoes before entering temples, homes, and some restaurants", "Avoid talking loudly on public transportation", "Do not stick chopsticks upright in rice — it resembles a funeral rite", "Use two hands when giving or receiving business cards"],
-  },
-  france: {
-    traditions: ["Bastille Day (July 14, national celebration of French independence)", "Christmas markets and elaborate holiday feasts", "Carnival of Nice (one of the world's largest carnival celebrations)", "Wine harvest festivals (Vendanges) across wine regions", "Galette des Rois (King's Cake) on Epiphany"],
-    socialNorms: ["French people value intellectual discussion and spirited debate", "Formality is important — use Monsieur/Madame until invited otherwise", "Kissing on both cheeks (la bise) is a common greeting among friends", "Long, leisurely meals are a cherished tradition", "Punctuality is appreciated but slight tardiness is tolerated socially"],
-    religionOverview: "Historically Catholic, France is now one of the most secular nations in Europe. About 50% identify as Catholic, with growing Muslim (~8%), Protestant, Jewish, and non-religious populations. Secularism (laïcité) is a core value.",
-    etiquetteTips: ["Always greet with 'Bonjour' (morning) or 'Bonsoir' (evening) when entering shops", "Avoid discussing money, salary, or asking overly personal questions", "Table manners matter — keep hands on the table (not in your lap) during meals", "Try to speak some French before switching to English — effort is appreciated", "Dress well — appearance is valued in French culture"],
-  },
-  'united states': {
-    traditions: ["Thanksgiving (family gathering with turkey dinner)", "Independence Day (July 4th fireworks and celebrations)", "Halloween (costumes and trick-or-treating)", "Super Bowl Sunday (major sports and social event)", "Black Friday (post-Thanksgiving shopping tradition)"],
-    socialNorms: ["Friendliness and casual informality are common in daily interactions", "Punctuality is valued in business and social settings", "Personal space and privacy are important", "Direct, open communication is preferred over indirect hints", "Tipping is expected and an important part of service workers' income"],
-    religionOverview: "A diverse religious landscape with Protestant Christianity being the largest group (~40%), followed by Catholicism (~20%), with significant Jewish, Muslim, Buddhist, Hindu, and growing non-religious populations.",
-    etiquetteTips: ["Handshakes are the standard business greeting", "Tipping 15-20% at restaurants is expected and important", "Smiling and eye contact signal friendliness and honesty", "Use first names unless instructed otherwise in formal settings", "Respect local laws — they vary significantly by state"],
-  },
-  brazil: {
-    traditions: ["Carnival (world-famous pre-Lenten celebration, especially in Rio)", "Festas Juninas (June festivals with traditional dress, music, and food)", "Capoeira (Afro-Brazilian martial art blending dance and music)", "Samba and bossa nova music culture", "Reveillon (New Year's Eve celebration with white clothing on beaches)"],
-    socialNorms: ["Brazilians are warm, affectionate, and expressive in conversation", "Physical closeness and touch during conversation are normal", "Family is central to Brazilian social life", "Spontaneity and joy in celebration are deeply valued", "Arriving slightly late to social events is common and accepted"],
-    religionOverview: "Predominantly Catholic (~65%), with rapidly growing Evangelical/Pentecostal communities (~25%), plus Afro-Brazilian religions like Candomblé and Umbanda, and a growing secular population.",
-    etiquetteTips: ["Greet with a handshake or kiss on the cheek — varies by region", "Learn a few Portuguese phrases — Brazilians appreciate the effort", "Be prepared for energetic and lively social interactions", "Dress colorfully and embrace the festive atmosphere", "Accept offers of coffee or food — it shows respect for hospitality"],
-  },
-  mexico: {
-    traditions: ["Día de Muertos (Day of the Dead, honoring deceased loved ones)", "Las Posadas (nine-day Christmas celebration reenacting Mary and Joseph's journey)", "Piñata tradition at birthday parties and celebrations", "Quinceañera (coming-of-age celebration for 15-year-old girls)", "Guelaguetza (Oaxacan indigenous dance festival)"],
-    socialNorms: ["Family is the foundation of Mexican social life", "Politeness, respect, and warmth form the basis of interaction", "Personal relationships are essential before business dealings", "Hospitality and generosity are highly valued cultural traits", "Mealtime is social — lunch is the main meal and can last hours"],
-    religionOverview: "Predominantly Catholic (~80%) with deep roots in colonial history. Indigenous spiritual practices are blended with Catholicism in many regions. Small but growing Protestant and non-religious communities exist.",
-    etiquetteTips: ["Greet with a handshake or embrace — closeness is normal", "Use formal titles (Señor, Señora) with people you don't know well", "Accept offers of food and drink — refusing can be seen as impolite", "Respect Indigenous cultures, traditions, and sacred sites", "Learn some Spanish phrases — locals appreciate the effort, even basic greetings"],
-  },
-  india: {
-    traditions: ["Diwali (festival of lights celebrating good over evil)", "Holi (festival of colors celebrating spring and love)", "Navratri (nine-night festival of dance and worship)", "Eid and Christmas are widely celebrated across communities", "Regional festivals vary enormously — every state has unique celebrations"],
-    socialNorms: ["Greet with 'Namaste' — palms together with a slight bow", "Deep respect for elders, teachers (gurus), and parents", "Family loyalty and collective decision-making are paramount", "Social hierarchy and age often determine interaction styles", "Hospitality is sacred — guests are treated as divine (Atithi Devo Bhava)"],
-    religionOverview: "The world's most religiously diverse nation: Hindu (~80%), Islam (~14%), Christianity (~2.3%), Sikhism (~1.7%), Buddhism, Jainism, and many tribal religions. Religious festivals and practices profoundly shape daily life.",
-    etiquetteTips: ["Use your right hand for eating, greeting, and exchanging items", "Remove shoes before entering homes, temples, and mosques", "Ask permission before photographing people or religious sites", "Respect sacred animals, especially cows, which are revered", "Dress modestly at religious sites — cover shoulders and knees", "Bargaining is expected and enjoyed in markets and street shops"],
-  },
-  thailand: {
-    traditions: ["Songkran (Thai New Year water festival in April)", "Loy Krathong (floating lantern and flower festival)", "Buddhist holidays and ceremonies throughout the year", "Local temple fairs (Ngan Wat) with food and entertainment", "Royal ceremonies and celebrations honoring the monarchy"],
-    socialNorms: ["Respect for the monarchy is deeply held and legally enforced", "The Thai smile (yim) communicates politeness, apology, and friendliness", "Avoiding public confrontation and maintaining calm (jai yen) is valued", "Hierarchy and seniority determine social interaction", "Buddhism influences daily life, ethics, and social behavior"],
-    religionOverview: "Over 94% of the population practices Theravada Buddhism, which shapes art, architecture, education, and daily routines. Small Muslim (~5%), Christian, and Hindu communities exist, particularly in southern provinces.",
-    etiquetteTips: ["Perform the wai greeting — press palms together and bow slightly", "Never disrespect the Thai royal family — it is a criminal offense", "Remove shoes before entering temples, homes, and some shops", "Do not point your feet at people or Buddha images — feet are considered the lowest part of the body", "Do not touch anyone's head — it is considered the most sacred part of the body", "Pour drinks for others before yourself, and always accept a drink offered by an elder"],
-  },
-  'south korea': {
-    traditions: ["Chuseok (Harvest Festival, similar to Thanksgiving)", "Seollal (Lunar New Year with family gatherings and ancestral rites)", "Kimchi-making season (Kimjang, a communal tradition)", "Hanbok (traditional clothing worn on holidays)", "Tea ceremonies and temple stay programs"],
-    socialNorms: ["Respect for elders is fundamental — use honorific speech (존댓말)", "Collective harmony is valued over individual expression", "Punctuality is highly valued in business and social settings", "Removing shoes before entering homes is standard", "Modesty in dress and behavior is expected", "Drinking culture is social — pouring for others shows respect"],
-    religionOverview: "A diverse religious landscape with a significant portion identifying as irreligious (~56%). Major religions include Protestantism (~20%), Buddhism (~16%), and Catholicism (~8%). Confucian values deeply influence social ethics.",
-    etiquetteTips: ["Bow when greeting or showing respect, especially to elders", "Use two hands when giving or receiving objects, especially money or gifts", "Avoid writing names in red ink, as it is traditionally associated with the deceased", "Don't stick chopsticks upright in your rice bowl, as it resembles offerings to the dead", "Pour drinks for others before yourself, and always accept a drink offered by an elder"],
-  },
-  'korea (republic of)': {
-    traditions: ["Chuseok (Harvest Festival, similar to Thanksgiving)", "Seollal (Lunar New Year with family gatherings and ancestral rites)", "Kimchi-making season (Kimjang, a communal tradition)", "Hanbok (traditional clothing worn on holidays)", "Tea ceremonies and temple stay programs"],
-    socialNorms: ["Respect for elders is fundamental — use honorific speech (존댓말)", "Collective harmony is valued over individual expression", "Punctuality is highly valued in business and social settings", "Removing shoes before entering homes is standard", "Modesty in dress and behavior is expected", "Drinking culture is social — pouring for others shows respect"],
-    religionOverview: "A diverse religious landscape with a significant portion identifying as irreligious (~56%). Major religions include Protestantism (~20%), Buddhism (~16%), and Catholicism (~8%). Confucian values deeply influence social ethics.",
-    etiquetteTips: ["Bow when greeting or showing respect, especially to elders", "Use two hands when giving or receiving objects, especially money or gifts", "Avoid writing names in red ink, as it is traditionally associated with the deceased", "Don't stick chopsticks upright in your rice bowl, as it resembles offerings to the dead", "Pour drinks for others before yourself, and always accept a drink offered by an elder"],
-  },
-  china: {
-    traditions: ["Chinese New Year (Spring Festival with fireworks and family reunions)", "Mid-Autumn Festival (mooncakes and lanterns)", "Dragon Boat Festival (dragon boat races and zongzi)", "Qingming Festival (tomb sweeping to honor ancestors)", "Lantern Festival (marking end of New Year celebrations)"],
-    socialNorms: ["Respect for elders and authority is deeply important", "Gift-giving is common, but gifts are refused before accepting", "Collective harmony (mianzi/face) is central to interactions", "Tea culture is integral to hospitality and business", "Punctuality is important in business settings"],
-    religionOverview: "Officially atheist state, but folk religion, Buddhism (~18%), Taoism, and Confucianism profoundly influence culture. Small Christian (~5%) and Muslim (~2%) communities exist.",
-    etiquetteTips: ["Present and receive business cards with both hands", "Avoid giving clocks, umbrellas, or white/black gifts — they symbolize death", "Do not stick chopsticks upright in rice", "Learn a few Mandarin phrases — effort is appreciated", "Avoid discussing politics, Taiwan, or Tibet with strangers"],
-  },
-  germany: {
-    traditions: ["Oktoberfest (world-famous beer festival in Munich)", "Christmas markets (Weihnachtsmärkte) throughout the country", "Karneval/Fasching (pre-Lenten carnival celebrations)", "Maifest (May Day celebrations)", "Reunification Day (October 3rd national holiday)"],
-    socialNorms: ["Punctuality is extremely important — being late is rude", "Direct, honest communication is valued over small talk", "Privacy and personal boundaries are respected", "Recycling and environmental consciousness are deeply ingrained", "Sunday is a rest day — most shops close (Sonntagsruhe)"],
-    religionOverview: "Roughly equal Catholic and Protestant populations (~27% each), with growing Muslim (~6%) and non-religious communities. Eastern Germany is one of the most secular regions in the world.",
-    etiquetteTips: ["Be punctual — arrive on time or a few minutes early", "Shake hands firmly when greeting someone", "Don't make the OK hand gesture — it can be offensive", "Address people formally (Herr/Frau) until invited to use first names", "Respect quiet hours (Ruhezeit) — avoid loud noise during midday and late evening"],
-  },
-  italy: {
-    traditions: ["Carnevale di Venezia (Venice Carnival with elaborate masks)", "Palio di Siena (historic horse race)", "Ferragosto (August 15th midsummer holiday)", "Christmas Nativity scenes (presepi) are national art", "La Passeggiata (evening stroll tradition in towns)"],
-    socialNorms: ["Family is the core of Italian social life", "Meals are sacred — lunch and dinner are social events", "Fashion and personal appearance are highly valued", "Animated conversation with hand gestures is normal", "Regional identity is strong — Italians identify with their city or region"],
-    religionOverview: "Predominantly Catholic (~80%), as the seat of the Vatican. However, regular church attendance has declined. Small Protestant, Muslim, and non-religious populations exist.",
-    etiquetteTips: ["Greet with a handshake or kiss on both cheeks among friends", "Dress well — Italians notice and appreciate good style", "Never order cappuccino after 11am — espresso is the afternoon drink", "Tipping is not required but rounding up is appreciated", "Learn a few Italian phrases — locals love the effort"],
-  },
-  'united kingdom': {
-    traditions: ["Bonfire Night (Guy Fawkes Night, November 5th)", "Royal ceremonies and Trooping the Colour", "Afternoon tea tradition", "Remembrance Day (honoring veterans on November 11th)", "Boxing Day (December 26th, shopping and sports)"],
-    socialNorms: ["Queuing (standing in line) is sacred — never cut in line", "Politeness, understatement, and dry humor are valued", "Personal space and privacy are important", "Small talk about weather is a national pastime", "Excessive directness can be seen as rude"],
-    religionOverview: "Historically Church of England (Anglican), with significant Catholic, Muslim (~5%), Hindu, Sikh, and Jewish communities. About half the population identifies as non-religious.",
-    etiquetteTips: ["Queue patiently — cutting in line is a serious social offense", "Say 'please', 'thank you', and 'sorry' frequently", "Tipping 10-15% at restaurants is customary", "Don't ask personal questions about salary or age", "Respect the monarchy — even casual criticism can offend some people"],
-  },
-  australia: {
-    traditions: ["Australia Day (January 26th national celebrations)", "ANZAC Day (April 25th, honoring veterans)", "Melbourne Cup (major horse racing event)", "Christmas celebrated in summer with barbecues", "Aboriginal cultural ceremonies and Dreamtime stories"],
-    socialNorms: ["Egalitarianism — everyone is treated equally regardless of status", "Casual, informal communication style (mate culture)", "Outdoor lifestyle and love of sports", "Tall poppy syndrome — bragging or showing off is frowned upon", "Barbecues (barbies) are a major social activity"],
-    religionOverview: "Increasingly secular, with Christianity (~44%, declining), Islam (~3%), Buddhism (~2.4%), Hinduism (~2.7%), and a growing non-religious population (~39%). Aboriginal spiritual practices are ancient and respected.",
-    etiquetteTips: ["Be casual and friendly — formality can seem pretentious", "Don't tip heavily — it's not expected but appreciated for good service", "Respect Indigenous Australian cultures and sacred sites", "Swim between the flags at beaches — safety is taken seriously", "Avoid bragging — Australians value humility"],
-  },
-  spain: {
-    traditions: ["La Tomatina (tomato-throwing festival in Buñol)", "Running of the Bulls in Pamplona (San Fermín)", "Semana Santa (Holy Week processions)", "Flamenco music and dance culture", "Siesta tradition (afternoon rest period)"],
-    socialNorms: ["Spanish people are warm, social, and family-oriented", "Late meals — lunch at 2-3pm, dinner at 9-10pm", "Nightlife starts very late — clubs open after midnight", "Physical closeness and cheek-kissing greetings are normal", "Passionate discussion is welcomed, not considered arguing"],
-    religionOverview: "Historically Catholic (~60%), but Spain has become increasingly secular, especially among younger generations. Small Muslim, Protestant, and non-religious communities exist.",
-    etiquetteTips: ["Greet with two kisses on the cheeks (right then left)", "Adjust to the later meal schedule — don't expect dinner at 6pm", "Learn basic Spanish — English is less widely spoken outside tourist areas", "Don't rush meals — dining is a social event, not just eating", "Respect local customs during fiestas and religious celebrations"],
-  },
-  egypt: {
-    traditions: ["Ramadan fasting and Eid celebrations", "Sham el-Nessim (spring festival dating to ancient Egypt)", "Moulid celebrations (commemorating saints and holy figures)", "Pharaonic heritage and pride in ancient civilization", "Nubian cultural traditions in southern Egypt"],
-    socialNorms: ["Hospitality is fundamental — guests are treated generously", "Family and community bonds are very strong", "Respect for elders and religious leaders is essential", "Gender roles are more traditional, especially outside Cairo", "Bargaining in markets (souks) is expected and enjoyable"],
-    religionOverview: "Predominantly Sunni Muslim (~90%), with a significant Coptic Christian minority (~10%) that is one of the oldest Christian communities in the world.",
-    etiquetteTips: ["Dress modestly, especially near mosques and in rural areas", "Use your right hand for eating and greeting", "Accept tea or coffee when offered — it is a sign of hospitality", "Bargain in markets — it is expected and part of the experience", "Ask permission before photographing people, especially women"],
-  },
-  turkey: {
-    traditions: ["Ramadan and Eid celebrations with family feasts", "Whirling Dervish ceremonies (Mevlana tradition)", "Turkish bath (hammam) cultural tradition", "Çay (tea) culture — offering tea is a sign of friendship", "Hıdırellez (spring festival celebrating nature's renewal)"],
-    socialNorms: ["Hospitality is legendary — guests are treated as gifts from God", "Respect for elders is shown through gestures and speech", "Tea and coffee are central to social interactions", "Family bonds are extremely strong and multi-generational", "Personal honor and reputation are highly valued"],
-    religionOverview: "Predominantly Muslim (~98%, mostly Sunni), with a secular constitutional framework (laïcité). Sufi traditions are culturally significant. Small Christian and Jewish communities exist.",
-    etiquetteTips: ["Remove shoes before entering homes and mosques", "Accept tea or coffee when offered — refusing is impolite", "Dress modestly at mosques — cover shoulders, knees, and hair (for women)", "Avoid discussing politics, the Kurdish question, or Armenian history with strangers", "Bargaining is expected in bazaars and markets"],
-  },
-  ...extraCultureProfiles,
-};
-
-const knownFoodData = {
-  nepal: [
-    { name: "Momos", description: "Steamed or fried dumplings filled with meat or vegetables, served with a spicy dipping sauce.", famousFor: "Nepal's most popular snack and a staple street food." },
-    { name: "Dal Bhat", description: "Lentil soup served with rice, vegetables, and pickles; a daily meal for many Nepalis.", famousFor: "Nutritional balance and hearty energy for trekkers." },
-    { name: "Newari Khaja Set", description: "Traditional Newari platter featuring beaten rice, meat, achar, and sweets.", famousFor: "Rich, layered flavors from the Kathmandu Valley cuisine." },
-    { name: "Thukpa", description: "Tibetan-style noodle soup with vegetables and meat, ideal for cold mountain regions.", famousFor: "Warming comfort food popular in higher altitudes." },
-    { name: "Sel Roti", description: "Ring-shaped sweet rice bread, often served during festivals.", famousFor: "Festive favorite during Dashain and Tihar." },
-  ],
-  japan: [
-    { name: "Sushi", description: "Vinegar rice with raw or cooked seafood and vegetables.", famousFor: "World-renowned dish with delicate preparation." },
-    { name: "Ramen", description: "Noodle soup with meat broth, toppings, and seasonings.", famousFor: "Comfort food with regional flavor variations." },
-    { name: "Tempura", description: "Lightly battered and fried seafood and vegetables.", famousFor: "Crispy texture and elegant presentation." },
-    { name: "Okonomiyaki", description: "Savory pancake with cabbage, meat, and special sauce.", famousFor: "Popular street food in Osaka." },
-    { name: "Sashimi", description: "Thinly sliced raw fish served with soy sauce and wasabi.", famousFor: "Freshness and seafood quality." },
-  ],
-  france: [
-    { name: "Croissant", description: "Buttery, flaky pastry served at breakfast.", famousFor: "Iconic French viennoiserie." },
-    { name: "Coq au Vin", description: "Chicken braised in red wine with mushrooms and bacon.", famousFor: "Classic slow-cooked French stew." },
-    { name: "Ratatouille", description: "Vegetable stew from Provence with tomato and herbs.", famousFor: "Healthy and aromatic Proven�al staple." },
-    { name: "Bouillabaisse", description: "Seafood soup from Marseille with saffron and herbs.", famousFor: "Rich, complex flavor from fish broth." },
-    { name: "Creme Brulee", description: "Custard dessert with caramelized sugar topping.", famousFor: "Contrast of creamy and crunchy textures." },
-  ],
-  'united states': [
-    { name: "Hamburger", description: "Beef patty in a bun with toppings.", famousFor: "Classic American fast food." },
-    { name: "Barbecue Ribs", description: "Slow-cooked ribs with sweet, smoky sauce.", famousFor: "Regional BBQ styles across the U.S." },
-    { name: "Mac and Cheese", description: "Cheesy baked macaroni.", famousFor: "Comforting family favorite." },
-    { name: "Clam Chowder", description: "Creamy New England soup with clams and potatoes.", famousFor: "Coastal seafood specialty." },
-    { name: "Apple Pie", description: "Baked pie with spiced apple filling.", famousFor: "Symbol of American home cooking." },
-  ],
-  brazil: [
-    { name: "Feijoada", description: "A hearty stew of black beans with various cuts of pork and beef, typically served with rice, farofa, and collard greens.", famousFor: "National dish representing Brazil's culinary heritage." },
-    { name: "Churrasco", description: "Brazilian barbecue featuring various grilled meats, often served rodizio style where skewers are brought to your table.", famousFor: "Rodizio style dining tradition in Brazil." },
-    { name: "Pao de Queijo", description: "Small, baked cheese rolls made from tapioca flour, giving them a chewy, gooey texture.", famousFor: "Popular snack and breakfast item." },
-    { name: "Brigadeiro", description: "A traditional Brazilian chocolate truffle, made from condensed milk, cocoa powder, butter, and chocolate sprinkles.", famousFor: "Popular dessert and party treat." },
-    { name: "Acai na Tigela", description: "Frozen acai berry pulp served in a bowl, often topped with granola, bananas, and other fruits.", famousFor: "Healthy and refreshing snack." },
-  ],
-  mexico: [
-    { name: "Tacos", description: "Corn or flour tortillas filled with marinated meat, fish, or vegetables, topped with salsa and cilantro.", famousFor: "Iconic Mexican street food and staple." },
-    { name: "Chiles Rellenos", description: "Roasted poblano peppers stuffed with cheese or meat, covered in egg batter and tomato sauce.", famousFor: "Hearty vegetarian-friendly dish." },
-    { name: "Mole Poblano", description: "Complex sauce made with chilies, spices, chocolate, and nuts, served over chicken.", famousFor: "Ancient pre-Hispanic recipe with deep flavors." },
-    { name: "Tamales", description: "Corn dough filled with meat, cheese, or vegetables, wrapped in corn husks and steamed.", famousFor: "Traditional dish for special occasions." },
-    { name: "Ceviche", description: "Raw fish or seafood cured in citrus juice, mixed with onions, cilantro, and chili peppers.", famousFor: "Refreshing coastal specialty." },
-  ],
-  india: [
-    { name: "Tikka Masala", description: "Marinated meat or vegetables cooked in a clay oven, served in a creamy tomato sauce.", famousFor: "Popular curry loved worldwide." },
-    { name: "Biryani", description: "Fragrant rice dish cooked with spiced meat, ghee, and aromatic spices like saffron.", famousFor: "Layered flavors and fried technique." },
-    { name: "Samosa", description: "Fried pastry filled with spiced potatoes and peas or meat.", famousFor: "Quintessential Indian appetizer and street food." },
-    { name: "Dosa", description: "Crispy fermented rice and lentil crepe from South India, served with sambar and chutney.", famousFor: "South Indian breakfast staple." },
-    { name: "Paneer Butter Masala", description: "Cottage cheese cubes in a rich, creamy tomato-based sauce.", famousFor: "Vegetarian favorite with complex spices." },
-  ],
-  thailand: [
-    { name: "Pad Thai", description: "Stir-fried rice noodles with shrimp, tofu, or chicken, bean sprouts, and peanuts.", famousFor: "National noodle dish of Thailand." },
-    { name: "Tom Yum", description: "Hot and sour soup with lemongrass, galangal, lime, and seafood or chicken.", famousFor: "Aromatic and refreshing soup." },
-    { name: "Green Curry", description: "Creamy curry made with green chilies, coconut milk, and meat or vegetables.", famousFor: "Complex heat and creamy balance." },
-    { name: "Larb", description: "Spicy minced meat salad with lime, fish sauce, herbs, and toasted rice powder.", famousFor: "Northeastern Thai favorite." },
-    { name: "Satay", description: "Grilled meat skewers served with creamy peanut sauce.", famousFor: "Popular appetizer throughout Southeast Asia." },
-  ],
-  italy: [
-    { name: "Pasta Carbonara", description: "Creamy pasta with guanciale, egg yolk, pecorino cheese, and black pepper.", famousFor: "Roman classic made with simple, quality ingredients." },
-    { name: "Risotto", description: "Creamy rice dish cooked with broth, wine, and various ingredients like mushrooms or seafood.", famousFor: "Northern Italian staple with delicate texture." },
-    { name: "Lasagna", description: "Layered pasta with meat sauce, bechamel, and cheese.", famousFor: "Family comfort food made with love." },
-    { name: "Osso Buco", description: "Braised veal shank served with saffron risotto and gremolata.", famousFor: "Elegant Milanese specialty." },
-    { name: "Tiramisu", description: "Dessert made with ladyfingers dipped in coffee, mascarpone cream, and cocoa powder.", famousFor: "Decadent coffee-flavored treat." },
-  ],
-  spain: [
-    { name: "Paella", description: "Saffron rice cooked with seafood, chicken, or vegetables in a wide shallow pan.", famousFor: "Iconic Spanish dish from Valencia." },
-    { name: "Tapas", description: "Small plates of various appetizers like cheese, cured meats, patatas bravas, and seafood.", famousFor: "Spanish dining culture and social tradition." },
-    { name: "Gazpacho", description: "Cold tomato-based soup, perfect for hot summer days, served with bread croutons.", famousFor: "Refreshing Andalusian summer staple." },
-    { name: "Jamon Iberico", description: "Premium cured ham from black Iberian pigs, sliced thin and served with bread.", famousFor: "Prized delicacy and symbol of Spanish cuisine." },
-    { name: "Churros", description: "Fried pastry sticks served with hot chocolate for dipping.", famousFor: "Popular breakfast and dessert item." },
-  ],
-  germany: [
-    { name: "Schnitzel", description: "Thin, breaded cutlet of veal, pork, or chicken, fried until golden and crispy.", famousFor: "Crispy exterior and tender meat inside." },
-    { name: "Bratwurst", description: "Spiced pork sausage, grilled and served with sauerkraut and mustard.", famousFor: "Bavarian favorite at beer gardens." },
-    { name: "Pretzels", description: "Soft, twisted bread rolls served with butter or cheese dip.", famousFor: "Iconic German snack and Oktoberfest staple." },
-    { name: "Sauerbraten", description: "Pot roast marinated in vinegar and spices, served with red cabbage and dumplings.", famousFor: "Slow-cooked comfort food with tangy flavor." },
-    { name: "Black Forest Cake", description: "Chocolate cake with whipped cream, cherries, and chocolate shavings.", famousFor: "Elegant German dessert." },
-  ],
-  china: [
-    { name: "Peking Duck", description: "Roasted duck with crispy skin, served with thin pancakes, hoisin sauce, and cucumber.", famousFor: "Beijing specialty with thousands of years of history." },
-    { name: "Mapo Tofu", description: "Silken tofu in spicy chili oil and minced pork sauce.", famousFor: "Sichuan classic with numbing and spicy heat." },
-    { name: "Dim Sum", description: "Small steamed or fried dumplings and rolls with various fillings, traditionally served with tea.", famousFor: "Cantonese dining tradition." },
-    { name: "Hot Pot", description: "Communal cooking of thinly sliced meats and vegetables in simmering broth.", famousFor: "Interactive social dining experience." },
-    { name: "Fried Rice", description: "Day-old rice stir-fried with eggs, vegetables, and protein.", famousFor: "Quick, versatile, and universally loved." },
-  ],
-  'korea (republic of)': [
-    { name: "Bibimbap", description: "Mixed rice bowl with vegetables, meat, egg, and gochujang sauce.", famousFor: "Colorful, balanced meal in every bowl." },
-    { name: "Korean Barbecue", description: "Grilled marinated meats cooked at the table and wrapped in lettuce leaves.", famousFor: "Interactive dining and tender, flavorful meat." },
-    { name: "Kimchi", description: "Fermented vegetables (primarily cabbage) with chili, garlic, and other seasonings.", famousFor: "Essential side dish present at every Korean meal." },
-    { name: "Bulgogi", description: "Thinly sliced marinated beef cooked on a griddle or grill.", famousFor: "Sweet and savory marinade with tender meat." },
-    { name: "Tteokbokki", description: "Chewy rice cakes in spicy gochujang sauce with vegetables and fish cakes.", famousFor: "Popular street food snack." },
-  ],
-  vietnam: [
-    { name: "Pho", description: "Aromatic rice noodle soup with beef or chicken broth, herbs, and meat.", famousFor: "Vietnam's national dish, served for breakfast." },
-    { name: "Banh Mi", description: "French-influenced sandwich with pate, cold cuts, pickled vegetables, and cilantro.", famousFor: "Vietnam's iconic street food." },
-    { name: "Spring Rolls", description: "Fresh rice paper rolls filled with shrimp, pork, noodles, and herbs.", famousFor: "Light, refreshing appetizer." },
-    { name: "Bun Cha", description: "Grilled pork served with rice vermicelli, fresh herbs, and fish sauce dipping sauce.", famousFor: "Hanoi specialty and summer favorite." },
-    { name: "Ca Phe Den", description: "Strong Vietnamese iced coffee made with dark roast and sweetened condensed milk.", famousFor: "Beloved Vietnamese coffee tradition." },
-  ],
-  greece: [
-    { name: "Moussaka", description: "Layered eggplant and meat sauce topped with bechamel, baked until golden.", famousFor: "Greek national dish." },
-    { name: "Souvlaki", description: "Grilled meat skewers served with pita bread and tzatziki sauce.", famousFor: "Classic Greek street food." },
-    { name: "Spanakopita", description: "Spinach and feta cheese wrapped in crispy phyllo pastry.", famousFor: "Flaky pastry with savory filling." },
-    { name: "Saganaki", description: "Fried cheese, often flambeed tableside.", famousFor: "Dramatic presentation and salty, melty flavor." },
-    { name: "Baklava", description: "Phyllo pastry layered with nuts and honey syrup.", famousFor: "Sweet, flaky Mediterranean dessert." },
-  ],
-  peru: [
-    { name: "Ceviche Peruano", description: "Fresh fish or seafood cured in citrus juice with red onion, cilantro, and chili peppers.", famousFor: "Peru's national dish and culinary symbol." },
-    { name: "Lomo Saltado", description: "Marinated beef stir-fried with onions, tomatoes, and served with rice and fries.", famousFor: "Peruvian-Chinese fusion classic." },
-    { name: "Causa", description: "Layered potato terrine with tuna or seafood, topped with avocado.", famousFor: "Cold, colorful appetizer dish." },
-    { name: "Cuy al Horno", description: "Oven-roasted guinea pig served with potatoes and corn.", famousFor: "Traditional Andean delicacy." },
-    { name: "Anticuchos", description: "Grilled marinated meat skewers served with spicy sauce.", famousFor: "Popular street food and appetizer." },
-  ],
-  portugal: [
-    { name: "Pasteis de Nata", description: "Flaky pastry tarts with creamy custard filling and cinnamon topping.", famousFor: "Iconic Portuguese pastry." },
-    { name: "Sardines", description: "Grilled fresh sardines with lemon and sea salt.", famousFor: "Simple, delicious coastal Portuguese staple." },
-    { name: "Francesinha", description: "Portuguese sandwich with meat, topped with melted cheese and beer sauce.", famousFor: "Porto specialty sandwich." },
-    { name: "Bacalhau a Bras", description: "Shredded salt cod mixed with thin-cut fried potatoes and olives.", famousFor: "Beloved Portuguese comfort food." },
-    { name: "Arroz de Marisco", description: "Seafood rice cooked in rich seafood broth.", famousFor: "Portuguese seafood specialty." },
-  ],
-  australia: [
-    { name: "Barbie (BBQ)", description: "Australian barbecue with grilled steaks, sausages, and seafood.", famousFor: "Australian outdoor dining tradition." },
-    { name: "Lamingtons", description: "Sponge cake cubes coated in chocolate and coconut.", famousFor: "Classic Australian dessert." },
-    { name: "Meat Pies", description: "Pastry pies filled with meat, gravy, and vegetables.", famousFor: "Iconic Australian snack." },
-    { name: "Pavlova", description: "Meringue dessert topped with whipped cream and fresh berries.", famousFor: "Light, indulgent dessert." },
-    { name: "Vegemite on Toast", description: "Toast spread with salty yeast extract spread.", famousFor: "Distinctly Australian breakfast." },
-  ],
-  canada: [
-    { name: "Poutine", description: "Fries covered with gravy and cheese curds.", famousFor: "Quebec's beloved comfort food." },
-    { name: "Butter Tarts", description: "Small pastry cups filled with butter, sugar, and raisins.", famousFor: "Iconic Canadian treat." },
-    { name: "Montreal Bagels", description: "Denser, sweeter bagels boiled in honey water and baked in wood ovens.", famousFor: "Montreal Jewish community tradition." },
-    { name: "Tourtiere", description: "Traditional meat pie filled with ground pork and spices.", famousFor: "Holiday meal staple." },
-  ],
-  argentina: [
-    { name: "Asado", description: "Argentine barbecue with grilled meats, sausages, and organ meats.", famousFor: "Argentine culinary tradition and social gathering." },
-    { name: "Milanesa", description: "Thin, breaded, fried cutlet of beef or chicken.", famousFor: "Simple, flavorful main course." },
-    { name: "Empanadas", description: "Pastry pockets filled with meat, cheese, or vegetables.", famousFor: "Popular street food and appetizer." },
-    { name: "Medialunas", description: "Sweet or savory croissant-like pastries.", famousFor: "Argentine breakfast staple." },
-    { name: "Alfajores", description: "Cookies sandwich with dulce de leche between layers.", famousFor: "Sweet Argentine treat." },
-  ],
-  ...extraFoodData,
-};
-
-function getFoodData(countryName) {
-  const normalized = countryName.toLowerCase().trim();
-  const alias = countryAliases[normalized] || normalized;
-  if (knownFoodData[alias]) return knownFoodData[alias];
-
-  return [
-    { name: `${countryName} Local Specialty`, description: 'Popular traditional dish.', famousFor: 'Traditional flavors and heritage' },
-    { name: `${countryName} Street Food`, description: `A beloved street-side favorite in ${countryName}.`, famousFor: 'Authentic local taste' },
-    { name: `${countryName} Folk Stew`, description: `Hearty stew prepared with traditional ingredients from ${countryName}.`, famousFor: 'Comforting home-style flavor' },
-    { name: `${countryName} Grilled Dish`, description: `Smoky, grilled specialty from ${countryName}.`, famousFor: 'Regional grilling techniques' },
-    { name: `${countryName} Sweet Treat`, description: `Dessert item commonly enjoyed in ${countryName}.`, famousFor: 'Local sweet traditions' },
-  ];
-}
-
-
-function getCultureProfile(countryName) { return null; }
-
 async function getPopulationFromWorldBank(iso2) {
   if (!iso2 || typeof iso2 !== 'string' || iso2.length !== 2) return 0;
   const code = iso2.toLowerCase();
@@ -2614,10 +2337,10 @@ app.get('/api/country', async (req, res) => {
     const knownGeoData = getGeographyData(countryName);
     const climateText = getClimateDescription(countryName, wikiSummary);
     const landscapeText = getLandscapeDescription(countryName, wikiSummary);
-    const cultureData = getCultureData(countryName);
+    const countryContent = getCountryContent(iso);
+    if (!countryContent) throw new Error(`Missing country content for ${iso}`);
     const mapCategoryData = getMapCategoryData(countryName);
 
-    const staticFoods = getFoodData(countryName);
     const staticAttractions = getAttractionsData(countryName, capital);
     const staticPhrases = getPhrasesData(countryName);
     const staticPrices = getPricesData(countryName);
@@ -2626,7 +2349,6 @@ app.get('/api/country', async (req, res) => {
 
     // Check if static data is real curated data (not a generic fallback)
     const hasRealAttractions = staticAttractions.length > 0 && !staticAttractions[0].name.includes(`${countryName} National Museum`);
-    const hasRealFoods = staticFoods.length > 0 && !staticFoods[0].name.includes('Local Specialty');
     // Phrases from knownPhrasesData are always preferred; language-group fallbacks are replaced by AI
     const hasHandcraftedPhrases = (() => {
       const key = (countryAliases[countryName.toLowerCase().trim()] || countryName.toLowerCase().trim());
@@ -2658,13 +2380,11 @@ app.get('/api/country', async (req, res) => {
         majorCities,
         naturalLandmarks: knownGeoData?.naturalLandmarks || await getNaturalLandmarks(countryName, wikiSummary),
       },
-      culture: {
-        traditions: cultureData?.traditions || ai?.culture?.traditions || ['Local festivals and celebrations', 'Traditional ceremonies', 'Community gatherings and events', 'Seasonal celebrations', 'Cultural performances'],
-        socialNorms: cultureData?.socialNorms || ai?.culture?.socialNorms || ['Greet people politely', 'Respect local customs and traditions', 'Observe personal space norms', 'Follow local dress codes at religious sites', 'Be mindful of local social etiquette'],
-        religionOverview: cultureData?.religionOverview || ai?.culture?.religionOverview || 'Diverse religious and spiritual practices.',
-        etiquetteTips: cultureData?.etiquetteTips || ai?.culture?.etiquetteTips || ['Greet people politely and use formal titles when appropriate', 'Ask before photographing people or religious sites', 'Respect local customs and dress modestly at religious sites', 'Learn a few words in the local language', 'Be respectful of local traditions and practices'],
-      },
-      foods: hasRealFoods ? staticFoods : (ai?.foods || staticFoods),
+      culture: countryContent.culture,
+      foods: countryContent.foods,
+      foodsNote: countryContent.foodsNote,
+      contentSources: countryContent.contentSources,
+      contentVersion: countryContent.contentVersion,
       attractions: hasRealAttractions ? staticAttractions : (ai?.attractions || staticAttractions),
       languageCode,
       // Prefer handcrafted phrases → AI phrases → generic language-group fallback
