@@ -28,7 +28,7 @@ export function WorldMap({
     () =>
       map.getSVG({
         radius: 0.22,
-        color: "#8B5E2A55",
+        color: "#000000",
         shape: "circle",
         backgroundColor: "transparent",
       }),
@@ -58,9 +58,8 @@ export function WorldMap({
   return (
     <div className="w-full aspect-[2/1] relative font-sans overflow-hidden"
       style={{ background: 'transparent' }}>
-      {/* Dotted map — fades into cream bg on all edges */}
-      <img
-        src={`data:image/svg+xml;utf8,${encodeURIComponent(svgMap)}`}
+      {/* A mask lets the dots use the current theme and fade into any canvas. */}
+      <div
         className="h-full w-full pointer-events-none select-none object-cover"
         style={{
           maskImage: 'linear-gradient(to right, transparent 0%, white 12%, white 88%, transparent 100%), linear-gradient(to bottom, transparent 0%, white 8%, white 92%, transparent 100%)',
@@ -68,9 +67,14 @@ export function WorldMap({
           WebkitMaskImage: 'linear-gradient(to right, transparent 0%, white 12%, white 88%, transparent 100%), linear-gradient(to bottom, transparent 0%, white 8%, white 92%, transparent 100%)',
           WebkitMaskComposite: 'source-in',
         }}
-        alt="world map"
-        draggable={false}
-      />
+      >
+        <div role="img" aria-label="World map" className="h-full w-full"
+          style={{
+            backgroundColor: 'var(--map-dot)',
+            maskImage: `url("data:image/svg+xml;utf8,${encodeURIComponent(svgMap)}")`,
+            maskSize: 'cover', maskRepeat: 'no-repeat', maskPosition: 'center',
+          }} />
+      </div>
 
       <svg
         ref={svgRef}
@@ -109,7 +113,7 @@ export function WorldMap({
                 d={path}
                 fill="none"
                 stroke="url(#path-gradient)"
-                strokeWidth="1"
+                strokeWidth="1.25"
                 initial={{ pathLength: 0 }}
                 animate={loop ? { pathLength: [0, 0, 1, 1, 0] } : { pathLength: 1 }}
                 transition={
@@ -191,8 +195,8 @@ export function WorldMap({
 }
 
 function CityLabel({ x, y, label, delay, lineColor }: { x: number; y: number; label: string; delay: number; lineColor: string }) {
-  const w = 88;
-  const h = 24;
+  const w = 94;
+  const h = 26;
   // push label above the dot with a small connector line
   const lx = x - w / 2;
   const ly = y - h - 10;
@@ -208,7 +212,7 @@ function CityLabel({ x, y, label, delay, lineColor }: { x: number; y: number; la
       <line x1={x} y1={y - 4} x2={x} y2={ly + h} stroke={lineColor} strokeWidth="0.8" strokeOpacity="0.5" />
       {/* Pill background */}
       <rect x={lx} y={ly} width={w} height={h} rx="5" ry="5"
-        fill="#1a1208" fillOpacity="0.88" />
+        fill="var(--map-label)" stroke="var(--line)" strokeWidth="0.75" />
       {/* Amber left accent bar */}
       <rect x={lx} y={ly + 5} width="2.5" height={h - 10} rx="1.5" fill={lineColor} />
       {/* City name */}
@@ -217,8 +221,8 @@ function CityLabel({ x, y, label, delay, lineColor }: { x: number; y: number; la
         y={ly + h / 2 + 0.5}
         textAnchor="start"
         dominantBaseline="middle"
-        fill="#F7F3EE"
-        fontSize="7.5"
+        fill="var(--map-label-ink)"
+        fontSize="9"
         fontWeight="700"
         fontFamily="system-ui, -apple-system, sans-serif"
         letterSpacing="0.04em"

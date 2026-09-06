@@ -7,6 +7,8 @@
 .account-main { max-width: 1104px; margin: auto; padding: 48px 24px 88px; }
 .account-welcome { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
 .account-eyebrow { color: var(--accent) !important; text-transform: uppercase; font-size: 10px !important; font-weight: 700; letter-spacing: 2.3px; }
+.account-welcome > div { min-width: 0; }
+.account-welcome h1 { overflow-wrap: anywhere; }
 .account-welcome h1, .account-signin h1 { font-size: clamp(30px,4vw,42px); line-height: 1.15; letter-spacing: -1.4px; font-weight: 800; margin: 14px 0 12px; }
 .account-welcome p:not(.account-eyebrow), .account-signin p { color: var(--muted); line-height: 1.65; font-size: 14px; }
 .account-link { display: inline-flex; align-items: center; justify-content: flex-start; gap: 8px; color: var(--accent); font-size: 13px; font-weight: 600; cursor: pointer; min-height: 40px; }
@@ -31,7 +33,7 @@
 .settings-heading p { margin-top: 5px; color: var(--muted); font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
 .settings-help { display: block; color: var(--muted); font-size: 12px; line-height: 1.65; font-weight: 400; margin-top: 5px; }
 .settings-card .account-button { margin-top: 20px; }
-.account-button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; border-radius: 10px; padding: 11px 18px; background: var(--brand); color: #fffaf3; border: 1px solid transparent; font-size: 13px; line-height: 1.4; font-weight: 650; cursor: pointer; text-align: center; }
+.account-button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; border-radius: 10px; padding: 11px 18px; background: var(--action); color: var(--action-ink); border: 1px solid transparent; font-size: 13px; line-height: 1.4; font-weight: 650; cursor: pointer; text-align: center; }
 .account-button:hover:not(:disabled) { box-shadow: 0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent); }
 .account-button.secondary { background: var(--surface); color: var(--ink); border-color: var(--line); }
 .account-button.danger { background: var(--danger-surface); color: var(--danger); border-color: var(--danger); }
@@ -59,10 +61,10 @@
 .theme-sample span { height: 7px; border-radius: 2px; background: #d6c7b2; width: 65%; }
 .theme-sample span:first-child { width: 35%; background: #88613d; }
 .theme-sample span:last-child { width: 90%; }
-.sample-dark { background: #17232c; border-color: #566674; }
-.sample-dark span { background: #596b77; }
-.sample-dark span:first-child { background: #e5ae72; }
-.sample-system { background: linear-gradient(90deg,#f6f0e6 50%,#17232c 50%); }
+.sample-dark { background: #201e1b; border-color: #65594a; }
+.sample-dark span { background: #9b856a; }
+.sample-dark span:first-child { background: #e5b477; }
+.sample-system { background: linear-gradient(90deg,#f6f0e6 50%,#201e1b 50%); }
 .theme-label { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 650; padding: 12px 2px 2px; }
 .theme-label svg:last-child:not(:first-child) { margin-left: auto; color: var(--accent); }
 .settings-line, .settings-toggle { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 18px 0; border-top: 1px solid var(--line); }

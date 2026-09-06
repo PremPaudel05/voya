@@ -66,7 +66,7 @@ export function AboutSection() {
                   transition={{ duration: 0.5, delay: i * 0.15, ease: [0.22, 1, 0.36, 1] }}
                   className="flex gap-4 items-start"
                 >
-                  <span className="text-2xl font-black text-accent/25 leading-none shrink-0 w-8">{s.step}</span>
+                  <span className="text-2xl font-black text-subtle leading-none shrink-0 w-8">{s.step}</span>
                   <div>
                     <div className="font-bold text-ink text-sm mb-0.5">{s.title}</div>
                     <div className="text-xs text-subtle leading-relaxed">{s.desc}</div>
