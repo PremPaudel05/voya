@@ -8,6 +8,8 @@ The resolver tries exact Wikipedia titles and redirects before searching. It acc
 
 Cards load near the viewport, try another verified image of the same attraction if needed, refresh stale metadata, and offer a manual retry after bounded automatic retries. Successful photos include source, author, and license credits. External-source outages and landmarks without a usable licensed photograph cannot be guaranteed away; a missing photo must never be replaced with a random destination image.
 
+When an original exceeds the 4 MB delivery limit, the server resizes that same photograph to fit within 1600 × 1600 pixels using [Sharp](https://sharp.pixelplumbing.com/api-resize/). Originals are capped at 32 MB and decoded images at 40 megapixels. The resized JPEG retains the same visible source and license credits and stays below Vercel's response limit.
+
 Some previous attraction names described broad categories or a different country. `attractionCorrections.mjs` gives these cards identifiable places and correct locations. Country aliases use ISO country codes, including Türkiye, São Tomé and Príncipe, the two Congos, and Eswatini. The server no longer invents a national museum or nature reserve name when it has no attraction data.
 
 Refresh the metadata catalogue manually with Node 24:
