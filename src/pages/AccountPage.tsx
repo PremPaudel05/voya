@@ -1,51 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Bookmark, Compass, Globe2, LogOut, MapPin, Settings2, Shield, Sparkles } from 'lucide-react';
 import { useAccount } from '../account/AccountContext';
 import { useTimeOfDayGreeting } from '../account/useTimeOfDayGreeting';
 import { usePreferences } from '../preferences/PreferencesContext';
-import { accountRequest, DEFAULT_PREFERENCES, loadScript } from '../services/accountService';
+import { accountRequest, DEFAULT_PREFERENCES } from '../services/accountService';
 import type { Account, Preferences, TravelPlan } from '../services/accountService';
-import { SecurityCheck } from '../components/SecurityCheck';
+import { GoogleSignIn } from '../components/GoogleSignIn';
 import { AccountDialog, AccountSettings } from '../components/AccountSettings';
 
 type HistoryEntry = { countryName: string; searchedAt: number };
 type SavedPlan = { id: string; countryName: string; createdAt: number; input: Preferences };
 type Tab = 'overview' | 'history' | 'plans' | 'settings';
-
-function GoogleSignIn() {
-  const { config, login } = useAccount();
-  const { t, preferences } = usePreferences();
-  const container = useRef<HTMLDivElement>(null);
-  const tokenRef = useRef('');
-  const [token, setToken] = useState('');
-  const [error, setError] = useState('');
-  const [busy, setBusy] = useState(false);
-  const [attempt, setAttempt] = useState(0);
-  useEffect(() => { tokenRef.current = token; }, [token]);
-  useEffect(() => {
-    if (!config?.ready) return;
-    let active = true;
-    Promise.all([loadScript('https://accounts.google.com/gsi/client'), accountRequest<{ nonce: string }>('/auth/challenge', { method: 'POST' })]).then(([, challenge]) => {
-      if (!active || !container.current || !window.google) return;
-      window.google.accounts.id.initialize({ client_id: config.googleClientId, nonce: challenge.nonce, auto_select: false, callback: response => {
-        if (!tokenRef.current) { setError(t('Complete the security check before signing in.')); return; }
-        setBusy(true); setError('');
-        void login(response.credential, tokenRef.current).catch(e => { if (active) { setError(e.message); setToken(''); setAttempt(a => a + 1); } }).finally(() => { if (active) setBusy(false); });
-      } });
-      window.google.accounts.id.renderButton(container.current, { theme: 'outline', size: 'large', text: 'continue_with', width: Math.max(200, Math.min(280, container.current.clientWidth)), locale: preferences.language });
-    }).catch(e => { if (active) setError(e.message); });
-    return () => { active = false; };
-  }, [config, login, attempt, preferences.language, t]);
-  if (!config?.ready) return <p role="status" className="account-banner">{t('Sign-in is being prepared. You can still explore every country guide.')}</p>;
-  return <div className="space-y-5">
-    <SecurityCheck key={attempt} siteKey={config.turnstileSiteKey} action="login" onToken={setToken} />
-    <div ref={container} className={!token || busy ? 'pointer-events-none opacity-50' : ''} inert={!token || busy} />
-    {busy && <p role="status">{t('Signing you in…')}</p>}
-    {error && <p role="alert" className="account-error">{error}</p>}
-    <p className="settings-help">{t('Google shares your name and email with Voya, never your password.')}</p>
-  </div>;
-}
 
 function SignedInAccount({ account, onDeleted }: { account: Account; onDeleted: () => void }) {
   const { error: accountError, refresh, logout } = useAccount();
@@ -101,7 +67,18 @@ export default function AccountPage() {
     <header className="account-header"><div><Link to={safeReturn}><ArrowLeft size={16} />{t('Back to exploring')}</Link><Link to="/" className="account-brand">Voya<span>World</span></Link></div></header>
     <main className="account-main">{loading ? <p role="status">{t('Loading your account…')}</p> : account ? <SignedInAccount key={account.user.email} account={account} onDeleted={() => setDeleted(true)} /> : <>
       {deleted && <p role="status" className="account-success">{t('Your Voya account has been deleted.')}</p>}
-      <div className="account-signin"><div><p className="account-eyebrow">{t('Your discovery space')}</p><h1>{t('A home for your discoveries.')}</h1><p>{t('Sign in with Google to revisit countries and make Voya feel like yours. Exploring is always free and sign-in is optional.')}</p><ul>{[[MapPin,'Revisit your recent country searches'],[Settings2,'Personalise appearance and language'],[Shield,'Manage your privacy and notifications']].map(([Icon,label]) => { const I = Icon as typeof MapPin; return <li key={String(label)}><I size={18} />{t(String(label))}</li>; })}</ul></div><section className="settings-card"><h2>{t('Welcome to Voya')}</h2><p>{t('Your first Google sign-in creates a free account.')}</p><GoogleSignIn />{error && <p role="alert" className="account-error">{error}</p>}</section></div>
+      <div className="account-signin">
+        <div><p className="account-eyebrow">{t('Your discovery space')}</p><h1>{t('A home for your discoveries.')}</h1><p>{t('Sign in with Google to revisit countries and make Voya feel like yours. Exploring is always free and sign-in is optional.')}</p><ul>{[[MapPin,'Revisit your recent country searches'],[Settings2,'Personalise appearance and language'],[Shield,'Manage your privacy and notifications']].map(([Icon,label]) => { const I = Icon as typeof MapPin; return <li key={String(label)}><I size={18} />{t(String(label))}</li>; })}</ul></div>
+        <section className="signin-card" aria-labelledby="signin-heading">
+          <div className="signin-card-heading">
+            <div className="signin-mark" aria-hidden="true"><Compass size={25} strokeWidth={1.5} /></div>
+            <h2 id="signin-heading">{t('Welcome to Voya')}</h2>
+          </div>
+          <GoogleSignIn />
+          {error && <p role="alert" className="account-error">{error}</p>}
+          <div className="signin-card-footer"><Link to={safeReturn} className="account-link">{t('Continue exploring')}<ArrowRight size={15} aria-hidden="true" /></Link></div>
+        </section>
+      </div>
     </>}</main>
   </div>;
 }
