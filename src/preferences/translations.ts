@@ -11,6 +11,7 @@ const messages = [
   ['Could not check availability. Please try again.', 'No se pudo comprobar la disponibilidad. Inténtalo de nuevo.', 'Impossible de vérifier la disponibilité. Réessayez.'],
   ['Back to exploring', 'Volver a explorar', 'Retour à la découverte'],
   ['About', 'Acerca de', 'À propos'], ['Share', 'Compartir', 'Partager'],
+  ['About Developer', 'Sobre el desarrollador', 'À propos du développeur'],
   ['Resources', 'Recursos', 'Ressources'], ['Privacy Policy', 'Política de privacidad', 'Politique de confidentialité'],
   ['Terms of Use', 'Términos de uso', 'Conditions d’utilisation'], ['AI Accuracy Notice', 'Aviso sobre la precisión de la IA', 'Avis sur la précision de l’IA'], ['Help & Contact', 'Ayuda y contacto', 'Aide et contact'],
   ['Explore', 'Explorar', 'Explorer'], ['My account', 'Mi cuenta', 'Mon compte'],

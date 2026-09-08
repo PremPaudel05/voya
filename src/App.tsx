@@ -1,11 +1,15 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Hero } from './components/Hero';
 import { LandingFeatures } from './components/LandingFeatures';
-import { AboutSection } from './components/AboutSection';
 import { Footer } from './components/Footer';
 
 export default function App() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
 
   const handleSearch = (country: string) => {
     const trimmed = country.trim();
@@ -18,7 +22,6 @@ export default function App() {
     <div className="min-h-screen bg-canvas font-sans text-ink">
       <Hero onSearch={handleSearch} isLoading={false} />
       <LandingFeatures />
-      <AboutSection />
       <Footer />
     </div>
   );
