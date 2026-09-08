@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { usePreferences } from '../preferences/PreferencesContext';
@@ -73,6 +74,9 @@ export function Footer() {
           {/* Resources */}
           <div className="flex flex-col gap-3">
             <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-accent mb-1">{t('Resources')}</span>
+            <Link to="/about-developer" className="text-[14px] text-muted hover:text-white transition-colors text-left w-fit">
+              {t('About Developer')}
+            </Link>
             {[
               { label: 'Privacy Policy',     key: 'privacy'  as ModalKey },
               { label: 'Terms of Use',       key: 'terms'    as ModalKey },

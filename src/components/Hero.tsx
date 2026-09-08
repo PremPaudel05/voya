@@ -2,8 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Search, ArrowRight, Lightbulb } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WorldMap } from './ui/map';
-import { ShareButton } from './ShareButton';
-import { AccountLink } from './AccountLink';
+import { SiteHeader } from './SiteHeader';
 import { TextEffect } from './ui/text-effect';
 import { usePreferences } from '../preferences/PreferencesContext';
 
@@ -98,29 +97,10 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
       {/* Rust accent — bottom right */}
       <div className="hero-rust absolute -bottom-24 -right-24 w-[440px] h-[440px] rounded-full pointer-events-none" />
 
-      {/* Top nav strip */}
-      <div className="sticky top-0 z-50 bg-canvas/95 backdrop-blur border-b border-line w-full">
-      <div className="w-full max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-xl font-black tracking-tight text-ink">Voya</span>
-          <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-accent bg-brand/10 px-2 py-0.5 rounded-full">World</span>
-        </div>
-        <div className="flex items-center gap-2 sm:gap-5 text-sm font-medium text-muted">
-          <button onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-ink transition-colors text-xs sm:text-sm">{t('About')}</button>
-          <ShareButton countryName="Voya" />
-          <AccountLink />
-          <button
-            onClick={() => {
-              inputRef.current?.focus();
-              inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }}
-            className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-action text-action-ink text-xs font-semibold hover:bg-action-hover transition-colors whitespace-nowrap"
-          >
-            <span>{t('Explore')} →</span>
-          </button>
-        </div>
-      </div>
-      </div>
+      <SiteHeader onExplore={() => {
+        inputRef.current?.focus();
+        inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }} />
 
       {/* Main content */}
       <div className="relative z-10 flex-1 flex items-center">
