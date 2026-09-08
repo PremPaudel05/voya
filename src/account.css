@@ -115,11 +115,25 @@ a.settings-card span { display: block; font-size: 12px; color: var(--muted); mar
 .account-dialog .settings-field { margin-top: 20px; }
 .dialog-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px; margin-top: 26px; }
 .account-signin { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 60px; padding: 30px 0; }
-.account-signin > .settings-card { padding: 30px; }
-.account-signin > .settings-card > p { margin: 12px 0 26px; }
 .account-signin ul { display: grid; gap: 20px; margin-top: 32px; }
 .account-signin li { display: flex; align-items: center; gap: 12px; font-size: 13px; }
 .account-signin li svg { color: var(--accent); flex-shrink: 0; }
+.signin-card { width: 100%; max-width: 460px; min-width: 0; justify-self: center; padding: 32px 32px 18px; border: 1px solid var(--line); border-radius: 24px; background: var(--surface); box-shadow: 0 12px 36px color-mix(in srgb,var(--ink) 4%,transparent); }
+.signin-card-heading { display: grid; justify-items: center; gap: 16px; margin-bottom: 28px; text-align: center; }
+.signin-mark { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; color: var(--accent); background: var(--surface-alt); }
+.signin-card h2 { font-size: 24px; font-weight: 750; letter-spacing: -.6px; line-height: 1.3; }
+.signin-google-button { width: 100%; min-height: 44px; display: flex; justify-content: center; }
+.signin-status { display: flex; justify-content: center; align-items: center; gap: 7px; min-height: 30px; padding-top: 4px; color: var(--muted); font-size: 12px; line-height: 1.5; text-align: center; }
+.signin-status svg { flex-shrink: 0; }
+.account-signin .signin-account-note { font-size: 12px; text-align: center; }
+.signin-privacy { display: flex; justify-content: center; align-items: flex-start; gap: 8px; margin-top: 18px; }
+.signin-privacy svg { flex-shrink: 0; margin-top: 3px; color: var(--accent); }
+.account-signin .signin-privacy p { font-size: 12px; max-width: 310px; }
+.signin-card-footer { display: flex; justify-content: center; margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--line); }
+.signin-form .security-check { display: grid; justify-items: center; }
+.signin-form .security-check[data-state="interactive"], .signin-form .security-check[data-state="error"] { margin-bottom: 16px; }
+.signin-form .account-error { width: 100%; margin: 10px 0; }
+.signin-form .account-error p { color: var(--danger); font-size: 12px; }
 .voya-toast { position: fixed; z-index: 100; bottom: 24px; right: 24px; max-width: min(420px,calc(100% - 32px)); display: flex; align-items: center; gap: 20px; border-radius: 14px; padding: 17px 18px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 8px 40px #0003; font-size: 13px; }
 .voya-toast button { flex-shrink: 0; padding: 6px; cursor: pointer; }
 @media(max-width: 680px) {
@@ -146,7 +160,7 @@ a.settings-card span { display: block; font-size: 12px; color: var(--muted); mar
   .settings-line select { max-width: 115px; }
   .settings-save { flex-direction: column; align-items: stretch; gap: 16px; }
   .account-signin { gap: 32px; padding: 0; }
-  .account-signin > .settings-card { padding: 22px; }
+  .signin-card { padding: 26px 20px 16px; border-radius: 20px; }
   .account-dialog { padding: 22px; }
   .dialog-actions { flex-direction: column-reverse; }
   .voya-toast { bottom: 16px; right: 16px; }
