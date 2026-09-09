@@ -235,7 +235,7 @@ export function CountryProfile({ data }: CountryProfileProps) {
               </div>
             </div>
 
-            <FestivalCalendar festivals={data.festivals} />
+            <FestivalCalendar key={`${data.overview.countryCode}:${data.festivals?.year}`} festivals={data.festivals} />
           </div>
         </Section>
 
