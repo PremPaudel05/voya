@@ -1,9 +1,10 @@
-// Apply device preferences before React loads to avoid a light flash in dark mode.
+// Keep this migration aligned with shared/preferences.ts to avoid a theme flash.
 (() => {
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem('voya-preferences') || '{}') || {}; } catch { /* Use defaults when storage is unavailable. */ }
   const root = document.documentElement;
-  const theme = ['light', 'dark'].includes(saved.theme) ? saved.theme : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const followsDevice = saved.theme === 'system' && saved.appearanceVersion === 1;
+  const theme = saved.theme === 'dark' || (followsDevice && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
   root.dataset.theme = theme;
   root.dataset.contrast = saved.contrast === 'high' ? 'high' : 'standard';
   root.dataset.motion = saved.reducedMotion === true ? 'reduced' : 'standard';

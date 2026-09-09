@@ -151,7 +151,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
             {/* Search */}
             <form onSubmit={handleSubmit} className="w-full max-w-lg mb-5">
               <div className="flex items-center gap-0 bg-surface border border-line rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.07)] overflow-hidden transition-shadow focus-within:shadow-[0_4px_32px_rgba(176,122,58,0.18)] focus-within:border-accent/50">
-                <div className="flex items-center gap-3 flex-1 px-4 h-[54px]">
+                <div className="flex items-center gap-3 flex-1 min-w-0 px-4 h-[54px]">
                   <Search size={16} className="text-accent shrink-0" />
                   <div className="relative flex-1 h-full flex items-center overflow-hidden">
                     {!query && (
@@ -183,7 +183,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                       aria-label={t('Explore a country')}
                       value={query}
                       onChange={e => setQuery(e.target.value)}
-                      className="relative z-10 w-full h-full bg-transparent text-ink text-sm font-medium focus:outline-none"
+                      className="relative z-10 w-full min-w-0 h-full bg-transparent text-ink text-base sm:text-sm font-medium focus:outline-none"
                       disabled={isLoading}
                       autoComplete="off"
                     />
@@ -192,7 +192,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                 <button
                   type="submit"
                   disabled={isLoading || !query.trim()}
-                  className="shrink-0 h-[54px] px-6 bg-action hover:bg-action-hover text-action-ink font-semibold text-sm flex items-center gap-2 transition-colors disabled:bg-surface-alt disabled:text-subtle disabled:cursor-not-allowed"
+                  className="shrink-0 h-[54px] px-4 sm:px-6 bg-action hover:bg-action-hover text-action-ink font-semibold text-sm flex items-center gap-2 transition-colors disabled:bg-surface-alt disabled:text-subtle disabled:cursor-not-allowed"
                 >
                   {isLoading
                     ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

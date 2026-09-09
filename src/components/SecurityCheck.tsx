@@ -12,12 +12,12 @@ declare global {
     google?: { accounts: { id: { initialize: (options: { client_id: string; nonce: string; callback: (response: { credential: string }) => void; auto_select: boolean }) => void; renderButton: (element: HTMLElement, options: { theme: string; size: string; text: string; width: number; shape?: string; locale?: string }) => void } } };
   }
 }
-export function SecurityCheck({ siteKey, action, onToken, appearance = 'always', size = 'flexible', onStatusChange }: {
+export function SecurityCheck({ siteKey, action, onToken, appearance = 'always', size = 'auto', onStatusChange }: {
   siteKey: string;
   action: string;
   onToken: (token: string) => void;
   appearance?: Appearance;
-  size?: WidgetSize;
+  size?: WidgetSize | 'auto';
   onStatusChange?: (status: SecurityCheckStatus) => void;
 }) {
   const { preferences, t } = usePreferences();
@@ -27,9 +27,22 @@ export function SecurityCheck({ siteKey, action, onToken, appearance = 'always',
   const [error, setError] = useState('');
   const [status, setStatus] = useState<SecurityCheckStatus>('checking');
   const [attempt, setAttempt] = useState(0);
+  const [responsiveSize, setResponsiveSize] = useState<WidgetSize | null>(null);
+  const widgetSize = size === 'auto' ? responsiveSize : size;
+  useEffect(() => {
+    if (size !== 'auto' || !container.current) return;
+    // Flexible Turnstile widgets require at least 300px. Measure the actual
+    // content width, including when a card is narrower than the viewport.
+    const measure = () => setResponsiveSize(container.current!.clientWidth >= 300 ? 'flexible' : 'compact');
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(container.current);
+    return () => observer.disconnect();
+  }, [size]);
   useEffect(() => { callback.current = onToken; }, [onToken]);
   useEffect(() => { statusCallback.current = onStatusChange; }, [onStatusChange]);
   useEffect(() => {
+    if (!widgetSize) return;
     let active = true;
     let id: string | undefined;
     const report = (next: SecurityCheckStatus, token = '') => {
@@ -49,7 +62,7 @@ export function SecurityCheck({ siteKey, action, onToken, appearance = 'always',
       if (!active || !container.current) return;
       if (!window.turnstile) { fail(); return; }
       id = window.turnstile.render(container.current, {
-        sitekey: siteKey, action, appearance, size,
+        sitekey: siteKey, action, appearance, size: widgetSize,
         theme: preferences.theme === 'system' ? 'auto' : preferences.theme,
         language: preferences.language,
         callback: token => { if (active) { setError(''); report('ready', token); } },
@@ -62,9 +75,9 @@ export function SecurityCheck({ siteKey, action, onToken, appearance = 'always',
       });
     }).catch(fail);
     return () => { active = false; if (id) window.turnstile?.remove(id); };
-  }, [siteKey, action, appearance, size, preferences.theme, preferences.language, attempt]);
-  return <div className="security-check" data-state={status}>
-    <div ref={container} />
+  }, [siteKey, action, appearance, widgetSize, preferences.theme, preferences.language, attempt]);
+  return <div className="security-check w-full min-w-0" data-state={status}>
+    <div ref={container} className="flex w-full min-w-0 justify-center" />
     {error && <div className="account-error" role="alert">
       <p>{t(error)}</p>
       <button type="button" className="account-link" onClick={() => setAttempt(value => value + 1)}>{t('Try again')}</button>

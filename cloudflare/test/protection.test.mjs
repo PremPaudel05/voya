@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import fs from 'node:fs';
 import { handle, digest } from '../src/index.ts';
-import { validateInput, parsePlan, promptFor, DEFAULT_SETTINGS } from '../src/planner.ts';
+import { validateInput, parsePlan, promptFor, DEFAULT_SETTINGS, storedSettings } from '../src/planner.ts';
 import { ipKey } from '../src/ip.ts';
 import { generateKeyPair, exportJWK, SignJWT } from 'jose';
 
@@ -133,7 +133,7 @@ test('oversized streaming bodies and invalid content types are rejected', async 
 test('appearance, language and notifications persist; legacy saves preserve new settings', async () => {
   const { env, req } = await fixture();
   const initial = await (await handle(req('/me'),env)).json();
-  assert.equal(initial.settings.theme,'system');
+  assert.equal(initial.settings.theme,'light');
   assert.deepEqual(initial.settings.notifications,{inApp:true,browser:false});
   const chosen = {...DEFAULT_SETTINGS,theme:'dark',contrast:'high',language:'fr',reducedMotion:true,notifications:{inApp:false,browser:true}};
   assert.equal((await handle(req('/settings','PUT',chosen),env)).status,200);
@@ -152,6 +152,16 @@ test('appearance, language and notifications persist; legacy saves preserve new 
   assert.deepEqual(after.settings,legacy.settings);
   assert.deepEqual(validateInput({...trip,...chosen,days:trip.days}),{...trip,budget:chosen.budget,traveler:chosen.traveler,styles:chosen.styles});
   assert.throws(()=>validateInput({countryName:'Nepal',notes:''}));
+});
+
+test('old automatic account themes migrate to light and an intentional system choice survives saving', async () => {
+  assert.equal(storedSettings('{"theme":"system"}').theme,'light');
+  assert.equal(storedSettings('{"theme":"dark"}').theme,'dark');
+  const { env, req } = await fixture();
+  assert.equal((await handle(req('/settings','PUT',{theme:'system',appearanceVersion:1}),env)).status,200);
+  const me=await (await handle(req('/me'),env)).json();
+  assert.equal(me.settings.theme,'system');
+  assert.equal(me.settings.appearanceVersion,1);
 });
 
 test('account deletion requires confirmation and removes only the authenticated account on every device', async () => {
