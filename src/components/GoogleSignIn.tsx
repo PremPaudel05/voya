@@ -88,7 +88,8 @@ export function GoogleSignIn() {
   const retry = () => { setError(''); updateToken(''); setAttempt(value => value + 1); };
 
   return <div className="signin-form">
-    <SecurityCheck key={attempt} siteKey={config.turnstileSiteKey} action="login" appearance="interaction-only" size="compact" onToken={updateToken} onStatusChange={setSecurityStatus} />
+    <p className="signin-account-note">{t('Your first Google sign-in creates a free account.')}</p>
+    <SecurityCheck key={attempt} siteKey={config.turnstileSiteKey} action="login" appearance="interaction-only" size="flexible" onToken={updateToken} onStatusChange={setSecurityStatus} />
     <div ref={container} className={`signin-google-button ${waiting || busy ? 'pointer-events-none opacity-50' : ''}`} inert={waiting || busy} aria-busy={waiting || busy} />
     <div className="signin-status" role="status">
       {busy ? <><LoaderCircle size={14} className="animate-spin motion-reduce:animate-none" aria-hidden="true" />{t('Signing you in…')}</> : !error && securityStatus !== 'error' && waiting ? <>
@@ -97,7 +98,6 @@ export function GoogleSignIn() {
       </> : null}
     </div>
     {error && <div className="account-error" role="alert"><p>{error}</p><button type="button" className="account-link" disabled={busy} onClick={retry}>{t('Try again')}</button></div>}
-    <p className="signin-account-note">{t('Your first Google sign-in creates a free account.')}</p>
     <div className="signin-privacy"><LockKeyhole size={15} aria-hidden="true" /><p>{t('Google shares your name and email with Voya, never your password.')}</p></div>
   </div>;
 }

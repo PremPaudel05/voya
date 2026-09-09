@@ -102,6 +102,7 @@ const messages = [
   ['Personalise appearance and language', 'Personaliza la apariencia y el idioma', 'Personnalisez l’apparence et la langue'],
   ['Manage your privacy and notifications', 'Gestiona tu privacidad y notificaciones', 'Gérez votre confidentialité et vos notifications'],
   ['Welcome to Voya', 'Bienvenido a Voya', 'Bienvenue sur Voya'],
+  ['Optional account', 'Cuenta opcional', 'Compte facultatif'],
   ['Your first Google sign-in creates a free account.', 'Tu primer inicio de sesión con Google crea una cuenta gratuita.', 'Votre première connexion Google crée un compte gratuit.'],
   ['Sign-in is being prepared. You can still explore every country guide.', 'Se está preparando el inicio de sesión. Puedes seguir explorando las guías de países.', 'La connexion est en préparation. Vous pouvez toujours explorer les guides de pays.'],
   ['Complete the security check before signing in.', 'Completa la comprobación de seguridad antes de iniciar sesión.', 'Terminez la vérification de sécurité avant de vous connecter.'],

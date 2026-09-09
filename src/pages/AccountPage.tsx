@@ -72,11 +72,13 @@ export default function AccountPage() {
         <section className="signin-card" aria-labelledby="signin-heading">
           <div className="signin-card-heading">
             <div className="signin-mark" aria-hidden="true"><Compass size={25} strokeWidth={1.5} /></div>
-            <h2 id="signin-heading">{t('Welcome to Voya')}</h2>
+            <div>
+              <p className="signin-card-kicker">{t('Optional account')}</p>
+              <h2 id="signin-heading">{t('Welcome to Voya')}</h2>
+            </div>
           </div>
           <GoogleSignIn />
           {error && <p role="alert" className="account-error">{error}</p>}
-          <div className="signin-card-footer"><Link to={safeReturn} className="account-link">{t('Continue exploring')}<ArrowRight size={15} aria-hidden="true" /></Link></div>
         </section>
       </div>
     </>}</main>
