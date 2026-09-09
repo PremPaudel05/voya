@@ -29,7 +29,22 @@ export interface CountryData {
     name: string;
     description: string;
     famousFor: string;
+    source?: { title: string; url: string };
   }[];
+  festivals?: {
+    year: number;
+    highlights: { name: string; timing: string; source: { title: string; url: string } }[];
+    calendar: {
+      name: string;
+      dates: string[];
+      kind: 'public' | 'observance' | 'optional';
+      dateNote?: string;
+      source: { title: string; url: string };
+    }[];
+    note: string;
+    sources: { title: string; url: string }[];
+    attribution?: { title: string; url: string; licenseUrl: string; noticesUrl: string };
+  };
   foodsNote?: string;
   contentVersion?: string;
   contentSources?: {

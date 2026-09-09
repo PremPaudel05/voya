@@ -3,12 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { CountryData } from '../types';
 import { MapSection } from './MapSection';
 import { PhraseTable } from './PhraseTable';
+import { FestivalCalendar } from './FestivalCalendar';
 import { AttractionCard } from './AttractionCard';
 import { TripPlannerModal } from './TripPlannerModal';
 import {
   Map, Users, Utensils, Camera, MessageCircle, CreditCard,
   ArrowRightLeft, Calendar, Thermometer, Mountain, Globe,
-  ChevronRight, Star, Sparkles, Clock, Coins,
+  ChevronRight, Sparkles, Clock, Coins,
 } from 'lucide-react';
 
 interface CountryProfileProps { data: CountryData }
@@ -234,22 +235,7 @@ export function CountryProfile({ data }: CountryProfileProps) {
               </div>
             </div>
 
-            {/* Festivals */}
-            {data.bestTimeToVisit.majorFestivals?.length > 0 && (
-              <div className="md:col-span-2 bg-surface rounded-2xl border border-line shadow-sm p-6">
-                <div className="flex items-center gap-2.5 mb-4">
-                  <Star size={16} className="text-accent" />
-                  <h3 className="font-bold text-ink text-sm">Major Festivals & Events</h3>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {data.bestTimeToVisit.majorFestivals.map((f, i) => (
-                    <span key={i} className="px-3 py-1.5 bg-brand/10 border border-accent/20 text-accent rounded-full text-xs font-semibold">
-                      🎉 {f}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+            <FestivalCalendar festivals={data.festivals} />
           </div>
         </Section>
 
@@ -340,7 +326,7 @@ export function CountryProfile({ data }: CountryProfileProps) {
         {/* FOOD */}
         <Section id="food" refs={sectionRefs} title="Popular Foods" icon={<Utensils size={17} />}>
           <p className="text-muted text-sm leading-relaxed mb-5">
-            {data.foodsNote || 'Discover well-known dishes and regional favourites. Recipes vary, and many food traditions are shared across borders.'}
+            {data.foodsNote || 'Explore everyday favourites, regional dishes and food traditions. This is a selection, not a popularity ranking. Recipes vary, and many foods are shared across borders.'}
           </p>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
             {data.foods.map((food, i) => (
@@ -352,8 +338,12 @@ export function CountryProfile({ data }: CountryProfileProps) {
                 <h3 className="font-bold text-ink mb-1.5 text-sm">{food.name}</h3>
                 <p className="text-muted text-xs leading-relaxed mb-3">{food.description}</p>
                 <span className="inline-block text-accent text-xs font-semibold bg-brand/10 border border-accent/20 px-2.5 py-1 rounded-full">
-                  ✨ {food.famousFor}
+                  {food.famousFor}
                 </span>
+                {food.source && <a href={food.source.url} target="_blank" rel="noopener noreferrer"
+                  className="block mt-3 text-xs text-accent underline underline-offset-4 leading-relaxed hover:text-ink">
+                  Source: {food.source.title}
+                </a>}
               </motion.div>
             ))}
           </div>

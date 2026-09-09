@@ -16,12 +16,56 @@ explain why station provisions or uninhabited islands should not be assigned
 invented national cuisines. Svalbard is treated separately because it has living
 settlements; the Chagos profile describes Chagossian community heritage.
 
+## September 9 food and holiday expansion
+
+`food-expansion.mjs` adds original summaries to every inhabited entry (244
+countries and territories), bringing each to at least five foods. The selection
+mixes everyday dishes, regional cooking, desserts and, where appropriate, local
+produce. The United States now includes burgers, pizza, fried chicken, mac and
+cheese, Buffalo wings and pumpkin pie alongside its original regional dishes.
+No statistical popularity ranking is claimed.
+
+`food-expansion-sources.mjs` credits the specific references used for additions.
+Most country additions use World Travel Guide's country-specific food guides;
+others use national or local tourism boards, MIT MISTI, the University of
+Edinburgh's Chagossian community archive, community reporting and Wikipedia.
+Additional French and Nepali foods link directly to France.fr and Nepal Tourism
+Board. These are short original factual summaries, not copied guide articles.
+New cards display their source; earlier cards retain section-level references.
+
+`festivals.mjs` supplies a separate, server-side calendar. It uses the bundled
+`date-holidays` dataset (version locked in package-lock.json) plus named cultural
+highlights and gap-filling entries in `festival-highlights.mjs`. Government and
+tourism sources supplement the calendar, including US OPM, Canada's CRA,
+Pakistan's Cabinet Division, Incredible India and Nepal Tourism Board. Countries
+outside the calendar provider's coverage get named annual observances from
+country-specific guides instead of invented dates or generic festival labels.
+The API also overwrites the legacy `majorFestivals` field with these names so AI
+or climate fallbacks cannot replace them.
+
+The calendar rolls forward by UTC year. It shows starting dates, not complete
+school, bank or vacation closures. Repeated named days are grouped, observed
+days are identified, and calculated Islamic dates are withheld because local
+moon-sighting announcements can differ. Annual highlights do not imply universal
+participation or nationwide days off. The dated calendar is a reference, not a
+complete government schedule; changes and regional holidays need local checks.
+One inconsistent upstream Western Sahara rule is excluded, and that profile
+explicitly identifies the community scope of the calendar.
+
+Calendar code is ISC; its Wikipedia-derived dataset is CC BY-SA 3.0. The UI
+credits the contributors and license and links the underlying country rules.
+`public/credits/date-holidays.txt` preserves the full upstream license and
+attributions and documents Voya's adaptations. The adapted calendar data remains
+CC BY-SA 3.0. It is separate from the original food summaries and independently
+cited cultural highlights. Do not describe this dataset as independently
+verified government data or as free of Wikipedia-derived material.
+
 ## References and maintenance
 
 `sources.mjs` contains links to country/cuisine background reading and specific
 references, including UNESCO, tourism organizations, community authors, academic
 material, and Wikipedia. Links and source material were reviewed during the
-September 6, 2026 content update. These are section-level references, not a
+September 6, 2026 content update. The original references are section-level references, not a
 claim-by-claim citation or proof that every custom applies to every resident.
 The page exposes them as expandable food and culture references.
 

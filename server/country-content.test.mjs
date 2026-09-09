@@ -22,7 +22,7 @@ test('every supported country and territory has named food and specific cultural
       assert.ok(data.foodsNote.length > 50, code);
       assert.ok(data.culture.note, code);
     } else {
-      assert.ok(data.foods.length >= 3, `${code}: at least three actual foods`);
+      assert.ok(data.foods.length >= 5, `${code}: at least five actual foods`);
       assert.ok(data.culture.traditions.length >= 2, `${code}: specific traditions`);
     }
     assert.equal(new Set(data.foods.map(f => f.name.toLowerCase())).size, data.foods.length, `${code}: duplicate dish`);
@@ -65,7 +65,7 @@ test('country aliases and official names select the same content without mixing 
 
 test('Pakistan has real dishes, regional traditions, and contextual etiquette', () => {
   const data = getCountryContent('Pakistan');
-  assert.deepEqual(data.foods.map(f => f.name), ['Sindhi biryani', 'Nihari', 'Chapli kebab', 'Chicken karahi', 'Haleem']);
+  for (const name of ['Sindhi biryani', 'Nihari', 'Chapli kebab', 'Chicken karahi', 'Haleem', 'Kheer', 'Gulab jamun']) assert.ok(data.foods.some(food => food.name === name), name);
   assert.match(data.foods.find(f => f.name === 'Chapli kebab').famousFor, /Peshawar/);
   assert.match(data.culture.traditions.join(' '), /Qawwali.*Ajrak.*Suri Jagek/);
   assert.match(data.culture.socialNorms.join(' '), /Assalamu alaikum/);
@@ -80,7 +80,7 @@ test('country API returns bundled food and culture when every external service i
   const realFetch = globalThis.fetch;
   globalThis.fetch = async () => { throw new Error('Simulated upstream outage'); };
   try {
-    for (const [name, code] of [['Pakistan','PK'], ['South Korea','KR'], ['Côte d’Ivoire','CI'], ['Niue','NU'], ['Antarctica','AQ']]) {
+    for (const [name, code] of [['United States','US'], ['Pakistan','PK'], ['South Korea','KR'], ['Côte d’Ivoire','CI'], ['Niue','NU'], ['Antarctica','AQ']]) {
       const response = await realFetch(`http://127.0.0.1:${server.address().port}/api/country?name=${encodeURIComponent(name)}`);
       assert.equal(response.status, 200, name);
       const data = await response.json();
@@ -89,6 +89,10 @@ test('country API returns bundled food and culture when every external service i
       assert.deepEqual(data.contentSources, countryContent[code].contentSources, name);
       assert.equal(data.foodsNote, countryContent[code].foodsNote, name);
       assert.equal(data.overview.countryCode, code, name);
+      assert.ok(data.festivals && data.festivals.year === new Date().getUTCFullYear());
+      assert.doesNotMatch(data.bestTimeToVisit.majorFestivals.join(' '), /Local cultural festivals|National holidays/);
+      if (code === 'US') assert.ok(data.festivals.calendar.some(event => event.name === 'Christmas Day'));
+      if (code === 'AQ') assert.deepEqual(data.festivals.calendar, []);
     }
   } finally {
     globalThis.fetch = realFetch;

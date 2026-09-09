@@ -7,12 +7,19 @@ import oceania from './oceania.mjs';
 import territories from './territories.mjs';
 import polar from './polar.mjs';
 import sources from './sources.mjs';
+import foodExpansion from './food-expansion.mjs';
 
-export const contentVersion = '2026-09-06';
+export const contentVersion = '2026-09-09';
 export const countryContent = Object.fromEntries(
   [asia, europe, africa, americas, oceania, territories, polar]
     .flatMap(region => Object.entries(region))
-    .map(([code, content]) => [code, { ...content, contentSources: sources[code], contentVersion }]),
+    .map(([code, content]) => {
+      const additions = foodExpansion[code] || [];
+      const foods = code === 'US' ? [...additions, ...content.foods] : [...content.foods, ...additions];
+      const foodSources = [...sources[code].food, ...additions.map(food => food.source)]
+        .filter((source, index, all) => all.findIndex(other => other.url === source.url) === index);
+      return [code, { ...content, foods, contentSources: { ...sources[code], food: foodSources }, contentVersion }];
+    }),
 );
 
 // ISO identity keeps aliases and alternate official names on the same profile.
