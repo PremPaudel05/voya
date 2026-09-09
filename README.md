@@ -36,4 +36,17 @@ Voya is a free travel planning tool that delivers instant insights on any countr
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE). © 2026 Prem Paudel.
+New original Voya code and documentation introduced after commit
+[`2e33c74`](https://github.com/PremPaudel05/voya/commit/2e33c74d3c9b063d916bbae6096ac83a60f39e0b)
+are **proprietary and require prior written permission from Prem Paudel to reuse**,
+including for noncommercial projects. See [LICENSE](LICENSE) for the scope and exceptions.
+
+Previously released MIT-licensed material remains available under its original
+[MIT terms](LICENSES/MIT-legacy.txt). Third-party dependencies, data, and assets
+retain their own licenses; calendar-data notices are preserved in
+[the credits file](public/credits/date-holidays.txt).
+
+Using the hosted Voya website is still permitted. For permission to reuse new
+proprietary contributions, contact [Prem Paudel](mailto:leduopprem15@gmail.com).
+
+© 2026 Prem Paudel.
