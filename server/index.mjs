@@ -17,6 +17,7 @@ import fs from 'fs';
 import path from 'path';
 import { extraMapCategoryData } from './indexExtra.mjs';
 import { getCountryContent } from './content/index.mjs';
+import { getCountryFestivals } from './content/festivals.mjs';
 
 const app = express();
 
@@ -2382,6 +2383,7 @@ app.get('/api/country', async (req, res) => {
       },
       culture: countryContent.culture,
       foods: countryContent.foods,
+      festivals: getCountryFestivals(iso),
       foodsNote: countryContent.foodsNote,
       contentSources: countryContent.contentSources,
       contentVersion: countryContent.contentVersion,
@@ -2395,7 +2397,10 @@ app.get('/api/country', async (req, res) => {
         phonetic: (p.phonetic || p.pronunciation || '').split(/\s*\/\s*/)[0].trim(),
       })),
       prices: ai?.prices || staticPrices,
-      bestTimeToVisit: ai?.bestTimeToVisit || staticBestTime,
+      bestTimeToVisit: {
+        ...(ai?.bestTimeToVisit || staticBestTime),
+        majorFestivals: [...getCountryFestivals(iso).highlights, ...getCountryFestivals(iso).calendar].map(event => event.name),
+      },
       funFacts: ai?.funFacts || staticFunFacts,
       mapData: {
         countryQuery: countryName,
