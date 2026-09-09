@@ -47,6 +47,7 @@ export function validateSettings(input: Record<string, unknown>, previous: Setti
     throw new ApiError(400, 'INVALID_SETTINGS', 'Choose valid appearance, language, and notification preferences.');
   }
   return { days: Number(body.days), budget: String(body.budget), traveler: String(body.traveler), styles: [...new Set(body.styles as string[])].sort(), saveHistory: body.saveHistory,
+    appearanceVersion: DEFAULT_INTERFACE.appearanceVersion,
     theme: body.theme, contrast: body.contrast, language: body.language, reducedMotion: body.reducedMotion,
     notifications: { inApp: body.notifications.inApp, browser: body.notifications.browser } };
 }

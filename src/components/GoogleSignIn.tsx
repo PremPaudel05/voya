@@ -89,7 +89,7 @@ export function GoogleSignIn() {
 
   return <div className="signin-form">
     <p className="signin-account-note">{t('Your first Google sign-in creates a free account.')}</p>
-    <SecurityCheck key={attempt} siteKey={config.turnstileSiteKey} action="login" appearance="interaction-only" size="flexible" onToken={updateToken} onStatusChange={setSecurityStatus} />
+    <SecurityCheck key={attempt} siteKey={config.turnstileSiteKey} action="login" appearance="interaction-only" onToken={updateToken} onStatusChange={setSecurityStatus} />
     <div ref={container} className={`signin-google-button ${waiting || busy ? 'pointer-events-none opacity-50' : ''}`} inert={waiting || busy} aria-busy={waiting || busy} />
     <div className="signin-status" role="status">
       {busy ? <><LoaderCircle size={14} className="animate-spin motion-reduce:animate-none" aria-hidden="true" />{t('Signing you in…')}</> : !error && securityStatus !== 'error' && waiting ? <>
