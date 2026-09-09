@@ -217,24 +217,6 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
               ))}
             </div>
 
-            {/* Social proof strip */}
-            <div className="flex items-center gap-5 border-t border-line pt-6">
-              <div className="text-center">
-                <div className="text-2xl font-black text-ink">195+</div>
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-subtle">Countries</div>
-              </div>
-              <div className="w-px h-8 bg-surface-alt" />
-              <div className="text-center">
-                <div className="text-2xl font-black text-ink">8</div>
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-subtle">Insight types</div>
-              </div>
-              <div className="w-px h-8 bg-surface-alt" />
-              <div className="text-center">
-                <div className="text-2xl font-black text-ink">Free</div>
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-subtle">Always</div>
-              </div>
-            </div>
-
             {/* Loading fact */}
             <AnimatePresence>
               {isLoading && (
