@@ -1,8 +1,8 @@
 .account-page { min-height: 100vh; background: var(--canvas); color: var(--ink); }
 .account-header { border-bottom: 1px solid var(--line); padding: 20px 24px; }
-.account-header > div { max-width: 1056px; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.account-header > div { max-width: 1056px; margin: auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; }
 .account-header a { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
-.account-header .account-brand { font-size: 23px; font-weight: 800; color: var(--ink); letter-spacing: -1px; }
+.account-header .account-brand { flex-shrink: 0; font-size: 23px; font-weight: 800; color: var(--ink); letter-spacing: -1px; }
 .account-brand span { color: var(--accent); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; }
 .account-main { max-width: 1104px; margin: auto; padding: 48px 24px 88px; }
 .account-welcome { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }

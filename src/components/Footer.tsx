@@ -1,3 +1,4 @@
+import { BrandMark } from './BrandMark';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -59,6 +60,7 @@ export function Footer() {
           {/* Brand */}
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2.5">
+              <BrandMark />
               <span className="text-2xl font-black text-white tracking-tight">Voya</span>
               <span className="text-[10px] font-bold tracking-[0.18em] uppercase text-accent border border-[#c49050]/30 px-2 py-0.5 rounded-full">World</span>
             </div>

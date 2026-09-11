@@ -1,3 +1,4 @@
+import { BrandMark } from './BrandMark';
 import { Link, NavLink } from 'react-router-dom';
 import { AccountLink } from './AccountLink';
 import { ShareButton } from './ShareButton';
@@ -11,6 +12,7 @@ export function SiteHeader({ onExplore }: { onExplore?: () => void }) {
     <header className="sticky top-0 z-50 bg-canvas/95 backdrop-blur border-b border-line w-full">
       <div className="w-full max-w-7xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-3">
         <Link to="/" aria-label="Voya home" className="flex items-center gap-2">
+          <BrandMark />
           <span className="text-xl font-black tracking-tight text-ink">Voya</span>
           <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-accent bg-brand/10 px-2 py-0.5 rounded-full">World</span>
         </Link>
