@@ -1,3 +1,4 @@
+import { BrandMark } from '../components/BrandMark';
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Bookmark, Compass, Globe2, LogOut, MapPin, Settings2, Shield, Sparkles } from 'lucide-react';
@@ -64,7 +65,7 @@ export default function AccountPage() {
   const returnTo = params.get('returnTo');
   const safeReturn = returnTo?.startsWith('/country/') && !returnTo.includes('\\') ? returnTo : '/';
   return <div className="account-page">
-    <header className="account-header"><div><Link to={safeReturn}><ArrowLeft size={16} />{t('Back to exploring')}</Link><Link to="/" className="account-brand">Voya<span>World</span></Link></div></header>
+    <header className="account-header"><div><Link to={safeReturn}><ArrowLeft size={16} />{t('Back to exploring')}</Link><Link to="/" className="account-brand"><BrandMark className="h-8 w-8 sm:h-10 sm:w-10" />Voya<span>World</span></Link></div></header>
     <main className="account-main">{loading ? <p role="status">{t('Loading your account…')}</p> : account ? <SignedInAccount key={account.user.email} account={account} onDeleted={() => setDeleted(true)} /> : <>
       {deleted && <p role="status" className="account-success">{t('Your Voya account has been deleted.')}</p>}
       <div className="account-signin">
