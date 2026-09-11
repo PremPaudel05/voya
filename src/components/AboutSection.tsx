@@ -125,7 +125,7 @@ export function AboutSection() {
             >
               <div className="flex flex-col">
                 <span className="font-black text-ink text-sm">Prem Paudel</span>
-                <span className="text-xs text-subtle">Founder · Voya</span>
+                <span className="text-xs text-subtle">Voya</span>
               </div>
               <div className="flex-1 h-px bg-surface-alt" />
               <div className="flex items-center gap-4">
