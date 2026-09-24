@@ -25,6 +25,7 @@ const funFacts = [
 ];
 
 const topDestinations = [
+  { name: "Nepal",         code: "np" },
   { name: "Japan",         code: "jp" },
   { name: "Italy",         code: "it" },
   { name: "France",        code: "fr" },
@@ -36,6 +37,7 @@ const topDestinations = [
 ];
 
 const placeholderCountries = [
+  { prefix: "Curious about", country: "Nepal" },
   { prefix: "Curious about", country: "Japan" },
   { prefix: "Discovering",   country: "Morocco" },
   { prefix: "Curious about", country: "Iceland" },
