@@ -48,6 +48,6 @@ jobs:
       - name: Deploy account service
         working-directory: cloudflare
         run: npm run deploy
-      - name: Confirm settings API is live
+      - name: Confirm account API is live
         run: |
-          node --input-type=module -e 'const r=await fetch("https://voya-account-api.voya-prempaudel05.workers.dev/config",{headers:{Origin:"https://voyatravel.vercel.app"}});if(!r.ok||(await r.json()).settingsVersion!==2)throw new Error("Account settings deployment verification failed");console.log("Account settings v2 is live");'
+          node --input-type=module -e 'const r=await fetch("https://voya-account-api.voya-prempaudel05.workers.dev/config",{headers:{Origin:"https://voyatravel.vercel.app"}});const c=await r.json();if(!r.ok||c.settingsVersion!==2||c.authVersion!==2)throw new Error("Account API deployment verification failed");console.log("Account settings and login options v2 are live");'

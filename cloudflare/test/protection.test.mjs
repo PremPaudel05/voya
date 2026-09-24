@@ -239,3 +239,120 @@ test('Google signatures, audience, issuer, expiry and single-use nonce are enfor
     assert.notEqual(stored.token_hash,login.token); assert.equal(stored.token_hash,await digest(login.token));
   } finally { globalThis.fetch=original; }
 });
+
+test('login configuration exposes only configured providers and never secrets', async () => {
+  const {env,req}=await fixture();
+  let config=await (await handle(req('/config'),env)).json();
+  assert.deepEqual(config.providers,{google:true,email:false,github:false});
+  env.GOOGLE_CLIENT_ID=''; env.RESEND_API_KEY='private-email-key'; env.EMAIL_FROM='Voya <hello@example.test>';
+  config=await (await handle(req('/config'),env)).json();
+  assert.equal(config.ready,true); assert.equal(config.providers.email,true); assert.equal(config.providers.google,false);
+  assert.equal(JSON.stringify(config).includes('private-email-key'),false);
+  env.TURNSTILE_SECRET_KEY='';
+  assert.equal((await (await handle(req('/config'),env)).json()).ready,false);
+});
+
+function emailProvider(env) {
+  env.RESEND_API_KEY='test-email-key'; env.EMAIL_FROM='Voya <hello@example.test>';
+  const sent=[];
+  return {sent, fetch:async(url,options)=>{
+    if(String(url).includes('siteverify'))return Response.json({success:true,hostname:'voyatravel.vercel.app',action:'login'});
+    assert.equal(String(url),'https://api.resend.com/emails');
+    const body=JSON.parse(options.body); sent.push(body);
+    return Response.json({id:'test-message'});
+  }};
+}
+const emailStart = (req,email='new@example.com') => req('/auth/email/start','POST',{email,turnstileToken:'valid'});
+
+test('email sign-in proves inbox ownership, hashes codes, and rejects replay', async () => {
+  const {env,req,DB}=await fixture(); const original=globalThis.fetch; const mail=emailProvider(env);globalThis.fetch=mail.fetch;
+  try {
+    const response=await handle(emailStart(req,' NEW@Example.com '),env);
+    assert.equal(response.status,200); assert.equal(response.headers.get('Cache-Control'),'no-store');
+    const {challengeId}=await response.json();
+    const code=mail.sent[0].text.match(/\b\d{8}\b/)[0];
+    const stored=DB.sql.prepare('SELECT * FROM email_logins WHERE id=?').get(challengeId);
+    assert.equal(stored.email,'new@example.com'); assert.notEqual(stored.code_hash,code); assert.equal(stored.code,undefined);
+    const body={challengeId,code};
+    const responses=await Promise.all([handle(req('/auth/email/verify','POST',body),env),handle(req('/auth/email/verify','POST',body),env)]);
+    assert.deepEqual(responses.map(r=>r.status).sort(),[200,400]);
+    const signedIn=await responses.find(r=>r.status===200).json();
+    assert.equal(signedIn.user.email,'new@example.com');
+    assert.equal((await handle(req('/me','GET',undefined,{Authorization:'Bearer '+signedIn.token}),env)).status,200);
+    assert.equal((await handle(req('/auth/email/verify','POST',body),env)).status,400);
+    assert.equal(DB.sql.prepare('SELECT count(*) n FROM users').get().n,2);
+    assert.equal(DB.sql.prepare('SELECT count(*) n FROM email_logins').get().n,0);
+    assert.equal((await handle(req('/account','DELETE',{email:'new@example.com',confirmation:'DELETE'},{Authorization:'Bearer '+signedIn.token}),env)).status,200);
+    assert.equal((await handle(req('/me','GET',undefined,{Authorization:'Bearer '+signedIn.token}),env)).status,401);
+  } finally {globalThis.fetch=original;}
+});
+
+test('email codes expire, stop after five guesses, and bind to the requesting origin', async () => {
+  const {env,req,DB}=await fixture(); const original=globalThis.fetch;const mail=emailProvider(env);globalThis.fetch=mail.fetch;
+  try {
+    const {challengeId}=await (await handle(emailStart(req),env)).json();
+    const code=mail.sent[0].text.match(/\b\d{8}\b/)[0];
+    env.ALLOWED_ORIGINS+=',https://preview.example';
+    assert.equal((await handle(req('/auth/email/verify','POST',{challengeId,code},{Origin:'https://preview.example'}),env)).status,400);
+    assert.equal(DB.sql.prepare('SELECT attempts FROM email_logins').get().attempts,0);
+    const wrong=code==='00000000'?'11111111':'00000000';
+    for(let i=0;i<5;i++)assert.equal((await handle(req('/auth/email/verify','POST',{challengeId,code:wrong}),env)).status,400);
+    assert.equal((await handle(req('/auth/email/verify','POST',{challengeId,code}),env)).status,400);
+    const second=await (await handle(emailStart(req),env)).json();
+    DB.sql.prepare('UPDATE email_logins SET expires_at=0 WHERE id=?').run(second.challengeId);
+    assert.equal((await handle(req('/auth/email/verify','POST',{challengeId:second.challengeId,code:mail.sent[1].text.match(/\b\d{8}\b/)[0]}),env)).status,400);
+    assert.equal(DB.sql.prepare('SELECT count(*) n FROM users').get().n,1);
+  } finally {globalThis.fetch=original;}
+});
+
+test('email delivery requires bot verification, applies recipient limits, and fails closed', async () => {
+  const {env,req,DB}=await fixture();const original=globalThis.fetch;const mail=emailProvider(env);
+  try {
+    globalThis.fetch=async()=>Response.json({success:false});
+    assert.equal((await handle(emailStart(req),env)).status,403);
+    assert.equal(DB.sql.prepare('SELECT count(*) n FROM email_logins').get().n,0);
+    globalThis.fetch=mail.fetch;
+    for(let i=0;i<3;i++)assert.equal((await handle(emailStart(req),env)).status,200);
+    assert.equal((await handle(emailStart(req),env)).status,429);assert.equal(mail.sent.length,3);
+    globalThis.fetch=async(url,options)=>String(url).includes('siteverify')?mail.fetch(url,options):Response.json({error:'failed'},{status:500});
+    assert.equal((await handle(emailStart(req,'failed@example.com'),env)).status,503);
+    assert.equal(DB.sql.prepare('SELECT count(*) n FROM email_logins WHERE email=?').get('failed@example.com').n,0);
+    delete env.RESEND_API_KEY;
+    assert.equal((await handle(emailStart(req),env)).status,503);
+  } finally {globalThis.fetch=original;}
+});
+
+test('GitHub login binds state, PKCE and origin, requires a verified primary email, and never links by email', async () => {
+  const {env,req,DB}=await fixture(); const original=globalThis.fetch;
+  const {pkceChallenge}=await import('../src/auth.ts');
+  env.GITHUB_CLIENT_ID='github-client';env.GITHUB_CLIENT_SECRET='private-github-secret';
+  const verifier='v'.repeat(64);let verified=true;let tokenCalls=0;
+  globalThis.fetch=async(url,options)=>{
+    if(String(url).includes('siteverify'))return Response.json({success:true,hostname:'voyatravel.vercel.app',action:'login'});
+    if(String(url).includes('/login/oauth/access_token')){tokenCalls++;assert.equal(options.body.get('code_verifier'),verifier);assert.equal(options.body.get('redirect_uri'),origin+'/account');return Response.json({access_token:'private-provider-token'});}
+    if(String(url).endsWith('/user/emails'))return Response.json([{email:'traveler@example.com',primary:true,verified}]);
+    assert.equal(String(url),'https://api.github.com/user');return Response.json({id:123456,name:'GitHub User'});
+  };
+  try {
+    const start=async()=>{
+      const response=await handle(req('/auth/github/start','POST',{challenge:await pkceChallenge(verifier),turnstileToken:'valid'}),env);
+      assert.equal(response.status,200);const data=await response.json();const url=new URL(data.url);
+      assert.equal(url.origin,'https://github.com');assert.equal(url.searchParams.get('code_challenge_method'),'S256');assert.equal(url.searchParams.get('redirect_uri'),origin+'/account');
+      assert.equal(JSON.stringify(data).includes('private-github-secret'),false);return data;
+    };
+    const {state}=await start();const body={state,verifier,code:'provider-code'};
+    assert.equal((await handle(req('/auth/github/exchange','POST',{...body,verifier:'w'.repeat(64)}),env)).status,400);
+    env.ALLOWED_ORIGINS+=',https://preview.example';
+    assert.equal((await handle(req('/auth/github/exchange','POST',body,{Origin:'https://preview.example'}),env)).status,400);
+    assert.equal(tokenCalls,0);
+    const response=await handle(req('/auth/github/exchange','POST',body),env);assert.equal(response.status,200);
+    const login=await response.json();assert.equal(login.user.name,'GitHub User');assert.equal(JSON.stringify(login).includes('private-provider-token'),false);
+    assert.equal(DB.sql.prepare('SELECT count(*) n FROM users WHERE email=?').get('traveler@example.com').n,2);
+    assert.equal(DB.sql.prepare('SELECT name FROM users WHERE id=?').get('user1').name,'Traveler');
+    assert.equal((await handle(req('/auth/github/exchange','POST',body),env)).status,400);
+    verified=false;const next=await start();
+    assert.equal((await handle(req('/auth/github/exchange','POST',{...body,state:next.state}),env)).status,400);
+    const expired=await start();DB.sql.exec('UPDATE oauth_logins SET expires_at=0');
+    assert.equal((await handle(req('/auth/github/exchange','POST',{...body,state:expired.state}),env)).status,400);
+  } finally {globalThis.fetch=original;}
+});

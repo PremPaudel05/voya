@@ -2,6 +2,8 @@ import { createRemoteJWKSet, jwtVerify } from 'jose';
 import { ApiError, DAILY_LIMIT, MAX_DAYS, MAX_TOKENS, MODEL, canonicalCountry, parsePlan, promptFor, storedSettings, validateInput, validateSettings } from './planner.ts';
 import type { Settings } from './planner.ts';
 import { ipKey } from './ip.ts';
+import { authProviders, digest, extraAuth, randomToken } from './auth.ts';
+export { digest } from './auth.ts';
 
 // Only the public signing-key cache is shared between requests.
 const googleKeys = createRemoteJWKSet(new URL('https://www.googleapis.com/oauth2/v3/certs'));
@@ -9,10 +11,6 @@ type User = { id: string; name: string; email: string; settings: string };
 type Job = { id: string; status: string; result: string | null; input: string; fingerprint: string; created_at: number };
 const seconds = () => Math.floor(Date.now() / 1000);
 const dayStart = (now: number) => now - now % 86400;
-export async function digest(value: string) {
-  return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value))), b => b.toString(16).padStart(2, '0')).join('');
-}
-const randomToken = () => Array.from(crypto.getRandomValues(new Uint8Array(32)), b => b.toString(16).padStart(2, '0')).join('');
 function json(body: unknown, status = 200, headers: Record<string, string> = {}) {
   return Response.json(body, { status, headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', ...headers } });
 }
@@ -75,6 +73,16 @@ async function usage(env: Env, user: User) {
 async function account(env: Env, user: User) {
   return { user: { name: user.name, email: user.email }, settings: storedSettings(user.settings), usage: await usage(env, user) };
 }
+async function createSession(env: Env, id: string, name: string, email: string) {
+  const token = randomToken();
+  await env.DB.batch([
+    env.DB.prepare('INSERT INTO users(id,name,email,created_at) VALUES(?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,email=excluded.email').bind(id, name, email, seconds()),
+    env.DB.prepare('INSERT INTO sessions(token_hash,user_id,expires_at) VALUES(?,?,?)').bind(await digest(token), id, seconds() + 7 * 86400),
+    env.DB.prepare('DELETE FROM sessions WHERE user_id=? AND token_hash NOT IN (SELECT token_hash FROM sessions WHERE user_id=? ORDER BY expires_at DESC LIMIT 5)').bind(id, id),
+  ]);
+  const user = await env.DB.prepare('SELECT * FROM users WHERE id=?').bind(id).first<User>();
+  return json({ token, ...await account(env, user!) });
+}
 function quotaError(error: unknown) {
   const message = String(error);
   const retry = dayStart(seconds()) + 86400 - seconds();
@@ -130,11 +138,13 @@ export async function handle(request: Request, env: Env): Promise<Response> {
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: { ...headers, 'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,Authorization', 'Access-Control-Max-Age': '600' } });
   try {
     const url = new URL(request.url); const path = url.pathname;
-    if (path === '/config' && request.method === 'GET') return json({ googleClientId: env.GOOGLE_CLIENT_ID, turnstileSiteKey: env.TURNSTILE_SITE_KEY, ready: Boolean(env.GOOGLE_CLIENT_ID && env.TURNSTILE_SITE_KEY && env.TURNSTILE_SECRET_KEY && env.IP_HASH_SECRET), dailyLimit: DAILY_LIMIT, maxDays: MAX_DAYS, settingsVersion: 2 }, 200, headers);
+    if (path === '/config' && request.method === 'GET') return json({ googleClientId: env.GOOGLE_CLIENT_ID, turnstileSiteKey: env.TURNSTILE_SITE_KEY, ready: Object.values(authProviders(env)).some(Boolean), providers: authProviders(env), authVersion: 2, dailyLimit: DAILY_LIMIT, maxDays: MAX_DAYS, settingsVersion: 2 }, 200, headers);
     const ip = await ipHash(request, env);
     await throttle(env, `api:${ip}`, 120);
     let response: Response;
-    if (path === '/auth/challenge' && request.method === 'POST') {
+    const extra = await extraAuth(request, env, ip, { bodyOf, throttle, verifyBot, session: createSession });
+    if (extra) response = extra;
+    else if (path === '/auth/challenge' && request.method === 'POST') {
       if (!env.GOOGLE_CLIENT_ID) throw new ApiError(503, 'SIGN_IN_UNAVAILABLE', 'Sign-in is being set up. Please check back shortly.');
       await throttle(env, `login:${ip}`, 10);
       const nonce = randomToken();
@@ -152,14 +162,7 @@ export async function handle(request: Request, env: Env): Promise<Response> {
       const nonce = await env.DB.prepare('DELETE FROM login_nonces WHERE nonce=? AND expires_at>? RETURNING nonce').bind(payload.nonce, seconds()).first();
       if (!nonce) throw new ApiError(401, 'LOGIN_EXPIRED', 'This sign-in request expired. Please try again.');
       const id = await digest(`google:${payload.sub}`);
-      const token = randomToken();
-      await env.DB.batch([
-        env.DB.prepare('INSERT INTO users(id,name,email,created_at) VALUES(?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,email=excluded.email').bind(id, String(payload.name || 'Traveler').slice(0, 100), payload.email.slice(0, 254), seconds()),
-        env.DB.prepare('INSERT INTO sessions(token_hash,user_id,expires_at) VALUES(?,?,?)').bind(await digest(token), id, seconds() + 7 * 86400),
-        env.DB.prepare('DELETE FROM sessions WHERE user_id=? AND token_hash NOT IN (SELECT token_hash FROM sessions WHERE user_id=? ORDER BY expires_at DESC LIMIT 5)').bind(id, id),
-      ]);
-      const user = await env.DB.prepare('SELECT * FROM users WHERE id=?').bind(id).first<User>();
-      response = json({ token, ...await account(env, user!) });
+      response = await createSession(env, id, String(payload.name || 'Traveler').slice(0, 100), payload.email.slice(0, 254));
     } else {
       const user = await authenticated(request, env);
       if (path === '/me' && request.method === 'GET') response = json(await account(env, user));
@@ -212,6 +215,8 @@ export async function handle(request: Request, env: Env): Promise<Response> {
       } else if (path === '/plan' && request.method === 'POST') response = await generate(request, env, user, ip);
       else throw new ApiError(404, 'NOT_FOUND', 'Endpoint not found.');
     }
+    response.headers.set('Cache-Control', 'no-store');
+    response.headers.set('X-Content-Type-Options', 'nosniff');
     for (const [key, value] of Object.entries(headers)) response.headers.set(key, value);
     return response;
   } catch (error) {
@@ -229,6 +234,8 @@ export default {
       env.DB.prepare('DELETE FROM plan_usage WHERE day_start<?').bind(dayStart(now)),
       env.DB.prepare('DELETE FROM login_nonces WHERE expires_at<?').bind(now),
       env.DB.prepare('DELETE FROM sessions WHERE expires_at<?').bind(now),
+      env.DB.prepare('DELETE FROM email_logins WHERE expires_at<?').bind(now),
+      env.DB.prepare('DELETE FROM oauth_logins WHERE expires_at<?').bind(now),
       env.DB.prepare('DELETE FROM plan_jobs WHERE created_at<?').bind(now - 30 * 86400),
       env.DB.prepare('DELETE FROM search_history WHERE searched_at<?').bind(now - 90 * 86400),
       env.DB.prepare("UPDATE plan_jobs SET status='failed' WHERE status='pending' AND created_at<?").bind(now - 120),

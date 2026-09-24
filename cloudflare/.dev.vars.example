@@ -1,3 +1,8 @@
 # Copy to .dev.vars for local development. Production secrets use wrangler secret put.
 TURNSTILE_SECRET_KEY=replace-with-turnstile-secret
 IP_HASH_SECRET=replace-with-32-random-bytes
+# Optional providers: leave unset until their accounts are configured.
+# RESEND_API_KEY=your-resend-sending-key
+# EMAIL_FROM=Voya <signin@your-verified-domain.example>
+# GITHUB_CLIENT_ID=your-github-oauth-app-client-id
+# GITHUB_CLIENT_SECRET=your-github-oauth-app-client-secret

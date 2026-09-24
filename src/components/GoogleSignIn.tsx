@@ -1,57 +1,57 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { LoaderCircle, LockKeyhole } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
 import { useAccount } from '../account/AccountContext';
 import { usePreferences } from '../preferences/PreferencesContext';
 import { accountRequest, loadScript } from '../services/accountService';
-import { SecurityCheck } from './SecurityCheck';
-import type { SecurityCheckStatus } from './SecurityCheck';
 
-export function GoogleSignIn() {
+export function GoogleSignIn({ token, disabled, onBusy, onTokenUsed }: {
+  token: string; disabled: boolean; onBusy: (busy: boolean) => void; onTokenUsed: () => void;
+}) {
   const { config, login } = useAccount();
   const { t, preferences } = usePreferences();
   const container = useRef<HTMLDivElement>(null);
   const tokenRef = useRef('');
-  const [token, setToken] = useState('');
-  const [securityStatus, setSecurityStatus] = useState<SecurityCheckStatus>('checking');
-  const [buttonReady, setButtonReady] = useState(false);
+  const callbacks = useRef({ onBusy, onTokenUsed });
+  useEffect(() => { tokenRef.current = token; }, [token]);
+  useEffect(() => { callbacks.current = { onBusy, onTokenUsed }; }, [onBusy, onTokenUsed]);
+  const clientId = config?.googleClientId;
+  const enabled = config?.providers?.google ?? config?.ready;
+  const [readyKey, setReadyKey] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [attempt, setAttempt] = useState(0);
-
-  const updateToken = useCallback((value: string) => {
-    tokenRef.current = value;
-    setToken(value);
-  }, []);
+  const buttonKey = `${enabled}:${clientId}:${attempt}:${preferences.language}:${preferences.theme}`;
 
   useEffect(() => {
-    if (!config?.ready) return;
+    if (!enabled || !clientId) return;
     let active = true;
     let observer: ResizeObserver | undefined;
     const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
     let renderButton = () => {};
-    setButtonReady(false);
 
     Promise.all([
       loadScript('https://accounts.google.com/gsi/client'),
-      accountRequest<{ nonce: string }>('/auth/challenge', { method: 'POST' }),
+      accountRequest<{ nonce: string }>('/auth/challenge', { method: 'POST', signal: AbortSignal.timeout(10000) }),
     ]).then(([, challenge]) => {
       if (!active || !container.current) return;
       if (!window.google) throw new Error(t('Google sign-in could not load. Please try again.'));
       const google = window.google;
       google.accounts.id.initialize({
-        client_id: config.googleClientId, nonce: challenge.nonce, auto_select: false,
+        client_id: clientId, nonce: challenge.nonce, auto_select: false,
         callback: response => {
           if (!active) return;
           if (!tokenRef.current) { setError(t('Complete the security check before signing in.')); return; }
           setBusy(true);
+          callbacks.current.onBusy(true);
           setError('');
           void login(response.credential, tokenRef.current).catch(e => {
             if (!active) return;
             setError(e.message);
             setBusy(false);
-            updateToken('');
+            callbacks.current.onBusy(false);
+            callbacks.current.onTokenUsed();
             setAttempt(value => value + 1);
-          }).finally(() => { if (active) setBusy(false); });
+          }).finally(() => { if (active) { setBusy(false); callbacks.current.onBusy(false); } });
         },
       });
 
@@ -68,7 +68,7 @@ export function GoogleSignIn() {
           theme: dark ? 'filled_black' : 'outline', size: 'large', text: 'continue_with',
           shape: 'pill', width, locale: preferences.language,
         });
-        setButtonReady(true);
+        setReadyKey(buttonKey);
       };
       renderButton();
       observer = new ResizeObserver(() => renderButton());
@@ -76,28 +76,20 @@ export function GoogleSignIn() {
       systemTheme.addEventListener('change', renderButton);
     }).catch(e => { if (active) setError(e.message); });
 
+    const expiry = window.setTimeout(() => setAttempt(value => value + 1), 240000);
     return () => {
+      clearTimeout(expiry);
       active = false;
       observer?.disconnect();
       systemTheme.removeEventListener('change', renderButton);
     };
-  }, [config, login, attempt, preferences.language, preferences.theme, t, updateToken]);
+  }, [enabled, clientId, login, buttonKey, preferences.language, preferences.theme, t]);
 
-  if (!config?.ready) return <p role="status" className="account-banner">{t('Sign-in is being prepared. You can still explore every country guide.')}</p>;
-  const waiting = !token || !buttonReady;
-  const retry = () => { setError(''); updateToken(''); setAttempt(value => value + 1); };
-
-  return <div className="signin-form">
-    <p className="signin-account-note">{t('Your first Google sign-in creates a free account.')}</p>
-    <SecurityCheck key={attempt} siteKey={config.turnstileSiteKey} action="login" appearance="interaction-only" onToken={updateToken} onStatusChange={setSecurityStatus} />
-    <div ref={container} className={`signin-google-button ${waiting || busy ? 'pointer-events-none opacity-50' : ''}`} inert={waiting || busy} aria-busy={waiting || busy} />
-    <div className="signin-status" role="status">
-      {busy ? <><LoaderCircle size={14} className="animate-spin motion-reduce:animate-none" aria-hidden="true" />{t('Signing you in…')}</> : !error && securityStatus !== 'error' && waiting ? <>
-        {securityStatus !== 'interactive' && <LoaderCircle size={14} className="animate-spin motion-reduce:animate-none" aria-hidden="true" />}
-        {t(securityStatus === 'interactive' ? 'Complete the security check before signing in.' : 'Preparing sign-in…')}
-      </> : null}
-    </div>
-    {error && <div className="account-error" role="alert"><p>{error}</p><button type="button" className="account-link" disabled={busy} onClick={retry}>{t('Try again')}</button></div>}
-    <div className="signin-privacy"><LockKeyhole size={15} aria-hidden="true" /><p>{t('Google shares your name and email with Voya, never your password.')}</p></div>
+  const retry = useCallback(() => { setError(''); setAttempt(value => value + 1); }, []);
+  const waiting = readyKey !== buttonKey;
+  return <div className="signin-google">
+    <div ref={container} className={`signin-google-button ${waiting || !token || disabled || busy ? 'pointer-events-none opacity-50' : ''}`} inert={waiting || !token || disabled || busy} aria-busy={waiting || busy} />
+    {waiting && !error && <p className="signin-status" role="status"><LoaderCircle size={14} className="animate-spin motion-reduce:animate-none" />{t('Loading Google…')}</p>}
+    {error && <div className="account-error" role="alert"><p>{error}</p><button type="button" className="account-link" disabled={busy || disabled} onClick={retry}>{t('Try Google again')}</button></div>}
   </div>;
 }

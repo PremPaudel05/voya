@@ -8,6 +8,7 @@ export interface AccountState {
   refresh: () => Promise<void>;
   refreshConfig: () => Promise<void>;
   login: (credential: string, turnstileToken: string) => Promise<void>;
+  acceptLogin: (result: Account & { token: string }) => void;
   logout: () => Promise<void>;
   saveSettings: (settings: Preferences) => Promise<void>;
   deleteAccount: (email: string, confirmation: string) => Promise<void>;
