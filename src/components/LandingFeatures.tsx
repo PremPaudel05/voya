@@ -24,10 +24,10 @@ export function LandingFeatures() {
       {/* Stats row */}
       <div className="max-w-7xl mx-auto px-6 py-14 grid grid-cols-2 sm:grid-cols-4 gap-8">
         {[
-          { val: "195+", label: "Countries covered" },
-          { val: "8",    label: "Insight categories" },
-          { val: "0s",   label: "Signup required" },
-          { val: "Free", label: "Always & forever" },
+          { val: "195+", label: "Countries to explore" },
+          { val: "8",    label: "Topics to browse" },
+          { val: "No",   label: "Account needed" },
+          { val: "Free", label: "For everyone" },
         ].map(s => (
           <div key={s.label} className="flex flex-col">
             <span className="text-4xl font-black text-ink tracking-tight">{s.val}</span>
