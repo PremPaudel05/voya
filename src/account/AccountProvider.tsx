@@ -20,7 +20,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   }, []);
   useEffect(() => {
     let active = true;
-    accountRequest<AccountConfig>('/config').then(value => { if (active) setConfig(value); }).catch(e => { if (active) setError(e.message); });
+    accountRequest<AccountConfig>('/config', { signal: AbortSignal.timeout(10000) }).then(value => { if (active) setConfig(value); }).catch(e => { if (active) setError(e.message); });
     if (sessionToken()) {
       accountRequest<Account>('/me').then(value => { if (active) setAccount(value); }).catch(e => { if (active) setError(e.message); }).finally(() => { if (active) setLoading(false); });
     } else {
@@ -33,10 +33,13 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     window.addEventListener('focus', checkAvailability);
     return () => { active = false; window.removeEventListener('storage', sync); window.removeEventListener('voya-session-expired', expire); window.removeEventListener('focus', checkAvailability); };
   }, [refresh, refreshConfig]);
-  const login = useCallback(async (credential: string, turnstileToken: string) => {
-    const result = await accountRequest<Account & { token: string }>('/auth/google', { method: 'POST', body: JSON.stringify({ credential, turnstileToken }) });
+  const acceptLogin = useCallback((result: Account & { token: string }) => {
     storeSession(result.token); setAccount(result); setError('');
   }, []);
+  const login = useCallback(async (credential: string, turnstileToken: string) => {
+    const result = await accountRequest<Account & { token: string }>('/auth/google', { method: 'POST', body: JSON.stringify({ credential, turnstileToken }) });
+    acceptLogin(result);
+  }, [acceptLogin]);
   const logout = useCallback(async () => {
     await accountRequest('/auth/logout', { method: 'POST' });
     storeSession(null); setAccount(null);
@@ -56,5 +59,5 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     if (!sessionToken()) return;
     await accountRequest('/history', { method: 'POST', body: JSON.stringify({ countryName }) });
   }, []);
-  return <AccountContext.Provider value={{ account, config, loading, error, refresh, refreshConfig, login, logout, saveSettings, deleteAccount, recordSearch }}>{children}</AccountContext.Provider>;
+  return <AccountContext.Provider value={{ account, config, loading, error, refresh, refreshConfig, login, acceptLogin, logout, saveSettings, deleteAccount, recordSearch }}>{children}</AccountContext.Provider>;
 }

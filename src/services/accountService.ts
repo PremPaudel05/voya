@@ -4,7 +4,7 @@ import type { InterfacePreferences } from '../../shared/preferences';
 export interface Preferences extends InterfacePreferences { budget: string; traveler: string; days: number; styles: string[]; saveHistory: boolean }
 export interface Usage { limit: number; used: number; remaining: number; resetsAt: number; cooldownUntil: number }
 export interface Account { user: { name: string; email: string }; settings: Preferences; usage: Usage }
-export interface AccountConfig { ready: boolean; googleClientId: string; turnstileSiteKey: string; settingsVersion?: number }
+export interface AccountConfig { ready: boolean; googleClientId: string; turnstileSiteKey: string; settingsVersion?: number; authVersion?: number; providers?: { google: boolean; email: boolean; github: boolean } }
 export interface PlanDay { day: number; title: string; morning: string; afternoon: string; evening: string; tip: string; estimatedCost: string }
 export interface TravelPlan { intro: string; days: PlanDay[]; packingEssentials: string[]; budgetSummary: string; bestAdvice: string }
 export const DEFAULT_PREFERENCES: Preferences = { budget: 'midrange', traveler: 'couple', days: 7, styles: ['culture'], saveHistory: true, ...DEFAULT_INTERFACE };
@@ -35,8 +35,10 @@ export function loadScript(src: string): Promise<void> {
   const previous = scripts.get(src); if (previous) return previous;
   const promise = new Promise<void>((resolve, reject) => {
     const script = document.createElement('script'); script.src = src; script.async = true; script.defer = true;
-    script.onload = () => resolve();
-    script.onerror = () => { scripts.delete(src); script.remove(); reject(new Error('Sign-in or security verification could not load. Please check your connection and try again.')); };
+    const fail = () => { clearTimeout(timer); scripts.delete(src); script.remove(); reject(new Error('Sign-in or security verification could not load. Please check your connection and try again.')); };
+    const timer = window.setTimeout(fail, 15000);
+    script.onload = () => { clearTimeout(timer); resolve(); };
+    script.onerror = fail;
     document.head.appendChild(script);
   });
   scripts.set(src, promise); return promise;

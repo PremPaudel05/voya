@@ -7,7 +7,7 @@ import { useTimeOfDayGreeting } from '../account/useTimeOfDayGreeting';
 import { usePreferences } from '../preferences/PreferencesContext';
 import { accountRequest, DEFAULT_PREFERENCES } from '../services/accountService';
 import type { Account, Preferences, TravelPlan } from '../services/accountService';
-import { GoogleSignIn } from '../components/GoogleSignIn';
+import { SignIn } from '../components/SignIn';
 import { AccountDialog, AccountSettings } from '../components/AccountSettings';
 
 type HistoryEntry = { countryName: string; searchedAt: number };
@@ -69,7 +69,7 @@ export default function AccountPage() {
     <main className="account-main">{loading ? <p role="status">{t('Loading your account…')}</p> : account ? <SignedInAccount key={account.user.email} account={account} onDeleted={() => setDeleted(true)} /> : <>
       {deleted && <p role="status" className="account-success">{t('Your Voya account has been deleted.')}</p>}
       <div className="account-signin">
-        <div><p className="account-eyebrow">{t('Your discovery space')}</p><h1>{t('A home for your discoveries.')}</h1><p>{t('Sign in with Google to revisit countries and make Voya feel like yours. Exploring is always free and sign-in is optional.')}</p><ul>{[[MapPin,'Revisit your recent country searches'],[Settings2,'Personalise appearance and language'],[Shield,'Manage your privacy and notifications']].map(([Icon,label]) => { const I = Icon as typeof MapPin; return <li key={String(label)}><I size={18} />{t(String(label))}</li>; })}</ul></div>
+        <div><p className="account-eyebrow">{t('Your discovery space')}</p><h1>{t('A home for your discoveries.')}</h1><p>{t('Sign in to revisit countries and make Voya feel like yours. Exploring is always free and sign-in is optional.')}</p><ul>{[[MapPin,'Revisit your recent country searches'],[Settings2,'Personalise appearance and language'],[Shield,'Manage your privacy and notifications']].map(([Icon,label]) => { const I = Icon as typeof MapPin; return <li key={String(label)}><I size={18} />{t(String(label))}</li>; })}</ul></div>
         <section className="signin-card" aria-labelledby="signin-heading">
           <div className="signin-card-heading">
             <div className="signin-mark" aria-hidden="true"><Compass size={25} strokeWidth={1.5} /></div>
@@ -78,7 +78,7 @@ export default function AccountPage() {
               <h2 id="signin-heading">{t('Welcome to Voya')}</h2>
             </div>
           </div>
-          <GoogleSignIn />
+          <SignIn />
           {error && <p role="alert" className="account-error">{error}</p>}
         </section>
       </div>
