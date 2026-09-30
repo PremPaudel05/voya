@@ -2,6 +2,11 @@
 @import "./account.css";
 
 @theme inline {
+  --color-background: var(--canvas);
+  --color-foreground: var(--ink);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--ink);
+  --color-muted-foreground: var(--muted);
   --color-canvas: var(--canvas);
   --color-surface: var(--surface);
   --color-surface-alt: var(--surface-alt);

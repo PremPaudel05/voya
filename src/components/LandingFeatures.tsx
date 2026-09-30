@@ -1,15 +1,16 @@
+import ExpandingCardsDemo from './ui/demo';
 import { motion } from 'framer-motion';
 import { Map, Users, Landmark, Utensils, MessageCircle, DollarSign, Calendar, Sparkles } from 'lucide-react';
 
 const features = [
-  { icon: Users,         title: "Culture & Everyday Life",   description: "Traditions, social customs, and etiquette that offer a window into local life.", num: "01" },
-  { icon: Landmark,      title: "Famous Places & Landmarks", description: "Recognisable sights, historic places, and what makes them worth knowing about.", num: "02" },
-  { icon: Utensils,      title: "Food & Local Flavours",      description: "Popular dishes, local specialities, and the ingredients that make them distinctive.", num: "03" },
-  { icon: MessageCircle, title: "Language & Local Phrases",   description: "Common expressions and pronunciation guides to help you try a few words.", num: "04" },
-  { icon: Map,           title: "Geography & Nature",        description: "Landscapes, climates, major cities, and natural landmarks that shape a country.", num: "05" },
-  { icon: Calendar,      title: "Seasons & Festivals",       description: "Seasonal changes and major celebrations that give each time of year its character.", num: "06" },
-  { icon: DollarSign,    title: "Local Costs & Currency",    description: "Currency information and typical prices for food, coffee, transport, and stays.", num: "07" },
-  { icon: Sparkles,      title: "Surprising Country Facts",  description: "Interesting details to spark a new question or give you something to share.", num: "08" },
+  { icon: Users,         title: "Culture & Everyday Life",   description: "Find out how people celebrate, spend their days, and welcome visitors.", num: "01" },
+  { icon: Landmark,      title: "Famous Places & Landmarks", description: "Get the stories behind the places you know and find a few you haven’t heard of.", num: "02" },
+  { icon: Utensils,      title: "Food & Local Flavours",      description: "See what’s on the menu, from street food to dishes shared around the table.", num: "03" },
+  { icon: MessageCircle, title: "Language & Local Phrases",   description: "Learn a greeting, say thank you, and try a few useful phrases.", num: "04" },
+  { icon: Map,           title: "Geography & Nature",        description: "Explore the mountains, coastlines, cities, and landscapes that shape local life.", num: "05" },
+  { icon: Calendar,      title: "Seasons & Festivals",       description: "See how the country changes through the year and what people celebrate.", num: "06" },
+  { icon: DollarSign,    title: "Local Costs & Currency",    description: "Get a feel for everyday prices, from a cup of coffee to a place to stay.", num: "07" },
+  { icon: Sparkles,      title: "Surprising Country Facts",  description: "Find something unexpected to remember or share with a friend.", num: "08" },
 ];
 
 export function LandingFeatures() {
@@ -51,7 +52,7 @@ export function LandingFeatures() {
         >
           <div className="flex items-center gap-2.5 mb-4">
             <div className="h-px w-8 bg-brand" />
-            <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-accent">What you get</span>
+            <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-accent">Inside each country</span>
           </div>
           <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-ink leading-[1.05] max-w-2xl">
             Get to know a country,<br />
@@ -78,27 +79,26 @@ export function LandingFeatures() {
                 <h3 className="font-bold text-ink mb-1 text-base">{feat.title}</h3>
                 <p className="text-muted text-sm leading-relaxed">{feat.description}</p>
               </div>
-              <div className="hidden sm:flex items-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-accent text-xs font-semibold gap-1 pt-1 shrink-0">
-                Try it <span>→</span>
-              </div>
             </motion.div>
           ))}
         </div>
       </div>
 
+      <ExpandingCardsDemo />
+
       {/* CTA strip */}
       <div className="bg-canvas">
         <div className="max-w-7xl mx-auto px-6 py-16 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="text-2xl font-black text-ink mb-1">Ready to explore?</h3>
-            <p className="text-muted text-sm">Free to explore. Sign-in is optional.</p>
+            <h3 className="text-2xl font-black text-ink mb-1">Have another country in mind?</h3>
+            <p className="text-muted text-sm">Search for a place you’ve always wondered about. No account needed.</p>
           </div>
           <a
-            href="#top"
-            onClick={e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            href="#country-search"
+            onClick={e => { e.preventDefault(); document.getElementById('country-search')?.focus(); }}
             className="shrink-0 px-7 py-3.5 rounded-full bg-action text-action-ink font-bold text-sm hover:bg-action-hover transition-colors duration-300 flex items-center gap-2"
           >
-            Start exploring <span>→</span>
+            Find a country <span aria-hidden="true">→</span>
           </a>
         </div>
       </div>

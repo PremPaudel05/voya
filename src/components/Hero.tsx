@@ -147,7 +147,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
             </h1>
 
             <p className="text-muted text-lg leading-relaxed mb-9 max-w-[480px]">
-              Get to know a country through its culture, famous places, food, language, and the everyday details that make it distinctive.
+              Pick a country and get to know it — from what people eat to the places they love and the rhythms of everyday life.
             </p>
 
             {/* Search */}
@@ -181,6 +181,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                     )}
                     <input
                       ref={inputRef}
+                      id="country-search"
                       type="text"
                       aria-label={t('Explore a country')}
                       value={query}

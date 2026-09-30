@@ -1,0 +1,26 @@
+.expanding-cards {
+  display: grid;
+  height: 460px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  grid-template-columns: var(--expanding-mobile-columns);
+  grid-template-rows: minmax(0, 1fr);
+  list-style: none;
+  padding: 0 0 12px;
+  margin: 0;
+  transition: grid-template-columns 500ms ease-out, grid-template-rows 500ms ease-out;
+}
+.expanding-card { isolation: isolate; }
+.expanding-card-image { transform: scale(1.08); filter: grayscale(1); transition: transform 500ms ease-out, filter 300ms ease-out; }
+.expanding-card[data-active="true"] .expanding-card-image { transform: scale(1); filter: grayscale(0); }
+.expanding-card-trigger:focus-visible { outline: 3px solid white; outline-offset: -6px; }
+.expanding-card-collapsed { inset: auto 0 24px; display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; text-shadow: 0 1px 8px #000; transition: opacity 180ms ease-out; }
+.expanding-card-details { opacity: 0; visibility: hidden; transition: opacity 200ms ease-out; }
+.expanding-card[data-active="true"] .expanding-card-details { opacity: 1; visibility: visible; transition-delay: 100ms; }
+.expanding-card[data-active="true"] .expanding-card-collapsed { opacity: 0; }
+.expanding-card-link:focus-visible { outline-color: white; }
+@media (min-width: 1024px) {
+  .expanding-cards { height: 520px; overflow: hidden; padding-bottom: 0; grid-template-columns: var(--expanding-columns); grid-template-rows: minmax(0, 1fr); }
+}

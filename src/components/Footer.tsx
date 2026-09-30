@@ -99,7 +99,7 @@ export function Footer() {
           <div className="flex flex-col gap-4">
             <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-accent">Get in touch</span>
             <p className="text-[14px] text-muted leading-relaxed">
-              Ideas, suggestions, or feedback? I'd genuinely love to hear them — every message is read and appreciated.
+              Found something useful, spotted a problem, or have an idea? I’d love to hear from you.
             </p>
             <a
               href="mailto:leduopprem15@gmail.com"
