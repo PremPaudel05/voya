@@ -1,5 +1,5 @@
 import { BrandMark } from './BrandMark';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AccountLink } from './AccountLink';
 import { ShareButton } from './ShareButton';
 import { usePreferences } from '../preferences/PreferencesContext';
@@ -17,12 +17,6 @@ export function SiteHeader({ onExplore }: { onExplore?: () => void }) {
           <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-accent bg-brand/10 px-2 py-0.5 rounded-full">World</span>
         </Link>
         <nav aria-label="Main navigation" className="flex w-full flex-wrap items-center justify-between gap-x-3 gap-y-2 sm:w-auto sm:justify-end sm:gap-x-5 text-sm font-medium text-muted">
-          <NavLink
-            to="/about-developer"
-            className={({ isActive }) => `inline-flex items-center min-h-10 py-2 text-xs sm:text-sm transition-colors ${isActive ? 'text-accent underline underline-offset-4' : 'hover:text-ink'}`}
-          >
-            {t('About Developer')}
-          </NavLink>
           <ShareButton countryName="Voya" />
           <AccountLink />
           {onExplore ? (
