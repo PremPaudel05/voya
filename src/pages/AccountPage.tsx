@@ -65,14 +65,14 @@ export default function AccountPage() {
   const returnTo = params.get('returnTo');
   const safeReturn = returnTo?.startsWith('/country/') && !returnTo.includes('\\') ? returnTo : '/';
   return <div className="account-page">
-    <header className="account-header"><div><Link to={safeReturn}><ArrowLeft size={16} />{t('Back to exploring')}</Link><Link to="/" className="account-brand"><BrandMark className="h-8 w-8 sm:h-10 sm:w-10" />Voya<span>World</span></Link></div></header>
+    <header className="account-header"><div><Link to={safeReturn}><ArrowLeft size={16} />{t('Back to exploring')}</Link><Link to="/" className="account-brand"><BrandMark className="h-10 w-10 sm:h-12 sm:w-12" />Voya<span>World</span></Link></div></header>
     <main className="account-main">{loading ? <p role="status">{t('Loading your account…')}</p> : account ? <SignedInAccount key={account.user.email} account={account} onDeleted={() => setDeleted(true)} /> : <>
       {deleted && <p role="status" className="account-success">{t('Your Voya account has been deleted.')}</p>}
       <div className="account-signin">
         <div><p className="account-eyebrow">{t('Your discovery space')}</p><h1>{t('A home for your discoveries.')}</h1><p>{t('Sign in to revisit countries and make Voya feel like yours. Exploring is always free and sign-in is optional.')}</p><ul>{[[MapPin,'Revisit your recent country searches'],[Settings2,'Personalise appearance and language'],[Shield,'Manage your privacy and notifications']].map(([Icon,label]) => { const I = Icon as typeof MapPin; return <li key={String(label)}><I size={18} />{t(String(label))}</li>; })}</ul></div>
         <section className="signin-card" aria-labelledby="signin-heading">
           <div className="signin-card-heading">
-            <div className="signin-mark" aria-hidden="true"><Compass size={25} strokeWidth={1.5} /></div>
+            <div className="signin-mark" aria-hidden="true"><BrandMark className="h-9 w-9" /></div>
             <div>
               <p className="signin-card-kicker">{t('Optional account')}</p>
               <h2 id="signin-heading">{t('Welcome to Voya')}</h2>
