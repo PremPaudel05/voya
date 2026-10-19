@@ -108,3 +108,8 @@ body {
   margin: 0;
   padding: 0;
 }
+
+/* Keep the transparent globe legible on dark headers and the footer. */
+html[data-theme="dark"] .brand-mark, .bg-inverse .brand-mark {
+  filter: brightness(0) saturate(100%) invert(94%) sepia(10%) saturate(350%);
+}
