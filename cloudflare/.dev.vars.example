@@ -6,3 +6,5 @@ IP_HASH_SECRET=replace-with-32-random-bytes
 # EMAIL_FROM=Voya <signin@your-verified-domain.example>
 # GITHUB_CLIENT_ID=your-github-oauth-app-client-id
 # GITHUB_CLIENT_SECRET=your-github-oauth-app-client-secret
+# MICROSOFT_CLIENT_ID=your-microsoft-application-client-id
+# MICROSOFT_CLIENT_SECRET=your-microsoft-client-secret-value

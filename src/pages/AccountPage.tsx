@@ -65,7 +65,7 @@ export default function AccountPage() {
   const returnTo = params.get('returnTo');
   const safeReturn = returnTo?.startsWith('/country/') && !returnTo.includes('\\') ? returnTo : '/';
   return <div className="account-page">
-    <header className="account-header"><div><Link to={safeReturn}><ArrowLeft size={16} />{t('Back to exploring')}</Link><Link to="/" className="account-brand"><BrandMark className="h-10 w-10 sm:h-12 sm:w-12" />Voya<span>World</span></Link></div></header>
+    <header className="account-header"><div><Link to={safeReturn}><ArrowLeft size={16} />{t('Back to exploring')}</Link><Link to="/" className="account-brand"><BrandMark className="h-10 w-10 sm:h-12 sm:w-12" />Voya</Link></div></header>
     <main className="account-main">{loading ? <p role="status">{t('Loading your account…')}</p> : account ? <SignedInAccount key={account.user.email} account={account} onDeleted={() => setDeleted(true)} /> : <>
       {deleted && <p role="status" className="account-success">{t('Your Voya account has been deleted.')}</p>}
       <div className="account-signin">

@@ -1,7 +1,7 @@
 import { ApiError } from './planner.ts';
 
-type AuthEnv = Env & { RESEND_API_KEY?: string; EMAIL_FROM?: string; GITHUB_CLIENT_ID?: string; GITHUB_CLIENT_SECRET?: string };
-type Services = {
+export type AuthEnv = Env & { RESEND_API_KEY?: string; EMAIL_FROM?: string; GITHUB_CLIENT_ID?: string; GITHUB_CLIENT_SECRET?: string; MICROSOFT_CLIENT_ID?: string; MICROSOFT_CLIENT_SECRET?: string };
+export type Services = {
   bodyOf: (request: Request, max?: number) => Promise<Record<string, unknown>>;
   throttle: (env: Env, key: string, max: number, window?: number) => Promise<void>;
   verifyBot: (request: Request, env: Env, token: unknown, action: string) => Promise<void>;
@@ -17,7 +17,7 @@ export async function pkceChallenge(value: string) {
 }
 export function authProviders(env: AuthEnv) {
   const security = Boolean(env.TURNSTILE_SITE_KEY && env.TURNSTILE_SECRET_KEY && env.IP_HASH_SECRET);
-  return { google: security && Boolean(env.GOOGLE_CLIENT_ID), email: security && Boolean(env.RESEND_API_KEY && env.EMAIL_FROM), github: security && Boolean(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET) };
+  return { google: security && Boolean(env.GOOGLE_CLIENT_ID), email: security && Boolean(env.RESEND_API_KEY && env.EMAIL_FROM), github: security && Boolean(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET), microsoft: security && Boolean(env.MICROSOFT_CLIENT_ID && env.MICROSOFT_CLIENT_SECRET) };
 }
 function emailAddress(value: unknown) {
   if (typeof value !== 'string' || value.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) throw new ApiError(400, 'INVALID_EMAIL', 'Enter a valid email address.');

@@ -243,7 +243,7 @@ test('Google signatures, audience, issuer, expiry and single-use nonce are enfor
 test('login configuration exposes only configured providers and never secrets', async () => {
   const {env,req}=await fixture();
   let config=await (await handle(req('/config'),env)).json();
-  assert.deepEqual(config.providers,{google:true,email:false,github:false});
+  assert.deepEqual(config.providers,{google:true,email:false,github:false,microsoft:false});
   env.GOOGLE_CLIENT_ID=''; env.RESEND_API_KEY='private-email-key'; env.EMAIL_FROM='Voya <hello@example.test>';
   config=await (await handle(req('/config'),env)).json();
   assert.equal(config.ready,true); assert.equal(config.providers.email,true); assert.equal(config.providers.google,false);
@@ -355,4 +355,124 @@ test('GitHub login binds state, PKCE and origin, requires a verified primary ema
     const expired=await start();DB.sql.exec('UPDATE oauth_logins SET expires_at=0');
     assert.equal((await handle(req('/auth/github/exchange','POST',{...body,state:expired.state}),env)).status,400);
   } finally {globalThis.fetch=original;}
+});
+
+async function microsoftFixture() {
+  const fixtureValue = await fixture();
+  const { env, req } = fixtureValue;
+  env.MICROSOFT_CLIENT_ID = 'microsoft-test-client';
+  env.MICROSOFT_CLIENT_SECRET = 'private-microsoft-secret';
+  const { privateKey, publicKey } = await generateKeyPair('RS256');
+  const jwk = { ...await exportJWK(publicKey), kid: 'microsoft-test-key', alg: 'RS256', use: 'sig', issuer: 'https://login.microsoftonline.com/{tenantid}/v2.0' };
+  const tenant = '9188040d-6c67-4c5b-b112-36a304b66dad';
+  const verifier = 'm'.repeat(64);
+  let nonce;
+  let tokenCalls = 0;
+  let overrides = {};
+  let signingKey = privateKey;
+  let botValid = true;
+  let tokenStatus = 200;
+  const fetch = async (url, options) => {
+    if (String(url).includes('siteverify')) return Response.json({ success: botValid, hostname: 'voyatravel.vercel.app', action: 'login' });
+    if (String(url).endsWith('/token')) {
+      tokenCalls++;
+      assert.equal(options.body.get('code_verifier'), verifier);
+      assert.equal(options.body.get('redirect_uri'), origin + '/account');
+      assert.equal(options.body.get('client_secret'), env.MICROSOFT_CLIENT_SECRET);
+      assert.equal(options.body.get('grant_type'), 'authorization_code');
+      const claims = { tid: tenant, ver: '2.0', sub: 'microsoft-subject', name: 'Microsoft Traveler', email: 'traveler@example.com', nonce, aud: env.MICROSOFT_CLIENT_ID, iss: `https://login.microsoftonline.com/${tenant}/v2.0`, iat: Math.floor(Date.now()/1000), exp: Math.floor(Date.now()/1000)+600, ...overrides };
+      return Response.json({ id_token: await new SignJWT(claims).setProtectedHeader({ alg: 'RS256', kid: jwk.kid }).sign(signingKey), access_token: 'private-microsoft-access-token' }, { status: tokenStatus });
+    }
+    assert.equal(String(url), 'https://login.microsoftonline.com/common/discovery/v2.0/keys');
+    return Response.json({ keys: [jwk] });
+  };
+  const start = async () => {
+    const { pkceChallenge } = await import('../src/auth.ts');
+    const response = await handle(req('/auth/microsoft/start', 'POST', { challenge: await pkceChallenge(verifier), turnstileToken: 'valid' }), env);
+    assert.equal(response.status, 200);
+    const data = await response.json();
+    const url = new URL(data.url);
+    assert.equal(url.origin, 'https://login.microsoftonline.com');
+    assert.equal(url.searchParams.get('scope'), 'openid profile email');
+    assert.equal(url.searchParams.get('response_type'), 'code');
+    assert.equal(url.searchParams.get('code_challenge_method'), 'S256');
+    assert.equal(url.searchParams.get('redirect_uri'), origin + '/account');
+    nonce = url.searchParams.get('nonce');
+    assert.match(nonce, /^[a-f0-9]{64}$/);
+    assert.equal(JSON.stringify(data).includes('private-microsoft-secret'), false);
+    return { state: data.state, verifier, code: 'microsoft-provider-code' };
+  };
+  return { ...fixtureValue, fetch, start, jwk, tokenCalls: () => tokenCalls, changeClaims: value => { overrides = value; }, changeKey: key => { signingKey = key; }, rejectBot: () => { botValid = false; }, rejectToken: () => { tokenStatus = 400; } };
+}
+
+test('Microsoft creates and reuses a separate account, with state, PKCE, origin and replay protection', async () => {
+  const m = await microsoftFixture(); const { env, req, DB } = m; const original = globalThis.fetch; globalThis.fetch = m.fetch;
+  try {
+    const config = await (await handle(req('/config'), env)).json();
+    assert.equal(config.providers.microsoft, true); assert.equal(config.authVersion, 3);
+    assert.equal(JSON.stringify(config).includes('private-microsoft-secret'), false);
+    const body = await m.start();
+    assert.notEqual(DB.sql.prepare('SELECT state_hash FROM microsoft_logins').get().state_hash, body.state);
+    assert.equal((await handle(req('/auth/microsoft/exchange', 'POST', { ...body, verifier: 'x'.repeat(64) }), env)).status, 400);
+    assert.equal((await handle(req('/auth/microsoft/exchange', 'POST', { ...body, state: 'f'.repeat(64) }), env)).status, 400);
+    env.ALLOWED_ORIGINS += ',https://preview.example';
+    assert.equal((await handle(req('/auth/microsoft/exchange', 'POST', body, { Origin: 'https://preview.example' }), env)).status, 400);
+    env.GITHUB_CLIENT_ID = 'github-id'; env.GITHUB_CLIENT_SECRET = 'github-secret';
+    assert.equal((await handle(req('/auth/github/exchange', 'POST', body), env)).status, 400);
+    assert.equal(m.tokenCalls(), 0);
+    const responses = await Promise.all([handle(req('/auth/microsoft/exchange', 'POST', body), env), handle(req('/auth/microsoft/exchange', 'POST', body), env)]);
+    assert.deepEqual(responses.map(r => r.status).sort(), [200,400]);
+    const login = await responses.find(r => r.status === 200).json();
+    assert.equal(login.user.name, 'Microsoft Traveler');
+    assert.equal(JSON.stringify(login).includes('private-microsoft-access-token'), false);
+    assert.equal((await handle(req('/me', 'GET', undefined, { Authorization: 'Bearer ' + login.token }), env)).status, 200);
+    assert.equal(DB.sql.prepare('SELECT count(*) n FROM users WHERE email=?').get('traveler@example.com').n, 2);
+    assert.equal(DB.sql.prepare('SELECT name FROM users WHERE id=?').get('user1').name, 'Traveler');
+    const userId = DB.sql.prepare('SELECT id FROM users WHERE name=?').get('Microsoft Traveler').id;
+    DB.sql.prepare('INSERT INTO search_history(user_id,country_name,searched_at) VALUES(?,?,?)').run(userId,'Nepal',1);
+    m.changeClaims({ email: 'updated@example.com' });
+    assert.equal((await handle(req('/auth/microsoft/exchange', 'POST', await m.start()), env)).status, 200);
+    assert.equal(DB.sql.prepare('SELECT count(*) n FROM users').get().n, 2);
+    assert.equal(DB.sql.prepare('SELECT country_name FROM search_history WHERE user_id=?').get(userId).country_name, 'Nepal');
+    const expired = await m.start(); DB.sql.exec('UPDATE microsoft_logins SET expires_at=0');
+    assert.equal((await handle(req('/auth/microsoft/exchange', 'POST', expired), env)).status, 400);
+    assert.equal((await handle(req('/account', 'DELETE', { email: 'updated@example.com', confirmation: 'DELETE' }, { Authorization: 'Bearer ' + login.token }), env)).status, 200);
+  } finally { globalThis.fetch = original; }
+});
+
+test('Microsoft rejects invalid ID token claims and signatures without creating a session', async () => {
+  const m = await microsoftFixture(); const { env, req, DB } = m; const original = globalThis.fetch; globalThis.fetch = m.fetch;
+  try {
+    for (const claims of [
+      { aud: 'wrong-client' }, { iss: 'https://attacker.example/v2.0' }, { nonce: 'wrong-nonce' },
+      { exp: 1 }, { tid: '../attacker' }, { sub: '' }, { ver: '1.0' },
+      { email: null, preferred_username: 'not-an-email' },
+    ]) {
+      m.changeClaims(claims);
+      assert.equal((await handle(req('/auth/microsoft/exchange', 'POST', await m.start()), env)).status, 400);
+    }
+    m.changeClaims({});
+    m.changeKey((await generateKeyPair('RS256')).privateKey);
+    assert.equal((await handle(req('/auth/microsoft/exchange', 'POST', await m.start()), env)).status, 400);
+    assert.equal(DB.sql.prepare('SELECT count(*) n FROM users').get().n, 1);
+    assert.equal(DB.sql.prepare('SELECT count(*) n FROM sessions').get().n, 1);
+  } finally { globalThis.fetch = original; }
+});
+
+test('Microsoft enforces signing-key issuer, handles provider failure and gates setup and bot checks', async () => {
+  const m = await microsoftFixture(); const { env, req, DB } = m; const original = globalThis.fetch; globalThis.fetch = m.fetch;
+  try {
+    m.jwk.issuer = 'https://login.microsoftonline.com/00000000-0000-0000-0000-000000000000/v2.0';
+    assert.equal((await handle(req('/auth/microsoft/exchange', 'POST', await m.start()), env)).status, 400);
+    m.jwk.issuer = 'https://login.microsoftonline.com/{tenantid}/v2.0';
+    m.rejectToken();
+    assert.equal((await handle(req('/auth/microsoft/exchange', 'POST', await m.start()), env)).status, 400);
+    m.rejectBot();
+    assert.equal((await handle(req('/auth/microsoft/start', 'POST', { challenge: 'a'.repeat(43), turnstileToken: 'invalid' }), env)).status, 403);
+    assert.equal(DB.sql.prepare('SELECT count(*) n FROM microsoft_logins').get().n, 0);
+    delete env.MICROSOFT_CLIENT_SECRET;
+    assert.equal((await (await handle(req('/config'), env)).json()).providers.microsoft, false);
+    assert.equal((await handle(req('/auth/microsoft/start', 'POST', {}), env)).status, 503);
+    assert.equal(DB.sql.prepare('SELECT count(*) n FROM users').get().n, 1);
+  } finally { globalThis.fetch = original; }
 });
