@@ -3,18 +3,13 @@ import { ArrowRight, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import './dashain-greeting.css';
 
-const dismissalKey = 'voya-dashain-2026-dismissed';
 // This seasonal message runs through Nov 1 in the developer's local timezone.
 const endsAt = Date.parse('2026-11-02T00:00:00-05:00');
 export function DashainGreeting() {
   const [open, setOpen] = useState(false);
-  const dismiss = () => {
-    setOpen(false);
-    try { localStorage.setItem(dismissalKey, 'yes'); } catch { /* Dismiss still works without storage. */ }
-  };
+  const dismiss = () => setOpen(false);
   useEffect(() => {
     if (Date.now() >= endsAt) return;
-    try { if (localStorage.getItem(dismissalKey)) return; } catch { /* Storage is optional. */ }
     const show = window.setTimeout(() => { if (Date.now() < endsAt) setOpen(true); }, 1800);
     const expire = window.setTimeout(() => setOpen(false), endsAt - Date.now());
     return () => { clearTimeout(show); clearTimeout(expire); };
