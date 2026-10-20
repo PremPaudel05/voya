@@ -101,10 +101,10 @@ export function Footer() {
               Found something useful, spotted a problem, or have an idea? I’d love to hear from you.
             </p>
             <a
-              href="mailto:leduopprem15@gmail.com"
+              href="mailto:Prempaudel5b@gmail.com"
               className="text-[14px] font-semibold text-white hover:text-accent transition-colors"
             >
-              leduopprem15@gmail.com →
+              Prempaudel5b@gmail.com →
             </a>
             {/* LinkedIn — single instance */}
             <a
@@ -146,7 +146,7 @@ export function Footer() {
           <p><strong>Your settings and account:</strong> Appearance, language, and notification preferences can be saved to your account and on your device. Browser alerts need your permission and only work while Voya is open. You can permanently delete your Voya account in Settings, removing your profile, preferences, saved searches, plans, and active sessions. Minimal usage records without your name, email, or saved content remain until the next daily cleanup to prevent allowance resets.</p>
           <p><strong>Analytics:</strong> I may use privacy-respecting, anonymous analytics (page views only) to improve the product. No personal identifiers are collected for these analytics.</p>
           <p><strong>Third-party services:</strong> Voya offers sign-in through the providers available on the account page, including Google and Microsoft when enabled. Cloudflare provides account services and security checks. Email sign-in codes, when available, are delivered through Resend. AI services generate personalised trip plans. When you generate a plan, your destination and travel preferences are sent to the AI provider. Please review these providers' privacy policies for details on how they handle data.</p>
-          <p>For any privacy concerns, reach me at <a href="mailto:leduopprem15@gmail.com" className="text-accent underline">leduopprem15@gmail.com</a>.</p>
+          <p>For any privacy concerns, reach me at <a href="mailto:Prempaudel5b@gmail.com" className="text-accent underline">Prempaudel5b@gmail.com</a>.</p>
         </Modal>
       )}
 
@@ -157,7 +157,7 @@ export function Footer() {
           <p><strong>No guarantees:</strong> Voya provides AI-generated travel information. While I strive for accuracy, I cannot guarantee that all content is current or error-free. Always verify critical information (e.g. visa requirements, health advice, safety conditions) with official government or embassy sources before travelling.</p>
           <p><strong>Acceptable use:</strong> You agree not to use Voya for any unlawful purpose, to attempt to reverse-engineer the service, or to overload the system with automated requests.</p>
           <p><strong>Changes:</strong> I reserve the right to modify these terms at any time. Continued use of the service constitutes acceptance of the updated terms.</p>
-          <p>Questions? <a href="mailto:leduopprem15@gmail.com" className="text-accent underline">leduopprem15@gmail.com</a></p>
+          <p>Questions? <a href="mailto:Prempaudel5b@gmail.com" className="text-accent underline">Prempaudel5b@gmail.com</a></p>
         </Modal>
       )}
 
@@ -171,7 +171,7 @@ export function Footer() {
             <li>Cost estimates are approximate and based on general knowledge. Actual prices may differ depending on season, location, and market conditions.</li>
             <li>Historical or cultural facts are sourced from the model's training data, which has a knowledge cutoff and may not reflect very recent events.</li>
           </ul>
-          <p>I'm continuously working to improve the quality and accuracy of the content. If you notice an error, please let me know at <a href="mailto:leduopprem15@gmail.com" className="text-accent underline">leduopprem15@gmail.com</a>.</p>
+          <p>I'm continuously working to improve the quality and accuracy of the content. If you notice an error, please let me know at <a href="mailto:Prempaudel5b@gmail.com" className="text-accent underline">Prempaudel5b@gmail.com</a>.</p>
         </Modal>
       )}
 
@@ -180,8 +180,8 @@ export function Footer() {
           <p>I'm building Voya to make discovering countries and cultures more accessible. I'd love to hear what sparked your curiosity.</p>
           <div className="bg-surface-alt rounded-xl p-4 space-y-1">
             <div className="text-[10px] font-bold uppercase tracking-widest text-accent">Email me</div>
-            <a href="mailto:leduopprem15@gmail.com" className="text-ink font-semibold hover:text-accent transition-colors">
-              leduopprem15@gmail.com
+            <a href="mailto:Prempaudel5b@gmail.com" className="text-ink font-semibold hover:text-accent transition-colors">
+              Prempaudel5b@gmail.com
             </a>
           </div>
           <p><strong>Common questions:</strong></p>
