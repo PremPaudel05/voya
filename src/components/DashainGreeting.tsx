@@ -32,7 +32,7 @@ export function DashainGreeting() {
       <span className="dashain-kicker">A little wish from home</span>
       <h2 id="dashain-title">Happy Dashain! <span lang="ne">शुभ दशैं</span></h2>
       <p>To those abroad and those at home—wishing you good health, happiness, and time with the people you love. Whether you’re sharing tika and jamara in person or sending blessings across the miles, may this Dashain bring you a little closer to home.</p>
-      <p className="dashain-signature">With warm wishes,<br /><strong>Prem</strong> · Voya’s Nepali developer</p>
+      <p className="dashain-signature">With warm wishes,<br /><strong>Prem</strong></p>
     </div>
   </aside>;
 }
