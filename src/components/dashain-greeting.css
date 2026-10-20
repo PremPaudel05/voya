@@ -1,4 +1,4 @@
-.dashain-greeting { position: fixed; z-index: 60; right: 22px; bottom: max(22px,env(safe-area-inset-bottom)); width: min(420px,calc(100vw - 28px)); max-height: calc(100dvh - 40px); overflow-y: auto; border: 1px solid #c6a773; border-radius: 22px; background: #fffaf2; color: #302316; text-align: center; box-shadow: 0 10px 48px #3726192b,0 1px 0 #fff inset; animation: dashain-arrive .5s ease-out; }
+.dashain-greeting { position: fixed; z-index: 60; left: 50%; top: 50%; translate: -50% -50%; width: min(420px,calc(100vw - 28px)); max-height: calc(100dvh - 40px); overflow-y: auto; border: 1px solid #c6a773; border-radius: 22px; background: #fffaf2; color: #302316; text-align: center; box-shadow: 0 10px 48px #3726192b,0 1px 0 #fff inset; animation: dashain-arrive .5s ease-out; }
 .dashain-greeting > img { display: block; width: calc(100% - 64px); height: 154px; object-fit: contain; margin: 18px auto 0; }
 .dashain-close { position: absolute; top: 5px; right: 5px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: #705638; cursor: pointer; }
 .dashain-close:hover { background: #eee3d3; }
@@ -15,7 +15,7 @@
 .dashain-explore a:focus-visible { outline: 2px solid #825225; outline-offset: 4px; }
 @keyframes dashain-arrive { from { opacity: 0; transform: translateX(-48px); } to { opacity: 1; transform: translateX(0); } }
 @media(max-width: 600px) {
-  .dashain-greeting { right: 0; left: 0; margin-inline: auto; bottom: max(14px,env(safe-area-inset-bottom)); max-height: min(80dvh,600px); border-radius: 18px; }
+  .dashain-greeting { max-height: min(80dvh,600px); border-radius: 18px; }
   .dashain-greeting > img { height: 116px; margin-top: 16px; }
   .dashain-copy { padding: 6px 18px 18px; }
   .dashain-copy h2 { font-size: 21px; }
