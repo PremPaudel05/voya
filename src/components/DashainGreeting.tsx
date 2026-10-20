@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { X } from 'lucide-react';
+import { ArrowRight, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import './dashain-greeting.css';
 
 const dismissalKey = 'voya-dashain-2026-dismissed';
@@ -33,6 +34,10 @@ export function DashainGreeting() {
       <h2 id="dashain-title">Happy Dashain! <span lang="ne">शुभ दशैं</span></h2>
       <p>To those abroad and those at home—wishing you good health, happiness, and time with the people you love. Whether you’re sharing tika and jamara in person or sending blessings across the miles, may this Dashain bring you a little closer to home.</p>
       <p className="dashain-signature">With warm wishes,<br /><strong>Prem</strong></p>
+      <div className="dashain-explore">
+        <p>Want to learn more about Nepal’s holidays and festivals?</p>
+        <Link to="/country/Nepal" onClick={dismiss}>Explore Nepal <ArrowRight size={17} aria-hidden="true" /></Link>
+      </div>
     </div>
   </aside>;
 }
