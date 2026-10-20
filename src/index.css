@@ -28,7 +28,7 @@
   --ink: #21170f; --muted: #695747; --subtle: #76614e; --line: #d5c7b5;
   --accent: #8f5524; --brand: #8f5524; --inverse: #1a1208;
   --danger: #a92323; --danger-surface: #fff3f1; --success: #246346;
-  --action: #21170f; --action-ink: #fffaf3; --action-hover: #3c2c1d;
+  --action: #8f5524; --action-ink: #fffaf3; --action-hover: #75431b;
   --headline-gradient: linear-gradient(135deg, #94602d 0%, #a3662b 45%, #9a4826 100%);
   --map-dot: #b29a7d; --map-label: #30251a; --map-label-ink: #fff5e7;
   --hero-glow: #d6a55f29; --hero-rust: #b95a3c17;
@@ -46,6 +46,7 @@
 }
 :root[data-contrast="high"] {
   --ink: #100b06; --muted: #35291e; --subtle: #493727; --line: #7c654d; --accent: #66390e;
+  --action: #66390e; --action-hover: #57300c;
 }
 :root[data-theme="dark"][data-contrast="high"] {
   --canvas: #171613; --surface: #22201c; --surface-alt: #302b24;
