@@ -62,10 +62,9 @@ export function Footer() {
             <div className="flex items-center gap-2.5">
               <BrandMark />
               <span className="text-2xl font-black text-white tracking-tight">Voya</span>
-              <span className="text-[10px] font-bold tracking-[0.18em] uppercase text-accent border border-[#c49050]/30 px-2 py-0.5 rounded-full">World</span>
             </div>
             <p className="text-[14px] leading-relaxed text-muted max-w-[210px]">
-              Culture, places, and everyday life. Get to know the world with Voya.
+              Culture, places, and everyday life. Get to know somewhere new.
             </p>
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-[#c49050] animate-pulse shrink-0" />

@@ -262,7 +262,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
             {/* Subtle top label */}
             <div className="flex items-center gap-2 mb-3">
               <div className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
-              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-accent">Around the World</span>
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-accent">Places to discover</span>
             </div>
             <div className="lg:max-h-none max-h-[260px] overflow-hidden">
               <WorldMap

@@ -14,7 +14,6 @@ export function SiteHeader({ onExplore }: { onExplore?: () => void }) {
         <Link to="/" aria-label="Voya home" className="flex items-center gap-2">
           <BrandMark />
           <span className="text-xl font-black tracking-tight text-ink">Voya</span>
-          <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-accent bg-brand/10 px-2 py-0.5 rounded-full">World</span>
         </Link>
         <nav aria-label="Main navigation" className="flex w-full flex-wrap items-center justify-between gap-x-3 gap-y-2 sm:w-auto sm:justify-end sm:gap-x-5 text-sm font-medium text-muted">
           <ShareButton countryName="Voya" />
