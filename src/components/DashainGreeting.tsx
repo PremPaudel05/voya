@@ -5,12 +5,21 @@ import './dashain-greeting.css';
 
 // This seasonal message runs through Nov 1 in the developer's local timezone.
 const endsAt = Date.parse('2026-11-02T00:00:00-05:00');
+const sessionKey = 'voya-dashain-2026-shown';
+let shownThisPageSession = false;
 export function DashainGreeting() {
   const [open, setOpen] = useState(false);
   const dismiss = () => setOpen(false);
   useEffect(() => {
     if (Date.now() >= endsAt) return;
-    const show = window.setTimeout(() => { if (Date.now() < endsAt) setOpen(true); }, 1800);
+    if (shownThisPageSession) return;
+    try { if (sessionStorage.getItem(sessionKey)) return; } catch { /* Use memory when storage is unavailable. */ }
+    const show = window.setTimeout(() => {
+      if (Date.now() >= endsAt) return;
+      shownThisPageSession = true;
+      try { sessionStorage.setItem(sessionKey, 'yes'); } catch { /* Navigation still respects the in-memory flag. */ }
+      setOpen(true);
+    }, 1800);
     const expire = window.setTimeout(() => setOpen(false), endsAt - Date.now());
     return () => { clearTimeout(show); clearTimeout(expire); };
   }, []);

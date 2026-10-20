@@ -48,6 +48,6 @@ retain their own licenses; calendar-data notices are preserved in
 [the credits file](public/credits/date-holidays.txt).
 
 Using the hosted Voya website is still permitted. For permission to reuse new
-proprietary contributions, contact [Prem Paudel](mailto:leduopprem15@gmail.com).
+proprietary contributions, contact [Prem Paudel](mailto:Prempaudel5b@gmail.com).
 
 © 2026 Prem Paudel.

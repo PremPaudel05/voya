@@ -6,7 +6,7 @@ Passwords use salted scrypt (N=16384, r=8, p=5). Registration and login require 
 
 Signup displays a private recovery code once. Users must save it before continuing. Password recovery rotates that code and revokes previous sessions. There is no email password-reset service; losing both password and recovery code means the account cannot be recovered through this flow.
 
-The homepage greeting is centered in the viewport and dismissible for the current visit. It appears again after refreshing or returning to the homepage, supports reduced motion and small screens, and expires November 2, 2026 at midnight America/New_York. Adjust `endsAt` in `src/components/DashainGreeting.tsx` for future campaigns.
+The homepage greeting is centered in the viewport and appears once per tab session using sessionStorage. Refreshing or navigating back home does not repeat it. Opening a fresh tab session allows it again (browser session restoration may retain the flag). If storage is blocked, an in-memory fallback prevents repeats during navigation but cannot persist across refreshes. It supports reduced motion and small screens, and expires November 2, 2026 at midnight America/New_York. Adjust `endsAt` in `src/components/DashainGreeting.tsx` for future campaigns.
 
 ## Illustration
 
