@@ -1,16 +1,16 @@
-# Voya — Travel Planning Web App
+# Voya — Country Insights & Culture
 
-> Type any country. Get instant travel insights — no account, no subscription, just go.
+> Pick a country. Explore its culture, food, landmarks, and everyday life — free, with no account needed to explore.
 
 ![Voya Preview](preview.png)
 
 ## About
 
-Voya started as a question I kept asking myself: why is it still so hard to plan a trip well, without paying for a subscription?
+Voya started with curiosity about places: their people, traditions, food, and what everyday life looks like there. I wanted a simple way to explore a country that caught my interest and find useful information in one place.
 
-Today's AI tools are powerful, but they fall short for real travel planning — usage limits mid-itinerary, generic routes, no guidance on local culture or practical costs. I felt that gap every time I tried to plan a trip, so I built Voya to fix it.
+Voya is a free website for getting to know countries through their culture, local dishes, landmarks, holidays and festivals, useful phrases, and estimated costs. Whether you’re curious about somewhere new, learning about your roots, or considering a visit, it gives you a starting point to explore further.
 
-Voya is a free travel planning tool that delivers instant insights on any country in the world. Type a destination and get culture overviews, local food guides, essential phrases, budget breakdowns, day-by-day itineraries, safety tips, and packing lists — all in one place.
+You can also use Voya to gather ideas for a trip, including suggested itineraries. These are starting points, and accuracy isn’t guaranteed. Before making travel decisions, check current local news, official travel advisories, entry requirements, regulations, prices, and opening hours directly with relevant authorities and providers. Conditions can change, and Voya’s information may not reflect the latest updates.
 
 ## Features
 
@@ -18,9 +18,10 @@ Voya is a free travel planning tool that delivers instant insights on any countr
 - 🗺️ Interactive map with city explorer
 - 🍜 Local food guides and must-try dishes
 - 💬 Essential travel phrases with pronunciation
-- 💰 Real budget breakdowns for every budget level
-- 📅 Day-by-day itinerary builder
-- 🛡️ Safety tips and travel warnings
+- 💰 Estimated costs to help understand local budgets
+- 🎉 Country holidays and festivals
+- 📅 Suggested day-by-day itineraries to support further research
+- 🛡️ General safety information to supplement current official advisories
 - 🎒 Smart packing lists by destination
 
 ## Tech Stack
