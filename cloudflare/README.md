@@ -187,3 +187,67 @@ claiming these methods are live.
 
 Provider references: [Resend send-email API](https://resend.com/docs/api-reference/emails/send-email),
 [GitHub OAuth and PKCE](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps).
+
+### Microsoft sign-in and explicit registration
+
+The account page now offers **Sign in** and **Create account**. Both use the
+same verified identity flow: the first successful authentication creates a Voya
+account, and subsequent visits return to it. Creating an account again with the
+same provider does not overwrite its preferences or saved countries. Email-code
+registration continues to work when the email provider is configured; this
+change does not add passwords or bypass inbox verification.
+
+Microsoft uses the existing `voyatravel.vercel.app` address; no custom domain is
+needed for this provider. Before enabling it:
+
+1. Open [Microsoft Entra app registrations](https://entra.microsoft.com/) and
+   register an application named **Voya**. Select support for **accounts in any
+   organizational directory and personal Microsoft accounts** (the manifest
+   `signInAudience` value is `AzureADandPersonalMicrosoftAccount`). This allows
+   Outlook/Hotmail and work/school accounts; an organization's own policies can
+   still require administrator approval.
+2. Add the **Web** redirect URI `https://voyatravel.vercel.app/account` exactly.
+   Although Voya has a React frontend, its Cloudflare server exchanges the code
+   using a secret, so this callback must use the **Web** platform, not **SPA**.
+   Leave implicit grants disabled. Use a separate registration for development.
+3. Copy the Application (client) ID. Create a client secret under **Certificates
+   & secrets** and copy its **Value**, not its Secret ID. Keep that value out of
+   chat, source control, frontend environment variables, and screenshots.
+4. In Cloudflare, open **Workers & Pages → voya-account-api → Settings →
+   Variables and Secrets**. Add `MICROSOFT_CLIENT_ID` and
+   `MICROSOFT_CLIENT_SECRET` as secrets and deploy the settings. Alternatively,
+   from this directory, run `npx wrangler secret put MICROSOFT_CLIENT_ID` and
+   `npx wrangler secret put MICROSOFT_CLIENT_SECRET` and enter each at its prompt.
+   Record the secret's expiry date and rotate it before it expires.
+5. The repository's account API deployment applies migration
+   `0004_microsoft_login.sql` before deploying the Worker. Confirm deployment
+   succeeded and `/config` reports `authVersion: 3` and
+   `providers.microsoft: true`. Reload `/account`, create an account with
+   Microsoft, sign out, then sign in again to verify saved data remains.
+
+Until those settings exist, the Microsoft button is visibly unavailable with
+an explanation; it never sends users to an unconfigured provider. Existing
+Google registration remains usable. The live configuration previously reported
+email and GitHub disabled; those providers still need their own setup described
+above. Resend email delivery to general users requires a verified sender domain.
+
+The Microsoft flow requests only `openid profile email`, uses S256 PKCE, and
+stores only a hash of its random state and nonce. State is tied to the origin,
+expires after ten minutes, and is atomically consumed. A separate table prevents
+cross-provider state reuse. The Worker verifies the ID-token signature, allowed
+algorithm, audience, expiry, age, nonce, tenant issuer, and signing-key issuer.
+Only Microsoft's fixed public-key endpoint is fetched. The current public keys
+are fetched at sign-in time, so signing-key rotations require no manual update.
+Microsoft access and refresh tokens are neither stored nor exposed to the
+browser. The client secret remains in the Worker.
+
+Accounts use the verified tenant and subject, never email, as their identity.
+Email is display data and cannot link an existing Google, email, or GitHub
+account. Returning users should choose their original provider. Microsoft
+accounts that supply neither an email nor an email-shaped username receive a
+clear error and can choose another method. No real Microsoft sign-in is claimed
+until the production credentials and end-to-end verification are complete.
+
+References: [Microsoft authorization code flow](https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-auth-code-flow),
+[ID token claims](https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference),
+[signing-key issuer validation](https://learn.microsoft.com/en-us/entra/identity-platform/access-tokens#validate-the-signing-key-issuer).

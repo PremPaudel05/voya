@@ -3,6 +3,7 @@ import { ApiError, DAILY_LIMIT, MAX_DAYS, MAX_TOKENS, MODEL, canonicalCountry, p
 import type { Settings } from './planner.ts';
 import { ipKey } from './ip.ts';
 import { authProviders, digest, extraAuth, randomToken } from './auth.ts';
+import { microsoftAuth } from './microsoft.ts';
 export { digest } from './auth.ts';
 
 // Only the public signing-key cache is shared between requests.
@@ -138,11 +139,12 @@ export async function handle(request: Request, env: Env): Promise<Response> {
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: { ...headers, 'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,Authorization', 'Access-Control-Max-Age': '600' } });
   try {
     const url = new URL(request.url); const path = url.pathname;
-    if (path === '/config' && request.method === 'GET') return json({ googleClientId: env.GOOGLE_CLIENT_ID, turnstileSiteKey: env.TURNSTILE_SITE_KEY, ready: Object.values(authProviders(env)).some(Boolean), providers: authProviders(env), authVersion: 2, dailyLimit: DAILY_LIMIT, maxDays: MAX_DAYS, settingsVersion: 2 }, 200, headers);
+    if (path === '/config' && request.method === 'GET') return json({ googleClientId: env.GOOGLE_CLIENT_ID, turnstileSiteKey: env.TURNSTILE_SITE_KEY, ready: Object.values(authProviders(env)).some(Boolean), providers: authProviders(env), authVersion: 3, dailyLimit: DAILY_LIMIT, maxDays: MAX_DAYS, settingsVersion: 2 }, 200, headers);
     const ip = await ipHash(request, env);
     await throttle(env, `api:${ip}`, 120);
     let response: Response;
-    const extra = await extraAuth(request, env, ip, { bodyOf, throttle, verifyBot, session: createSession });
+    const services = { bodyOf, throttle, verifyBot, session: createSession };
+    const extra = await microsoftAuth(request, env, ip, services) ?? await extraAuth(request, env, ip, services);
     if (extra) response = extra;
     else if (path === '/auth/challenge' && request.method === 'POST') {
       if (!env.GOOGLE_CLIENT_ID) throw new ApiError(503, 'SIGN_IN_UNAVAILABLE', 'Sign-in is being set up. Please check back shortly.');
@@ -236,6 +238,7 @@ export default {
       env.DB.prepare('DELETE FROM sessions WHERE expires_at<?').bind(now),
       env.DB.prepare('DELETE FROM email_logins WHERE expires_at<?').bind(now),
       env.DB.prepare('DELETE FROM oauth_logins WHERE expires_at<?').bind(now),
+      env.DB.prepare('DELETE FROM microsoft_logins WHERE expires_at<?').bind(now),
       env.DB.prepare('DELETE FROM plan_jobs WHERE created_at<?').bind(now - 30 * 86400),
       env.DB.prepare('DELETE FROM search_history WHERE searched_at<?').bind(now - 90 * 86400),
       env.DB.prepare("UPDATE plan_jobs SET status='failed' WHERE status='pending' AND created_at<?").bind(now - 120),
