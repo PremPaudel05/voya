@@ -205,3 +205,18 @@ a.settings-card span { display: block; font-size: 12px; color: var(--muted); mar
   .signin-mark { width: 42px; height: 42px; }
   .signin-card h2 { font-size: 20px; }
 }
+
+/* Black account actions with a restrained, static border glint. */
+.auth-black, .account-button.auth-black { color: #fff; border: 1px solid transparent; background: linear-gradient(#19191c,#19191c) padding-box, linear-gradient(120deg,#45454b 10%,#eee8dd 45%,#8b8174 55%,#303035 90%) border-box; box-shadow: 0 1px 0 #ffffff24 inset,0 2px 7px #0002; transition: box-shadow .2s,background .2s; }
+.auth-black:hover { box-shadow: 0 1px 0 #ffffff40 inset,0 0 12px #c7ab7a30; }
+.account-nav-login { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 42px; padding: 10px 20px; border-radius: 999px; font-size: 12px; font-weight: 650; white-space: nowrap; }
+.auth-black:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.signin-mode { border-radius: 999px; background: #19191c; border: 1px solid #66605a; box-shadow: 0 1px 0 #e8ddc98c inset; }
+.signin-mode button { border-radius: 999px; color: #d8d5d0; }
+.signin-mode button[aria-pressed="true"] { background: #09090b; color: #fff; box-shadow: 0 0 0 1px #c1b6a4,0 1px 5px #ffffff30 inset; }
+.password-input { position: relative; }
+.password-input input { padding-right: 48px; }
+.password-input button { position: absolute; top: 0; right: 0; display: grid; place-items: center; width: 46px; height: 46px; color: var(--muted); }
+.recovery-code { display: block; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-alt); overflow-wrap: anywhere; user-select: all; font-size: 14px; }
+.signin-email .recovery-saved { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; }
+.signin-email .recovery-saved input { width: 18px; min-height: 18px; margin-top: 2px; }

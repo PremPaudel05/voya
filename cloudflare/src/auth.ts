@@ -5,7 +5,7 @@ export type Services = {
   bodyOf: (request: Request, max?: number) => Promise<Record<string, unknown>>;
   throttle: (env: Env, key: string, max: number, window?: number) => Promise<void>;
   verifyBot: (request: Request, env: Env, token: unknown, action: string) => Promise<void>;
-  session: (env: Env, id: string, name: string, email: string) => Promise<Response>;
+  session: (env: Env, id: string, name: string, email: string, passwordHash?: string) => Promise<Response>;
 };
 const now = () => Math.floor(Date.now() / 1000);
 const hex = (bytes: ArrayBuffer) => Array.from(new Uint8Array(bytes), b => b.toString(16).padStart(2, '0')).join('');
@@ -17,7 +17,7 @@ export async function pkceChallenge(value: string) {
 }
 export function authProviders(env: AuthEnv) {
   const security = Boolean(env.TURNSTILE_SITE_KEY && env.TURNSTILE_SECRET_KEY && env.IP_HASH_SECRET);
-  return { google: security && Boolean(env.GOOGLE_CLIENT_ID), email: security && Boolean(env.RESEND_API_KEY && env.EMAIL_FROM), github: security && Boolean(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET), microsoft: security && Boolean(env.MICROSOFT_CLIENT_ID && env.MICROSOFT_CLIENT_SECRET) };
+  return { password: security, google: security && Boolean(env.GOOGLE_CLIENT_ID), email: security && Boolean(env.RESEND_API_KEY && env.EMAIL_FROM), github: security && Boolean(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET), microsoft: security && Boolean(env.MICROSOFT_CLIENT_ID && env.MICROSOFT_CLIENT_SECRET) };
 }
 function emailAddress(value: unknown) {
   if (typeof value !== 'string' || value.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) throw new ApiError(400, 'INVALID_EMAIL', 'Enter a valid email address.');

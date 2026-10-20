@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Hero } from './components/Hero';
 import { LandingFeatures } from './components/LandingFeatures';
+import { DashainGreeting } from './components/DashainGreeting';
 import { Footer } from './components/Footer';
 
 export default function App() {
@@ -23,6 +24,7 @@ export default function App() {
       <Hero onSearch={handleSearch} isLoading={false} />
       <LandingFeatures />
       <Footer />
+      <DashainGreeting />
     </div>
   );
 }

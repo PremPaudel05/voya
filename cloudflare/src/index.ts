@@ -4,6 +4,7 @@ import type { Settings } from './planner.ts';
 import { ipKey } from './ip.ts';
 import { authProviders, digest, extraAuth, randomToken } from './auth.ts';
 import { microsoftAuth } from './microsoft.ts';
+import { passwordAuth } from './password.ts';
 export { digest } from './auth.ts';
 
 // Only the public signing-key cache is shared between requests.
@@ -74,12 +75,21 @@ async function usage(env: Env, user: User) {
 async function account(env: Env, user: User) {
   return { user: { name: user.name, email: user.email }, settings: storedSettings(user.settings), usage: await usage(env, user) };
 }
-async function createSession(env: Env, id: string, name: string, email: string) {
+async function createSession(env: Env, id: string, name: string, email: string, passwordHash?: string) {
   const token = randomToken();
+  if (passwordHash) {
+    await env.DB.batch([
+      env.DB.prepare('INSERT INTO sessions(token_hash,user_id,expires_at) SELECT ?,user_id,? FROM password_credentials WHERE user_id=? AND password_hash=?').bind(await digest(token), seconds() + 7 * 86400, id, passwordHash),
+      env.DB.prepare('DELETE FROM sessions WHERE user_id=? AND token_hash NOT IN (SELECT token_hash FROM sessions WHERE user_id=? ORDER BY expires_at DESC, rowid DESC LIMIT 5)').bind(id, id),
+    ]);
+    const user = await env.DB.prepare('SELECT u.* FROM users u JOIN sessions s ON s.user_id=u.id WHERE s.token_hash=?').bind(await digest(token)).first<User>();
+    if (!user) throw new ApiError(400, 'CREDENTIAL_CHANGED', 'Your sign-in details changed. Please sign in again.');
+    return json({ token, ...await account(env, user) });
+  }
   await env.DB.batch([
     env.DB.prepare('INSERT INTO users(id,name,email,created_at) VALUES(?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,email=excluded.email').bind(id, name, email, seconds()),
     env.DB.prepare('INSERT INTO sessions(token_hash,user_id,expires_at) VALUES(?,?,?)').bind(await digest(token), id, seconds() + 7 * 86400),
-    env.DB.prepare('DELETE FROM sessions WHERE user_id=? AND token_hash NOT IN (SELECT token_hash FROM sessions WHERE user_id=? ORDER BY expires_at DESC LIMIT 5)').bind(id, id),
+    env.DB.prepare('DELETE FROM sessions WHERE user_id=? AND token_hash NOT IN (SELECT token_hash FROM sessions WHERE user_id=? ORDER BY expires_at DESC, rowid DESC LIMIT 5)').bind(id, id),
   ]);
   const user = await env.DB.prepare('SELECT * FROM users WHERE id=?').bind(id).first<User>();
   return json({ token, ...await account(env, user!) });
@@ -139,12 +149,12 @@ export async function handle(request: Request, env: Env): Promise<Response> {
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: { ...headers, 'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,Authorization', 'Access-Control-Max-Age': '600' } });
   try {
     const url = new URL(request.url); const path = url.pathname;
-    if (path === '/config' && request.method === 'GET') return json({ googleClientId: env.GOOGLE_CLIENT_ID, turnstileSiteKey: env.TURNSTILE_SITE_KEY, ready: Object.values(authProviders(env)).some(Boolean), providers: authProviders(env), authVersion: 3, dailyLimit: DAILY_LIMIT, maxDays: MAX_DAYS, settingsVersion: 2 }, 200, headers);
+    if (path === '/config' && request.method === 'GET') return json({ googleClientId: env.GOOGLE_CLIENT_ID, turnstileSiteKey: env.TURNSTILE_SITE_KEY, ready: Object.values(authProviders(env)).some(Boolean), providers: authProviders(env), authVersion: 4, dailyLimit: DAILY_LIMIT, maxDays: MAX_DAYS, settingsVersion: 2 }, 200, headers);
     const ip = await ipHash(request, env);
     await throttle(env, `api:${ip}`, 120);
     let response: Response;
     const services = { bodyOf, throttle, verifyBot, session: createSession };
-    const extra = await microsoftAuth(request, env, ip, services) ?? await extraAuth(request, env, ip, services);
+    const extra = await passwordAuth(request, env, ip, services) ?? await microsoftAuth(request, env, ip, services) ?? await extraAuth(request, env, ip, services);
     if (extra) response = extra;
     else if (path === '/auth/challenge' && request.method === 'POST') {
       if (!env.GOOGLE_CLIENT_ID) throw new ApiError(503, 'SIGN_IN_UNAVAILABLE', 'Sign-in is being set up. Please check back shortly.');

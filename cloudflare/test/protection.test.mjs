@@ -243,7 +243,7 @@ test('Google signatures, audience, issuer, expiry and single-use nonce are enfor
 test('login configuration exposes only configured providers and never secrets', async () => {
   const {env,req}=await fixture();
   let config=await (await handle(req('/config'),env)).json();
-  assert.deepEqual(config.providers,{google:true,email:false,github:false,microsoft:false});
+  assert.deepEqual(config.providers,{password:true,google:true,email:false,github:false,microsoft:false});
   env.GOOGLE_CLIENT_ID=''; env.RESEND_API_KEY='private-email-key'; env.EMAIL_FROM='Voya <hello@example.test>';
   config=await (await handle(req('/config'),env)).json();
   assert.equal(config.ready,true); assert.equal(config.providers.email,true); assert.equal(config.providers.google,false);
@@ -409,7 +409,7 @@ test('Microsoft creates and reuses a separate account, with state, PKCE, origin 
   const m = await microsoftFixture(); const { env, req, DB } = m; const original = globalThis.fetch; globalThis.fetch = m.fetch;
   try {
     const config = await (await handle(req('/config'), env)).json();
-    assert.equal(config.providers.microsoft, true); assert.equal(config.authVersion, 3);
+    assert.equal(config.providers.microsoft, true); assert.equal(config.authVersion, 4);
     assert.equal(JSON.stringify(config).includes('private-microsoft-secret'), false);
     const body = await m.start();
     assert.notEqual(DB.sql.prepare('SELECT state_hash FROM microsoft_logins').get().state_hash, body.state);
@@ -475,4 +475,58 @@ test('Microsoft enforces signing-key issuer, handles provider failure and gates 
     assert.equal((await handle(req('/auth/microsoft/start', 'POST', {}), env)).status, 503);
     assert.equal(DB.sql.prepare('SELECT count(*) n FROM users').get().n, 1);
   } finally { globalThis.fetch = original; }
+});
+
+test('password signup stores salted hashes, logs in, isolates providers and preserves profile', async () => {
+  const {env,req,DB}=await fixture(); const original=globalThis.fetch;
+  globalThis.fetch=async()=>Response.json({success:true,hostname:'voyatravel.vercel.app',action:'login'});
+  const details={name:'Prem Test',email:' NEW@Example.com ',password:'river mountain lantern sky',turnstileToken:'valid'};
+  try {
+    const r=await handle(req('/auth/password/signup','POST',details),env);assert.equal(r.status,200);
+    const login=await r.json();assert.equal(login.user.name,'Prem Test');assert.equal(login.user.email,'new@example.com');assert.match(login.recoveryCode,/^[a-f0-9-]{71}$/);
+    const row=DB.sql.prepare('SELECT * FROM password_credentials').get();assert.notEqual(row.password_hash,details.password);assert.equal(row.password_hash.length,64);assert.notEqual(row.recovery_hash,login.recoveryCode.replaceAll('-',''));
+    assert.equal((await handle(req('/me','GET',undefined,{Authorization:'Bearer '+login.token}),env)).status,200);
+    assert.equal((await handle(req('/auth/password/signup','POST',details),env)).status,400);
+    assert.equal((await handle(req('/auth/password/login','POST',{...details,password:'incorrect password'}),env)).status,400);
+    const second=await handle(req('/auth/password/login','POST',details),env);assert.equal(second.status,200);assert.equal((await second.json()).recoveryCode,undefined);
+    // Same email as an existing provider creates an independent password account.
+    assert.equal((await handle(req('/auth/password/signup','POST',{...details,email:'traveler@example.com'}),env)).status,200);
+    assert.equal(DB.sql.prepare('SELECT name FROM users WHERE id=?').get('user1').name,'Traveler');
+    assert.equal((await handle(req('/account','DELETE',{email:'new@example.com',confirmation:'DELETE'},{Authorization:'Bearer '+login.token}),env)).status,200);
+    assert.equal(DB.sql.prepare('SELECT count(*) n FROM password_credentials WHERE email=?').get('new@example.com').n,0);
+  } finally {globalThis.fetch=original;}
+});
+
+test('password recovery is single-use, changes password and revokes old sessions', async () => {
+  const {env,req,DB}=await fixture();const original=globalThis.fetch;
+  globalThis.fetch=async()=>Response.json({success:true,hostname:'voyatravel.vercel.app',action:'login'});
+  const details={name:'Recovery Test',email:'recover@example.com',password:'river mountain lantern sky',turnstileToken:'valid'};
+  try {
+    const initial=await (await handle(req('/auth/password/signup','POST',details),env)).json();
+    const reset={...details,password:'different words moonlit garden',recoveryCode:initial.recoveryCode};
+    assert.equal((await handle(req('/auth/password/recover','POST',{...reset,recoveryCode:'a'.repeat(64)}),env)).status,400);
+    assert.equal((await handle(req('/me','GET',undefined,{Authorization:'Bearer '+initial.token}),env)).status,200);
+    const outcomes=await Promise.all([handle(req('/auth/password/recover','POST',reset),env),handle(req('/auth/password/recover','POST',reset),env)]);
+    assert.deepEqual(outcomes.map(r=>r.status).sort(),[200,400]);
+    const changed=await outcomes.find(r=>r.status===200).json();assert.notEqual(changed.recoveryCode,initial.recoveryCode);
+    assert.equal((await handle(req('/me','GET',undefined,{Authorization:'Bearer '+initial.token}),env)).status,401);
+    assert.equal((await handle(req('/auth/password/login','POST',details),env)).status,400);
+    assert.equal((await handle(req('/auth/password/login','POST',reset),env)).status,200);
+    assert.equal((await handle(req('/auth/password/recover','POST',reset),env)).status,400);
+    assert.equal(DB.sql.prepare('SELECT count(*) n FROM users WHERE email=?').get(details.email).n,1);
+  } finally {globalThis.fetch=original;}
+});
+
+test('password registration validates fields, bot checks and throttles guessing', async () => {
+  const {env,req,DB}=await fixture();const original=globalThis.fetch;
+  const details={name:'Test',email:'test@example.com',password:'river mountain lantern sky',turnstileToken:'valid'};
+  try {
+    globalThis.fetch=async()=>Response.json({success:false});
+    assert.equal((await handle(req('/auth/password/signup','POST',details),env)).status,403);
+    globalThis.fetch=async()=>Response.json({success:true,hostname:'voyatravel.vercel.app',action:'login'});
+    for(const update of [{name:''},{email:'invalid'},{password:'short'},{password:'x'.repeat(129)}]) assert.equal((await handle(req('/auth/password/signup','POST',{...details,...update}),env)).status,400);
+    assert.equal(DB.sql.prepare('SELECT count(*) n FROM password_credentials').get().n,0);
+    for(let i=0;i<7;i++)await handle(req('/auth/password/login','POST',{...details,password:'wrong'}),env);
+    assert.equal((await handle(req('/auth/password/login','POST',details),env)).status,429);
+  } finally {globalThis.fetch=original;}
 });
