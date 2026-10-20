@@ -206,14 +206,14 @@ a.settings-card span { display: block; font-size: 12px; color: var(--muted); mar
   .signin-card h2 { font-size: 20px; }
 }
 
-/* Theme-aware bronze actions with a soft champagne border highlight. */
-.auth-black, .account-button.auth-black { color: var(--action-ink); border: 1px solid transparent; background: linear-gradient(var(--action),var(--action)) padding-box, linear-gradient(120deg,var(--accent) 10%,#e9cf9f 45%,#ba8c59 65%,var(--accent) 90%) border-box; box-shadow: 0 1px 0 #ffffff24 inset,0 2px 7px #8f552420; transition: box-shadow .2s,background .2s; }
-.auth-black:hover:not(:disabled) { background: linear-gradient(var(--action-hover),var(--action-hover)) padding-box, linear-gradient(120deg,var(--accent),#e9cf9f,var(--accent)) border-box; box-shadow: 0 1px 0 #ffffff40 inset,0 0 12px #c7ab7a30; }
-.account-nav-login { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 42px; padding: 10px 20px; border-radius: 999px; font-size: 12px; font-weight: 650; white-space: nowrap; }
+/* Simple transparent account controls with softly squared edges. */
+.auth-black, .account-button.auth-black { color: var(--accent); border: 1px solid color-mix(in srgb,var(--accent) 55%,var(--line)); border-radius: 9px; background: transparent; box-shadow: none; transition: border-color .2s,background .2s; }
+.auth-black:hover:not(:disabled), .account-button.auth-black:hover:not(:disabled) { background: color-mix(in srgb,var(--accent) 6%,transparent); border-color: var(--accent); box-shadow: none; }
+.account-nav-login { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 42px; padding: 10px 20px; border-radius: 9px; font-size: 12px; font-weight: 650; white-space: nowrap; }
 .auth-black:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-.signin-mode { border-radius: 999px; background: var(--surface-alt); border: 1px solid var(--line); box-shadow: 0 1px 0 #e8ddc940 inset; }
-.signin-mode button { border-radius: 999px; color: var(--muted); }
-.signin-mode button[aria-pressed="true"] { background: var(--action); color: var(--action-ink); box-shadow: 0 0 0 1px var(--accent),0 1px 5px #ffffff30 inset; }
+.signin-mode { border-radius: 11px; background: transparent; border: 1px solid var(--line); box-shadow: none; }
+.signin-mode button { border-radius: 7px; border: 1px solid transparent; color: var(--muted); }
+.signin-mode button[aria-pressed="true"] { background: transparent; color: var(--accent); border-color: color-mix(in srgb,var(--accent) 55%,var(--line)); box-shadow: none; }
 .password-input { position: relative; }
 .password-input input { padding-right: 48px; }
 .password-input button { position: absolute; top: 0; right: 0; display: grid; place-items: center; width: 46px; height: 46px; color: var(--muted); }
