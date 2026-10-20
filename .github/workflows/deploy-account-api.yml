@@ -50,4 +50,4 @@ jobs:
         run: npm run deploy
       - name: Confirm account API is live
         run: |
-          node --input-type=module -e 'const r=await fetch("https://voya-account-api.voya-prempaudel05.workers.dev/config",{headers:{Origin:"https://voyatravel.vercel.app"}});const c=await r.json();if(!r.ok||c.settingsVersion!==2||c.authVersion!==3)throw new Error("Account API deployment verification failed");console.log("Account settings and login options v3 are live");'
+          node --input-type=module -e 'const r=await fetch("https://voya-account-api.voya-prempaudel05.workers.dev/config",{headers:{Origin:"https://voyatravel.vercel.app"}});const c=await r.json();if(!r.ok||c.settingsVersion!==2||c.authVersion!==4)throw new Error("Account API deployment verification failed");console.log("Account settings and login options v4 are live");'
