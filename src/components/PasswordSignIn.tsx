@@ -41,7 +41,7 @@ export function PasswordSignIn({ creating, token, busy, onBusy, onTokenUsed, onR
     <button className="account-button auth-black" disabled={!saved} onClick={() => { const { recoveryCode: _code, ...login } = pending; void _code; setPending(null); onRecoveryChange(false); acceptLogin(login); }}>Continue to my account</button>
     {error && <p role="alert" className="account-error">{error}</p>}
   </section>;
-  return <form className="signin-email" onSubmit={submit}>
+  return <form className={`signin-email${creating ? ' signin-registration' : ''}`} onSubmit={submit}>
     {creating && <><label htmlFor="register-name">Your name</label><input id="register-name" name="name" autoComplete="name" maxLength={100} value={name} onChange={e => setName(e.target.value)} required disabled={busy} /></>}
     <label htmlFor="password-email">Email address</label><input id="password-email" name="email" type="email" autoComplete="username" maxLength={254} value={email} onChange={e => setEmail(e.target.value)} required disabled={busy} />
     {recover && !creating && <><label htmlFor="recovery-code">Recovery code</label><input id="recovery-code" name="recoveryCode" autoComplete="off" spellCheck={false} maxLength={100} value={recoveryCode} onChange={e => setRecoveryCode(e.target.value)} required disabled={busy} /></>}
