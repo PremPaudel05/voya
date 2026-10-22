@@ -48,14 +48,11 @@ const placeholderCountries = [
   { prefix: "Discovering",   country: "Thailand" },
 ];
 
-const discoveryWords = ["explore", "discover"];
-
 export function Hero({ onSearch, isLoading }: HeroProps) {
   const { t } = usePreferences();
   const [query, setQuery] = useState('');
   const [factIndex, setFactIndex] = useState(0);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
-  const [wordIndex, setWordIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -69,11 +66,6 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
 
   useEffect(() => {
     const t = setInterval(() => setPlaceholderIndex(i => (i + 1) % placeholderCountries.length), 3800);
-    return () => clearInterval(t);
-  }, []);
-
-  useEffect(() => {
-    const t = setInterval(() => setWordIndex(i => (i + 1) % discoveryWords.length), 3200);
     return () => clearInterval(t);
   }, []);
 
@@ -126,28 +118,12 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
             {/* Headline */}
             <h1 className="font-black leading-[1.0] tracking-[-0.03em] mb-6"
               style={{ fontSize: 'clamp(3rem, 6vw, 5.2rem)' }}>
-              The world is<br />
-              yours to{' '}
-              <span className="relative inline-block">
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={wordIndex}
-                    initial={{ opacity: 0, y: 16, rotateX: -20 }}
-                    animate={{ opacity: 1, y: 0, rotateX: 0 }}
-                    exit={{ opacity: 0, y: -16, rotateX: 20 }}
-                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                    className="discovery-gradient absolute left-0 whitespace-nowrap"
-                  >
-                    {discoveryWords[wordIndex]}
-                  </motion.span>
-                </AnimatePresence>
-                {/* spacer to hold width */}
-                <span className="invisible">{discoveryWords.reduce((a, b) => a.length > b.length ? a : b)}</span>
-              </span>
+              Curious about somewhere?<br />
+              <span className="discovery-gradient">Start here.</span>
             </h1>
 
             <p className="text-muted text-lg leading-relaxed mb-9 max-w-[480px]">
-              Pick a country and get to know it — from what people eat to the places they love and the rhythms of everyday life.
+              Pick a country to learn about its food, culture, places to visit, and everyday life.
             </p>
 
             {/* Search */}
