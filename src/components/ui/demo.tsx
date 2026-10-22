@@ -54,12 +54,7 @@ const architecturalWonders: CardItem[] = [
 export default function ExpandingCardsDemo() {
   return (
     <section aria-labelledby="places-heading" className="mx-auto w-full max-w-7xl px-6 pb-10 pt-4">
-      <div className="mb-8 max-w-2xl">
-        <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.22em] text-accent">A place to start</p>
-        <h2 id="places-heading" className="text-3xl font-black tracking-tight text-ink sm:text-4xl">One place can spark a whole journey.</h2>
-        <p className="mt-4 text-base leading-relaxed text-muted">Something catch your eye? Open a card, then explore the country behind it.</p>
-        <p className="mt-2 text-sm text-muted lg:hidden">Swipe to see more places. Tap a card to take a closer look.</p>
-      </div>
+      <h2 id="places-heading" className="mb-6 text-base font-medium leading-relaxed text-muted">Something catch your eye? Open a card, then explore the country behind it.</h2>
       <ExpandingCards items={architecturalWonders} defaultActiveIndex={0} aria-label="Places to start exploring" />
     </section>
   );
