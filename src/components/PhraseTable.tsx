@@ -41,7 +41,7 @@ export function PhraseTable({ phrases, languageCode }: PhraseTableProps) {
   };
 
   return (
-    <div className="space-y-2">
+    <div className="min-w-0 space-y-3 p-4 sm:p-5">
       <p className="text-sm text-muted">Start with a few useful phrases. Choose a situation to narrow the list.</p>
       <div className="flex flex-wrap gap-2">{Object.keys(groups).map(name => <button key={name} aria-pressed={!showAll && topic === name} onClick={() => { setTopic(name); setShowAll(false); setExpanded(null); }} className={`px-3 py-2 rounded-full border text-sm ${!showAll && topic === name ? 'bg-action text-action-ink border-action' : 'text-ink border-line'}`}>{name}</button>)}</div>
       {!visible.length && <p className="text-sm text-muted">No phrases for this situation in this guide yet.</p>}
@@ -62,16 +62,16 @@ export function PhraseTable({ phrases, languageCode }: PhraseTableProps) {
             }}>
             {/* Main row */}
             <div
-              className="grid grid-cols-[1fr_44px] sm:grid-cols-[1fr_1fr_1fr_44px] gap-3 items-center px-4 py-3.5 cursor-pointer"
+              className="grid grid-cols-[minmax(0,1fr)_44px] lg:grid-cols-[repeat(3,minmax(0,1fr))_44px] gap-3 items-center px-4 py-3.5 cursor-pointer"
               role="button" tabIndex={0} aria-expanded={isExpanded}
               onKeyDown={e => { if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); setExpanded(isExpanded ? null : idx); } }}
               onClick={() => setExpanded(isExpanded ? null : idx)}>
-              <span className="text-sm font-semibold text-ink">{phrase.english}</span>
-              <span className="text-sm font-bold text-accent col-start-1 sm:col-start-auto">{phrase.local}</span>
-              <span className="text-sm italic text-subtle col-start-1 sm:col-start-auto">{phrase.phonetic}</span>
+              <span className="min-w-0 whitespace-normal [overflow-wrap:anywhere] leading-relaxed text-sm font-semibold text-ink">{phrase.english}</span>
+              <span className="min-w-0 whitespace-normal [overflow-wrap:anywhere] leading-relaxed text-sm font-bold text-accent col-start-1 lg:col-start-auto">{phrase.local}</span>
+              <span className="min-w-0 whitespace-normal [overflow-wrap:anywhere] leading-relaxed text-sm italic text-subtle col-start-1 lg:col-start-auto">{phrase.phonetic}</span>
               <button
                 onClick={e => { e.stopPropagation(); playAudio(phrase.local, idx); }}
-                className="col-start-2 row-start-1 sm:col-start-auto sm:row-start-auto w-9 h-9 rounded-xl flex items-center justify-center transition-all shrink-0"
+                className="col-start-2 row-start-1 lg:col-start-auto lg:row-start-auto w-9 h-9 rounded-xl flex items-center justify-center transition-all shrink-0"
                 style={{
                   background: isPlaying ? '#b07a3a' : '#F7F3EE',
                   color: isPlaying ? '#fff' : '#b07a3a',
@@ -95,7 +95,7 @@ export function PhraseTable({ phrases, languageCode }: PhraseTableProps) {
                   transition={{ duration: 0.2 }}>
                   <div className="px-4 pb-3.5 pt-1 flex items-start gap-2.5" style={{ borderTop: '1px dashed #e8dfd2' }}>
                     <ChevronRight size={12} className="text-accent mt-0.5 shrink-0" />
-                    <div>
+                    <div className="min-w-0 [overflow-wrap:anywhere]">
                       <p className="text-[10px] font-black uppercase tracking-widest text-accent mb-1">How to say it</p>
                       <p className="text-xs text-muted leading-relaxed">
                         Say <span className="font-bold text-ink">"{phrase.local}"</span> — pronounced <span className="italic">"{phrase.phonetic}"</span>. Tap the speaker to hear it aloud.
