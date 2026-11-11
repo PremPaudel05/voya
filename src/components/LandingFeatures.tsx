@@ -3,14 +3,14 @@ import { motion } from 'framer-motion';
 import { Map, Users, Landmark, Utensils, MessageCircle, DollarSign, Calendar, Sparkles } from 'lucide-react';
 
 const features = [
-  { icon: Users,         title: "Culture & Everyday Life",   description: "Find out how people celebrate, spend their days, and welcome visitors.", num: "01" },
-  { icon: Landmark,      title: "Famous Places & Landmarks", description: "Get the stories behind the places you know and find a few you haven’t heard of.", num: "02" },
-  { icon: Utensils,      title: "Food & Local Flavours",      description: "See what’s on the menu, from street food to dishes shared around the table.", num: "03" },
-  { icon: MessageCircle, title: "Language & Local Phrases",   description: "Learn a greeting, say thank you, and try a few useful phrases.", num: "04" },
-  { icon: Map,           title: "Geography & Nature",        description: "Explore the mountains, coastlines, cities, and landscapes that shape local life.", num: "05" },
-  { icon: Calendar,      title: "Seasons & Festivals",       description: "See how the country changes through the year and what people celebrate.", num: "06" },
-  { icon: DollarSign,    title: "Local Costs & Currency",    description: "Get a feel for everyday prices, from a cup of coffee to a place to stay.", num: "07" },
-  { icon: Sparkles,      title: "Surprising Country Facts",  description: "Find something unexpected to remember or share with a friend.", num: "08" },
+  { icon: Users,         title: "Culture & Everyday Life",   description: "Read about local customs, family life, and what to know as a guest.", num: "01" },
+  { icon: Landmark,      title: "Famous Places & Landmarks", description: "See where landmarks are and why people visit them.", num: "02" },
+  { icon: Utensils,      title: "Food",      description: "Read about street food and dishes people make at home.", num: "03" },
+  { icon: MessageCircle, title: "Language & Local Phrases",   description: "Learn how to say hello, thank someone, or ask for help.", num: "04" },
+  { icon: Map,           title: "Geography & Nature",        description: "See where major cities are and what the landscape looks like.", num: "05" },
+  { icon: Calendar,      title: "Seasons & Festivals",       description: "Find out what the weather is like by season and when festivals take place.", num: "06" },
+  { icon: DollarSign,    title: "Local Costs & Currency",    description: "Check the local currency and estimated prices for meals and lodging.", num: "07" },
+  { icon: Sparkles,      title: "Quick Facts",  description: "Read a few short facts about the country.", num: "08" },
 ];
 
 export function LandingFeatures() {
@@ -52,11 +52,11 @@ export function LandingFeatures() {
         >
           <div className="flex items-center gap-2.5 mb-4">
             <div className="h-px w-8 bg-brand" />
-            <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-accent">Inside each country</span>
+            <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-accent">Country guides</span>
           </div>
           <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-ink leading-[1.05] max-w-2xl">
-            Get to know a country,<br />
-            <span className="discovery-gradient">one detail at a time.</span>
+            What’s in<br />
+            <span className="discovery-gradient">each guide?</span>
           </h2>
         </motion.div>
 
@@ -91,7 +91,7 @@ export function LandingFeatures() {
         <div className="max-w-7xl mx-auto px-6 py-16 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
             <h3 className="text-2xl font-black text-ink mb-1">Have another country in mind?</h3>
-            <p className="text-muted text-sm">Search for a place you’ve always wondered about. No account needed.</p>
+            <p className="text-muted text-sm">You can browse any guide without signing in.</p>
           </div>
           <a
             href="#country-search"

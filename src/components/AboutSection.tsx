@@ -4,17 +4,17 @@ const steps = [
   {
     step: "01",
     title: "Start with a country",
-    desc: "Choose somewhere you've always wondered about, or look up a place that's new to you.",
+    desc: "Type a country name or choose one below the search bar.",
   },
   {
     step: "02",
-    title: "Get to know the place",
-    desc: "Explore its traditions, famous landmarks, local dishes, language, and everyday customs.",
+    title: "Read the guide",
+    desc: "Pick a topic like food, landmarks, or local phrases.",
   },
   {
     step: "03",
-    title: "Follow your curiosity",
-    desc: "Find a surprising fact, explore the map, or pick another country. It's free to explore, and sign-in is optional.",
+    title: "Look around the map",
+    desc: "Find major cities and regions, or search for another country.",
   },
 ];
 
@@ -85,21 +85,21 @@ export function AboutSection() {
               transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
               className="text-2xl sm:text-3xl font-black text-ink leading-snug tracking-tight border-l-4 border-accent pl-6"
             >
-              I built Voya to explore what gives each country its character.
+              I built Voya for the questions a map can’t answer.
             </motion.div>
 
             {[
               {
-                label: "Hello.",
-                text: "My name is Prem Paudel. I'm an Information Systems Management student at the University of Akron. I created Voya out of a curiosity about places: the landmarks people recognise, the traditions they grow up with, the food they share, and the everyday details you might otherwise miss.",
+                label: "About me",
+                text: "I’m Prem Paudel, an Information Systems Management student at the University of Akron. Voya is a side project where I’ve been learning how to build a website, connect it to a backend, and get it online.",
               },
               {
-                label: "What made me curious.",
-                text: "A photo or a place on a map can make you want to know more. I wanted a way to follow that curiosity: learn about a local tradition, find out why a landmark is famous, discover a popular dish, or try a few words in another language. Bringing those details together can make an unfamiliar country feel a little more familiar.",
+                label: "Where the idea came from",
+                text: "Seeing a place on a map makes me wonder what it’s like to live there. What do people eat at home? Which holidays do they look forward to? I wanted one place to start looking up those answers.",
               },
               {
-                label: "Why I built Voya.",
-                text: "Voya brings culture, famous places, local flavours, useful context, and surprising facts into one place. You can explore somewhere you've always wondered about or discover a country that's new to you. My goal is to make learning about the world feel approachable, visual, and worth coming back to. Exploring is free, and signing in is optional.",
+                label: "What you can do here",
+                text: "Search for a country and jump to whatever you want to read about. You can browse for free without an account. If you’re planning a trip, use the guide to make a list of things to check before you book.",
               },
             ].map((para, i) => (
               <motion.div
