@@ -27,9 +27,14 @@ export function MapSection({ mapData }: { mapData: CountryData['mapData'] }) {
     import('maplibre-gl').then(lib => {
       if (disposed || !container.current) return;
       try {
-        const instance = new lib.Map({ container: container.current, center: [0, 20], zoom: 1.5, minZoom: 0, maxZoom: 18, cooperativeGestures: true,
+        const instance = new lib.Map({ container: container.current, center: [0, 20], zoom: 1.5, minZoom: 0, maxZoom: 18,
+          cooperativeGestures: false, rotateSpeed: 0.3, pitchSpeed: -0.2,
+          dragPan: { linearity: 0.15, maxSpeed: 500, deceleration: 3500 },
           style: { version: 8, sources: { base: { type: 'raster', tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize: 256, attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors</a>' , maxzoom: 19 } }, layers: [{ id: 'base', type: 'raster', source: 'base' }] } });
         map.current = instance;
+        // Keep wheel gestures inside the map, with gentler wheel and trackpad zoom.
+        instance.scrollZoom.setWheelZoomRate(1 / 900);
+        instance.scrollZoom.setZoomRate(1 / 200);
         instance.addControl(new lib.NavigationControl(), 'top-right');
         instance.on('load', () => { instance.setProjection({ type: 'globe' }); setReady(true); });
         instance.on('error', () => setStatus('Some map tiles could not load. You can still open places in Maps.'));
@@ -73,7 +78,7 @@ export function MapSection({ mapData }: { mapData: CountryData['mapData'] }) {
     if (category !== 'areasToAvoid') setQuery(category === 'cities' ? mapData.cities.find(c => c.name === item)?.query || `${item}, ${mapData.countryQuery}` : `${item}, ${mapData.countryQuery}`);
   };
   return <section className="bg-surface border border-line rounded-2xl overflow-hidden mb-6">
-    <div className="p-5 border-b border-line"><h2 className="text-xl font-bold text-ink">Explore the map</h2><p className="text-sm text-muted mt-1">Choose a topic, then a place. Drag to look around. Use + and − to zoom, or hold Ctrl / ⌘ while scrolling. On a phone, use two fingers.</p></div>
+    <div className="p-5 border-b border-line"><h2 className="text-xl font-bold text-ink">Explore the map</h2><p className="text-sm text-muted mt-1">Choose a topic, then a place. Drag to look around and scroll over the map to zoom. Move your pointer outside the map to scroll the page. On a phone, pinch to zoom.</p></div>
     <div className="flex flex-wrap gap-2 p-4" aria-label="Map topics">{categories.map(([key, label]) => <button key={key} aria-pressed={category === key} onClick={() => { setCategory(key); setSelected(''); }} className={`rounded-full px-4 py-2 text-sm border ${category === key ? 'bg-action text-action-ink border-action' : 'border-line text-ink bg-surface'}`}>{label}</button>)}</div>
     <div className="grid lg:grid-cols-[260px_1fr] gap-4 p-4 pt-0">
       <div className="space-y-2 lg:max-h-[480px] overflow-y-auto">
