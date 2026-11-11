@@ -28,6 +28,7 @@ export function MapSection({ mapData }: { mapData: CountryData['mapData'] }) {
       if (disposed || !container.current) return;
       try {
         const instance = new lib.Map({ container: container.current, center: [0, 20], zoom: 1.5, minZoom: 0, maxZoom: 18,
+          attributionControl: { customAttribution: 'Location search: Photon / OpenStreetMap' },
           cooperativeGestures: false, rotateSpeed: 0.3, pitchSpeed: -0.2,
           dragPan: { linearity: 0.15, maxSpeed: 500, deceleration: 3500 },
           style: { version: 8, sources: { base: { type: 'raster', tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize: 256, attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors</a>' , maxzoom: 19 } }, layers: [{ id: 'base', type: 'raster', source: 'base' }] } });
@@ -63,8 +64,8 @@ export function MapSection({ mapData }: { mapData: CountryData['mapData'] }) {
     if (night && !instance.getSource('city-lights')) {
       instance.addSource('city-lights', {
         type: 'raster', tileSize: 256, maxzoom: 8,
-        tiles: ['https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_CityLights_2012/default/2012-01-01/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpg'],
-        attribution: '<a href="https://science.nasa.gov/earth/earth-observatory/night-lights-2012-the-black-marble-79803/" target="_blank" rel="noreferrer">NASA / NOAA VIIRS city lights (2012)</a>',
+        tiles: ['https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_Black_Marble/default/2016-01-01/GoogleMapsCompatible_Level8/{z}/{y}/{x}.png'],
+        attribution: '<a href="https://blackmarble.gsfc.nasa.gov/" target="_blank" rel="noreferrer">NASA / NOAA Black Marble (2016)</a>',
       });
       instance.addLayer({
         id: 'city-lights', type: 'raster', source: 'city-lights', maxzoom: 11,
@@ -141,7 +142,7 @@ export function MapSection({ mapData }: { mapData: CountryData['mapData'] }) {
       </div>
       <div className="min-w-0"><div className="relative rounded-xl overflow-hidden border border-line"><div ref={container} className="map-space h-[360px] sm:h-[480px]" aria-label="Interactive world map" />
       <div className="flex flex-wrap gap-2 p-3 bg-surface border-t border-line"><button className="bg-surface text-ink border border-line rounded-full px-3 py-2 text-xs" aria-pressed={night} onClick={() => setNight(value => !value)}>{night ? '☀ Day view' : '☾ Night view'}</button><button className="bg-surface text-ink border border-line rounded-full px-3 py-2 text-xs" onClick={() => { const next = !tilted; setTilted(next); map.current?.easeTo({ pitch: next ? 50 : 0, duration: 0 }); }} aria-pressed={tilted}>3D buildings</button><button className="bg-surface text-ink border border-line rounded-full px-3 py-2 text-xs" onClick={() => { map.current?.flyTo({ center: [0, 20], zoom: 0, pitch: 0, bearing: 0, duration: 0 }); }}>World view</button><button className="bg-surface text-ink border border-line rounded-full px-3 py-2 text-xs" onClick={() => { setQuery(mapData.countryQuery); setSelected(''); setResetCount(n => n + 1); }}>Country view</button></div></div>
-      <p className="text-xs text-muted mt-2">{night ? 'City lights from NASA satellite imagery (2012), not live. Zoom in to see streets and places.' : ''}</p><p role="status" className="text-xs text-muted mt-2">{status}</p><p className="text-xs text-subtle mt-1">Building shapes and heights vary by location. Buildings: OpenFreeMap / OpenStreetMap. Place suggestions come from the country guide. Location search: Photon / OpenStreetMap.</p></div>
+      <p role="status" className="sr-only">{status}</p></div>
     </div>
   </section>;
 }
