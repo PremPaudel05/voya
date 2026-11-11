@@ -36,7 +36,21 @@ export function MapSection({ mapData }: { mapData: CountryData['mapData'] }) {
         instance.scrollZoom.setWheelZoomRate(1 / 900);
         instance.scrollZoom.setZoomRate(1 / 200);
         instance.addControl(new lib.NavigationControl(), 'top-right');
-        instance.on('load', () => { instance.setProjection({ type: 'globe' }); setReady(true); });
+        instance.on('load', () => {
+          instance.setProjection({ type: 'globe' });
+          instance.addSource('buildings', { type: 'vector', url: 'https://tiles.openfreemap.org/planet' });
+          instance.addLayer({
+            id: '3d-buildings', type: 'fill-extrusion', source: 'buildings', 'source-layer': 'building', minzoom: 13,
+            filter: ['!=', ['get', 'hide_3d'], true],
+            paint: {
+              'fill-extrusion-color': '#c7b39a',
+              'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], 13, 0, 14, ['coalesce', ['get', 'render_height'], 3]],
+              'fill-extrusion-base': ['interpolate', ['linear'], ['zoom'], 13, 0, 14, ['coalesce', ['get', 'render_min_height'], 0]],
+              'fill-extrusion-opacity': 0.9,
+            },
+          });
+          setReady(true);
+        });
         instance.on('error', () => setStatus('Some map tiles could not load. You can still open places in Maps.'));
       } catch { setStatus('This device could not open the 3D map. Use the place links below.'); }
     }).catch(() => setStatus('The map could not load. Use the place links below.'));
@@ -64,9 +78,22 @@ export function MapSection({ mapData }: { mapData: CountryData['mapData'] }) {
     if (instance.getLayer('city-lights')) instance.setLayoutProperty('city-lights', 'visibility', night ? 'visible' : 'none');
     instance.setPaintProperty('base', 'raster-brightness-max', night ? 0.6 : 1);
     instance.setPaintProperty('base', 'raster-saturation', night ? -0.6 : 0);
+    instance.setPaintProperty('3d-buildings', 'fill-extrusion-color', night ? '#c3a36b' : '#c7b39a');
     // Keep place-level navigation available in both views.
     instance.setMaxZoom(18);
   }, [night, ready]);
+  useEffect(() => {
+    const instance = map.current;
+    if (!ready || !instance) return;
+    const adjustTilt = () => {
+      const pitch = tilted && instance.getZoom() >= 13 ? 55 : 0;
+      if (Math.abs(instance.getPitch() - pitch) > 1) instance.easeTo({ pitch, duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 500 });
+    };
+    instance.setLayoutProperty('3d-buildings', 'visibility', tilted ? 'visible' : 'none');
+    instance.on('zoomend', adjustTilt);
+    adjustTilt();
+    return () => { instance.off('zoomend', adjustTilt); };
+  }, [ready, tilted]);
   useEffect(() => {
     setCategory('cities'); setSelected(''); setQuery(mapData.countryQuery);
   }, [mapData.countryQuery]);
@@ -91,7 +118,7 @@ export function MapSection({ mapData }: { mapData: CountryData['mapData'] }) {
         if (controller.signal.aborted || !map.current) return;
         const point: [number, number] = [coordinates[0], coordinates[1]];
         marker.current = new lib.Marker({ color: '#8f5524' }).setLngLat(point).addTo(map.current);
-        map.current.flyTo({ center: point, zoom: Math.min(query === mapData.countryQuery ? 5 : 12, map.current.getMaxZoom()), pitch: tilted ? 50 : 0, duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1400 });
+        map.current.flyTo({ center: point, zoom: Math.min(isCountry ? 5 : cityQuery ? 14 : 16, map.current.getMaxZoom()), pitch: tilted ? 50 : 0, duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1400 });
         setStatus(`Map match: ${[feature.properties?.name, feature.properties?.city, feature.properties?.country].filter(Boolean).join(', ')}. Approximate location; check the match before visiting.`);
       }).catch(() => { if (cancelled) return; if (!controller.signal.aborted) setStatus('No map match found. Try the Maps link for this place.'); else if (map.current) setStatus('Location lookup timed out. Try the Maps link.'); })
       .finally(() => clearTimeout(timer));
@@ -113,8 +140,8 @@ export function MapSection({ mapData }: { mapData: CountryData['mapData'] }) {
         {selected && category !== 'areasToAvoid' && <a className="block text-sm text-accent underline p-2" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`} target="_blank" rel="noreferrer">Check this place in Maps ↗</a>}
       </div>
       <div className="min-w-0"><div className="relative rounded-xl overflow-hidden border border-line"><div ref={container} className="map-space h-[360px] sm:h-[480px]" aria-label="Interactive world map" />
-      <div className="flex flex-wrap gap-2 p-3 bg-surface border-t border-line"><button className="bg-surface text-ink border border-line rounded-full px-3 py-2 text-xs" aria-pressed={night} onClick={() => setNight(value => !value)}>{night ? '☀ Day view' : '☾ Night view'}</button><button className="bg-surface text-ink border border-line rounded-full px-3 py-2 text-xs" onClick={() => { const next = !tilted; setTilted(next); map.current?.easeTo({ pitch: next ? 50 : 0, duration: 0 }); }} aria-pressed={tilted}>3D tilt</button><button className="bg-surface text-ink border border-line rounded-full px-3 py-2 text-xs" onClick={() => { setTilted(false); map.current?.flyTo({ center: [0, 20], zoom: 0, pitch: 0, bearing: 0, duration: 0 }); }}>World view</button><button className="bg-surface text-ink border border-line rounded-full px-3 py-2 text-xs" onClick={() => { setQuery(mapData.countryQuery); setSelected(''); setResetCount(n => n + 1); }}>Country view</button></div></div>
-      <p className="text-xs text-muted mt-2">{night ? 'City lights from NASA satellite imagery (2012), not live. Zoom in to see streets and places.' : ''}</p><p role="status" className="text-xs text-muted mt-2">{status}</p><p className="text-xs text-subtle mt-1">Place suggestions come from the country guide. Location search by Photon / OpenStreetMap.</p></div>
+      <div className="flex flex-wrap gap-2 p-3 bg-surface border-t border-line"><button className="bg-surface text-ink border border-line rounded-full px-3 py-2 text-xs" aria-pressed={night} onClick={() => setNight(value => !value)}>{night ? '☀ Day view' : '☾ Night view'}</button><button className="bg-surface text-ink border border-line rounded-full px-3 py-2 text-xs" onClick={() => { const next = !tilted; setTilted(next); map.current?.easeTo({ pitch: next ? 50 : 0, duration: 0 }); }} aria-pressed={tilted}>3D buildings</button><button className="bg-surface text-ink border border-line rounded-full px-3 py-2 text-xs" onClick={() => { map.current?.flyTo({ center: [0, 20], zoom: 0, pitch: 0, bearing: 0, duration: 0 }); }}>World view</button><button className="bg-surface text-ink border border-line rounded-full px-3 py-2 text-xs" onClick={() => { setQuery(mapData.countryQuery); setSelected(''); setResetCount(n => n + 1); }}>Country view</button></div></div>
+      <p className="text-xs text-muted mt-2">{night ? 'City lights from NASA satellite imagery (2012), not live. Zoom in to see streets and places.' : ''}</p><p role="status" className="text-xs text-muted mt-2">{status}</p><p className="text-xs text-subtle mt-1">Building shapes and heights vary by location. Buildings: OpenFreeMap / OpenStreetMap. Place suggestions come from the country guide. Location search: Photon / OpenStreetMap.</p></div>
     </div>
   </section>;
 }
