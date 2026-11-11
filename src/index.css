@@ -116,6 +116,16 @@ html[data-theme="dark"] .brand-mark, .bg-inverse .brand-mark {
 }
 
 /* Night styling applies to the map canvas, keeping labels and controls readable. */
+.map-space {
+  background-color: #050b19;
+  background-image:
+    radial-gradient(ellipse at 50% 100%, rgba(82, 148, 213, 0.45), transparent 65%),
+    radial-gradient(circle at 23px 31px, rgba(255, 255, 255, 0.75) 0.7px, transparent 1.3px),
+    radial-gradient(circle at 89px 67px, rgba(191, 218, 255, 0.6) 0.8px, transparent 1.4px),
+    radial-gradient(circle at 47px 113px, rgba(255, 255, 255, 0.4) 0.5px, transparent 1px);
+  background-size: 100% 100%, 157px 139px, 223px 197px, 271px 229px;
+}
+
 .map-night .maplibregl-canvas {
   filter: invert(1) hue-rotate(180deg) brightness(0.85) saturate(0.65);
 }
