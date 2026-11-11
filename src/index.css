@@ -115,7 +115,7 @@ html[data-theme="dark"] .brand-mark, .bg-inverse .brand-mark {
   filter: brightness(0) saturate(100%) invert(94%) sepia(10%) saturate(350%);
 }
 
-/* Night styling applies to the map canvas, keeping labels and controls readable. */
+/* Space stays visible behind the transparent globe in day and night views. */
 .map-space {
   background-color: #050b19;
   background-image:
@@ -124,8 +124,4 @@ html[data-theme="dark"] .brand-mark, .bg-inverse .brand-mark {
     radial-gradient(circle at 89px 67px, rgba(191, 218, 255, 0.6) 0.8px, transparent 1.4px),
     radial-gradient(circle at 47px 113px, rgba(255, 255, 255, 0.4) 0.5px, transparent 1px);
   background-size: 100% 100%, 157px 139px, 223px 197px, 271px 229px;
-}
-
-.map-night .maplibregl-canvas {
-  filter: invert(1) hue-rotate(180deg) brightness(0.85) saturate(0.65);
 }
