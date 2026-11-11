@@ -114,3 +114,8 @@ body {
 html[data-theme="dark"] .brand-mark, .bg-inverse .brand-mark {
   filter: brightness(0) saturate(100%) invert(94%) sepia(10%) saturate(350%);
 }
+
+/* Night styling applies to the map canvas, keeping labels and controls readable. */
+.map-night .maplibregl-canvas {
+  filter: invert(1) hue-rotate(180deg) brightness(0.85) saturate(0.65);
+}
