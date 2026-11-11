@@ -1,176 +1,89 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { MapPin } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import type { Map as MapInstance, Marker } from 'maplibre-gl';
+import type { CountryData } from '../types';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
-interface MapSectionProps {
-  mapData: {
-    countryQuery: string;
-    cities: {
-      name: string;
-      query: string;
-      highlights: string[];
-    }[];
-    bestBeaches?: string[];
-    bestFoodAreas?: string[];
-    nightlifeZones?: string[];
-    instagrammableSpots?: string[];
-    areasToAvoid?: string[];
+const categories = [
+  ['cities', '🌍 Cities'], ['bestFoodAreas', '🍽 Best Food Areas'],
+  ['nightlifeZones', '🎉 Nightlife Zones'], ['instagrammableSpots', '📸 Photo Spots'],
+  ['bestBeaches', '🏖 Beaches'], ['areasToAvoid', '⚠️ Areas to Avoid'],
+] as const;
+type Category = typeof categories[number][0];
+
+export function MapSection({ mapData }: { mapData: CountryData['mapData'] }) {
+  const container = useRef<HTMLDivElement>(null);
+  const map = useRef<MapInstance | null>(null);
+  const marker = useRef<Marker | null>(null);
+  const [ready, setReady] = useState(false);
+  const [category, setCategory] = useState<Category>('cities');
+  const [selected, setSelected] = useState('');
+  const [status, setStatus] = useState('Loading the globe…');
+  const [tilted, setTilted] = useState(true);
+  const [resetCount, setResetCount] = useState(0);
+  const [query, setQuery] = useState(mapData.countryQuery);
+  useEffect(() => {
+    let disposed = false;
+    import('maplibre-gl').then(lib => {
+      if (disposed || !container.current) return;
+      try {
+        const instance = new lib.Map({ container: container.current, center: [0, 20], zoom: 1.5,
+          style: { version: 8, sources: { base: { type: 'raster', tiles: ['https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'], tileSize: 256, attribution: '© OpenStreetMap contributors © CARTO', maxzoom: 19 } }, layers: [{ id: 'base', type: 'raster', source: 'base' }] } });
+        map.current = instance;
+        instance.addControl(new lib.NavigationControl(), 'top-right');
+        instance.on('load', () => { instance.setProjection({ type: 'globe' }); setReady(true); });
+        instance.on('error', () => setStatus('Some map tiles could not load. You can still open places in Maps.'));
+      } catch { setStatus('This device could not open the 3D map. Use the place links below.'); }
+    }).catch(() => setStatus('The map could not load. Use the place links below.'));
+    return () => { disposed = true; marker.current?.remove(); map.current?.remove(); map.current = null; };
+  }, []);
+  useEffect(() => {
+    setCategory('cities'); setSelected(''); setQuery(mapData.countryQuery);
+  }, [mapData.countryQuery]);
+  useEffect(() => {
+    if (!ready) return;
+    const controller = new AbortController();
+    let cancelled = false;
+    marker.current?.remove();
+    setStatus('Finding this place…');
+    const timer = setTimeout(() => controller.abort(), 12000);
+    fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5&lang=en`, { signal: controller.signal })
+      .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+      .then(async data => {
+        const candidates = data.features || [];
+        const isCountry = query === mapData.countryQuery;
+        const cityQuery = mapData.cities.some(c => c.query === query);
+        const feature = (isCountry ? candidates.find((f: { properties?: { type?: string } }) => f.properties?.type === 'country') : cityQuery ? candidates.find((f: { properties?: { type?: string } }) => ['city', 'town'].includes(f.properties?.type || '')) : candidates[0]);
+        if (!feature) throw new Error();
+        const coordinates = feature.geometry?.coordinates;
+        if (!Array.isArray(coordinates) || coordinates.length !== 2 || !coordinates.every(Number.isFinite)) throw new Error();
+        const lib = await import('maplibre-gl');
+        if (controller.signal.aborted || !map.current) return;
+        const point: [number, number] = [coordinates[0], coordinates[1]];
+        marker.current = new lib.Marker({ color: '#8f5524' }).setLngLat(point).addTo(map.current);
+        map.current.flyTo({ center: point, zoom: query === mapData.countryQuery ? 5 : 12, pitch: tilted ? 50 : 0, duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1400 });
+        setStatus(`Map match: ${[feature.properties?.name, feature.properties?.city, feature.properties?.country].filter(Boolean).join(', ')}. Approximate location; check the match before visiting.`);
+      }).catch(() => { if (cancelled) return; if (!controller.signal.aborted) setStatus('No map match found. Try the Maps link for this place.'); else if (map.current) setStatus('Location lookup timed out. Try the Maps link.'); })
+      .finally(() => clearTimeout(timer));
+    return () => { cancelled = true; clearTimeout(timer); controller.abort(); };
+  }, [query, ready, mapData.countryQuery, resetCount]);
+  const items = category === 'cities' ? mapData.cities.map(c => c.name) : (mapData[category] || []).filter(Boolean);
+  const choose = (item: string) => {
+    setSelected(item);
+    if (category !== 'areasToAvoid') setQuery(category === 'cities' ? mapData.cities.find(c => c.name === item)?.query || `${item}, ${mapData.countryQuery}` : `${item}, ${mapData.countryQuery}`);
   };
-}
-
-export function MapSection({ mapData }: MapSectionProps) {
-  const [currentQuery, setCurrentQuery] = useState(mapData.countryQuery);
-  const [zoom, setZoom] = useState(5);
-  const [activeCity, setActiveCity] = useState<string | null>(null);
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
-
-  const handleCityClick = (city: typeof mapData.cities[0]) => {
-    setCurrentQuery(city.query);
-    setZoom(10);
-    setActiveCity(city.name);
-    setActiveCategory(null);
-  };
-
-  const handleReset = () => {
-    setCurrentQuery(mapData.countryQuery);
-    setZoom(5);
-    setActiveCity(null);
-    setActiveCategory(null);
-  };
-
-  const getCategoryItems = (category: string): string[] => {
-    if (category === 'beaches') return mapData.bestBeaches || [];
-    if (category === 'food') return mapData.bestFoodAreas || [];
-    if (category === 'nightlife') return mapData.nightlifeZones || [];
-    if (category === 'instagram') return mapData.instagrammableSpots || [];
-    if (category === 'avoid') return mapData.areasToAvoid || [];
-    return [];
-  };
-
-  const handleCategoryClick = (category: string) => {
-    const items = getCategoryItems(category);
-    if (items.length > 0) {
-      setCurrentQuery(`${items[0]}, ${mapData.countryQuery}`);
-      setZoom(13);
-    }
-    setActiveCity(null);
-    setActiveCategory(category);
-  };
-
-  return (
-    <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden mb-6">
-      <div className="p-6 border-b border-line">
-        <h2 className="text-xl font-semibold text-ink flex items-center gap-2">
-          <MapPin className="text-accent" />
-          Interactive Map
-        </h2>
-        <p className="text-subtle text-sm mt-1">Explore major cities and regions.</p>
+  return <section className="bg-surface border border-line rounded-2xl overflow-hidden mb-6">
+    <div className="p-5 border-b border-line"><h2 className="text-xl font-bold text-ink">Explore the map</h2><p className="text-sm text-muted mt-1">Choose a topic, then a place. Drag to look around and use + or − to zoom.</p></div>
+    <div className="flex flex-wrap gap-2 p-4" aria-label="Map topics">{categories.map(([key, label]) => <button key={key} aria-pressed={category === key} onClick={() => { setCategory(key); setSelected(''); }} className={`rounded-full px-4 py-2 text-sm border ${category === key ? 'bg-action text-action-ink border-action' : 'border-line text-ink bg-surface'}`}>{label}</button>)}</div>
+    <div className="grid lg:grid-cols-[260px_1fr] gap-4 p-4 pt-0">
+      <div className="space-y-2 lg:max-h-[480px] overflow-y-auto">
+        {category === 'areasToAvoid' && <p className="text-sm text-muted p-3 bg-surface-alt rounded-xl">These are unverified notes from the guide, not live safety alerts. They are not plotted as danger zones. Check <a className="underline" href="https://www.gov.uk/foreign-travel-advice" target="_blank" rel="noreferrer">current official travel advice</a> and local updates.</p>}
+        {!items.length && <p className="text-sm text-muted p-3">No places listed for this topic yet.</p>}
+        {items.map((item, i) => <button key={`${item}-${i}`} onClick={() => choose(item)} aria-pressed={selected === item} className={`block w-full text-left rounded-xl border p-3 text-sm ${selected === item ? 'border-action bg-surface-alt text-ink' : 'border-line text-muted'}`}>{item}</button>)}
+        {selected && category !== 'areasToAvoid' && <a className="block text-sm text-accent underline p-2" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`} target="_blank" rel="noreferrer">Check this place in Maps ↗</a>}
       </div>
-
-      <div className="p-6 flex flex-col lg:flex-row gap-6">
-        <div className="w-full lg:w-1/3 flex flex-col gap-3">
-          <button
-            onClick={handleReset}
-            className={`text-left px-4 py-3 rounded-xl transition-all ${
-              activeCity === null
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'bg-surface-alt text-muted hover:bg-surface-alt'
-            }`}
-          >
-            <div className="font-medium">Country View</div>
-          </button>
-          
-          {mapData.cities.map((city) => (
-            <button
-              key={city.name}
-              onClick={() => handleCityClick(city)}
-              className={`text-left px-4 py-3 rounded-xl transition-all ${
-                activeCity === city.name
-                  ? 'bg-blue-600 text-white shadow-md'
-                  : 'bg-surface-alt text-muted hover:bg-surface-alt'
-              }`}
-            >
-              <div className="font-medium">{city.name}</div>
-              {activeCity === city.name && (
-                <motion.ul 
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  className="mt-2 space-y-1 text-sm text-blue-100 list-disc list-inside"
-                >
-                  {city.highlights.map((highlight, idx) => (
-                    <li key={idx}>{highlight}</li>
-                  ))}
-                </motion.ul>
-              )}
-            </button>
-          ))}
-        </div>
-
-        <div className="w-full lg:w-2/3 flex flex-col gap-4">
-          <div className="h-[400px] rounded-xl overflow-hidden bg-surface-alt relative shadow-inner">
-            <iframe
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              loading="lazy"
-              allowFullScreen
-              src={`https://maps.google.com/maps?q=${encodeURIComponent(currentQuery)}&t=&z=${zoom}&ie=UTF8&iwloc=&output=embed`}
-            ></iframe>
-          </div>
-
-          <div className="flex flex-wrap gap-2 mt-2">
-            {[
-              { id: 'beaches', label: '🏖 Best Beaches', data: mapData.bestBeaches },
-              { id: 'food', label: '🍽 Best Food Areas', data: mapData.bestFoodAreas },
-              { id: 'nightlife', label: '🎉 Nightlife Zones', data: mapData.nightlifeZones },
-              { id: 'instagram', label: '📸 Most Instagrammable Spots', data: mapData.instagrammableSpots },
-              { id: 'avoid', label: '⚠️ Areas to Avoid', data: mapData.areasToAvoid },
-            ].map((cat) => cat.data && cat.data.length > 0 && cat.data[0] !== "" && (
-              <button
-                key={cat.id}
-                onClick={() => handleCategoryClick(cat.id)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  activeCategory === cat.id
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-surface-alt text-muted hover:bg-surface-alt'
-                }`}
-              >
-                {cat.label}
-              </button>
-            ))}
-          </div>
-
-          {activeCategory && (
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-surface-alt p-4 rounded-xl border border-line mt-2"
-            >
-              <h4 className="font-medium text-ink mb-2 capitalize">
-                {activeCategory.replace(/([A-Z])/g, ' $1').trim()}
-              </h4>
-              <ul className="text-sm text-blue-800 space-y-1">
-                {(activeCategory === 'beaches' ? mapData.bestBeaches :
-                  activeCategory === 'food' ? mapData.bestFoodAreas :
-                  activeCategory === 'nightlife' ? mapData.nightlifeZones :
-                  activeCategory === 'instagram' ? mapData.instagrammableSpots :
-                  activeCategory === 'avoid' ? mapData.areasToAvoid : []
-                )?.map((item, i) => (
-                  <li
-                    key={i}
-                    onClick={() => { setCurrentQuery(`${item}, ${mapData.countryQuery}`); setZoom(13); }}
-                    className="cursor-pointer hover:bg-blue-100 px-2 py-1 rounded-lg transition-colors flex items-center gap-2"
-                  >
-                    <MapPin size={14} className="text-blue-500 shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          )}
-        </div>
-      </div>
-
+      <div className="min-w-0"><div className="relative rounded-xl overflow-hidden border border-line"><div ref={container} className="h-[360px] sm:h-[480px]" aria-label="Interactive world map" />
+      <div className="absolute bottom-10 left-3 flex gap-2"><button className="bg-surface text-ink border border-line rounded-full px-3 py-2 text-xs" onClick={() => { const next = !tilted; setTilted(next); map.current?.easeTo({ pitch: next ? 50 : 0, duration: 0 }); }} aria-pressed={tilted}>3D tilt</button><button className="bg-surface text-ink border border-line rounded-full px-3 py-2 text-xs" onClick={() => map.current?.flyTo({ zoom: 1.5, pitch: 0, duration: 0 })}>World view</button><button className="bg-surface text-ink border border-line rounded-full px-3 py-2 text-xs" onClick={() => { setQuery(mapData.countryQuery); setSelected(''); setResetCount(n => n + 1); }}>Country view</button></div></div>
+      <p role="status" className="text-xs text-muted mt-2">{status}</p><p className="text-xs text-subtle mt-1">Place suggestions come from the country guide. Location search by Photon / OpenStreetMap.</p></div>
     </div>
-  );
+  </section>;
 }
