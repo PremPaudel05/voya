@@ -64,7 +64,7 @@ export function Footer() {
               <span className="text-2xl font-black text-white tracking-tight">Voya</span>
             </div>
             <p className="text-[14px] leading-relaxed text-muted max-w-[210px]">
-              Culture, places, and everyday life. Get to know somewhere new.
+              Country guides to food, landmarks, and daily life.
             </p>
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-[#c49050] animate-pulse shrink-0" />
@@ -98,7 +98,7 @@ export function Footer() {
           <div className="flex flex-col gap-4">
             <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-accent">Get in touch</span>
             <p className="text-[14px] text-muted leading-relaxed">
-              Found something useful, spotted a problem, or have an idea? I’d love to hear from you.
+              Have a question, a suggestion, or a correction? Email me.
             </p>
             <a
               href="mailto:Prempaudel5b@gmail.com"
@@ -163,21 +163,21 @@ export function Footer() {
 
       {open === 'accuracy' && (
         <Modal title="AI Accuracy Notice" onClose={() => setOpen(null)}>
-          <p>Voya uses advanced AI technology to generate travel insights. This technology is powerful, but it is not infallible.</p>
-          <p><strong>What this means for you:</strong></p>
+          <p>Voya uses AI to help write its country guides and trip plans. It can get details wrong or miss recent changes.</p>
+          <p><strong>What to double-check:</strong></p>
           <ul className="list-disc pl-5 space-y-2">
             <li>Information such as visa requirements, entry rules, currency exchange rates, and safety advisories can change rapidly. Always cross-check with official government or embassy sources.</li>
-            <li>Local phrases and translations are generally reliable, but regional dialects and nuances may vary.</li>
+            <li>Words and expressions can vary by region. Check with a local speaker if you’re unsure how to say something.</li>
             <li>Cost estimates are approximate and based on general knowledge. Actual prices may differ depending on season, location, and market conditions.</li>
-            <li>Historical or cultural facts are sourced from the model's training data, which has a knowledge cutoff and may not reflect very recent events.</li>
+            <li>Check a trusted source if you’re using a historical or cultural detail for school, work, or publication.</li>
           </ul>
-          <p>I'm continuously working to improve the quality and accuracy of the content. If you notice an error, please let me know at <a href="mailto:Prempaudel5b@gmail.com" className="text-accent underline">Prempaudel5b@gmail.com</a>.</p>
+          <p>If you spot a mistake, send the country name and the detail that looks wrong to <a href="mailto:Prempaudel5b@gmail.com" className="text-accent underline">Prempaudel5b@gmail.com</a>.</p>
         </Modal>
       )}
 
       {open === 'contact' && (
         <Modal title="Help & Contact" onClose={() => setOpen(null)}>
-          <p>I'm building Voya to make discovering countries and cultures more accessible. I'd love to hear what sparked your curiosity.</p>
+          <p>If something on Voya isn’t working, email me and tell me what you were trying to do.</p>
           <div className="bg-surface-alt rounded-xl p-4 space-y-1">
             <div className="text-[10px] font-bold uppercase tracking-widest text-accent">Email me</div>
             <a href="mailto:Prempaudel5b@gmail.com" className="text-ink font-semibold hover:text-accent transition-colors">
@@ -186,10 +186,10 @@ export function Footer() {
           </div>
           <p><strong>Common questions:</strong></p>
           <ul className="list-disc pl-5 space-y-2">
-            <li><strong>Is Voya free?</strong> Yes, always. Country insights are free, with no subscription. Account creation and sign-in are optional for exploring. Sign in to save your search history or use the optional trip planner.</li>
-            <li><strong>How accurate is the information?</strong> Generally reliable, but AI can make mistakes. See the AI Accuracy Notice for details.</li>
+            <li><strong>Is Voya free?</strong> Yes. You can read the guides without an account. Sign in if you want to save searches or use the trip planner.</li>
+            <li><strong>How accurate is the information?</strong> AI can make mistakes. See the AI Accuracy Notice for what to double-check.</li>
             <li><strong>Can I suggest a feature?</strong> Absolutely. Email me with your idea.</li>
-            <li><strong>I found incorrect information.</strong> Please report it via email so I can investigate and improve.</li>
+            <li><strong>I found incorrect information.</strong> Email me the country name and what needs correcting.</li>
           </ul>
           <p className="text-muted">I aim to respond within 48 hours.</p>
         </Modal>

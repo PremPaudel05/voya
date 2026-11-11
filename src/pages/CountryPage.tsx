@@ -62,7 +62,7 @@ export default function CountryPage() {
         const msg = err instanceof Error ? err.message : 'Unknown error';
         setError(msg.toLowerCase().includes('timed out')
           ? 'The request took too long. Please try again.'
-          : 'Could not load travel insights. Please try again later.');
+          : 'Couldn’t load the country guide. Please try again later.');
       })
       .finally(() => { if (active) setIsLoading(false); });
     return () => { active = false; };
@@ -134,7 +134,7 @@ export default function CountryPage() {
                 <p className="text-subtle text-sm leading-relaxed mb-8 max-w-xs mx-auto">
                   {error.includes('valid country')
                     ? `"${decoded}" doesn't match any country in our database. Check the spelling or try a different name.`
-                    : 'We had trouble loading insights for this destination. It might be a temporary issue.'}
+                    : 'The country guide didn’t load. Try again in a moment.'}
                 </p>
 
                 {/* Suggestions if invalid country */}

@@ -111,19 +111,19 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
             <div className="flex items-center gap-2.5 mb-7">
               <div className="h-px w-8 bg-brand" />
               <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-accent">
-                Country insights & culture
+                Country guides
               </span>
             </div>
 
             {/* Headline */}
             <h1 className="font-black leading-[1.0] tracking-[-0.03em] mb-6"
               style={{ fontSize: 'clamp(3rem, 6vw, 5.2rem)' }}>
-              Curious about somewhere?<br />
-              <span className="discovery-gradient">Start here.</span>
+              Get to know<br />
+              <span className="discovery-gradient">a country.</span>
             </h1>
 
             <p className="text-muted text-lg leading-relaxed mb-9 max-w-[480px]">
-              Pick a country to learn about its food, culture, places to visit, and everyday life.
+              Look up a country to see what people eat, what they celebrate, and what you can visit.
             </p>
 
             {/* Search */}
@@ -238,7 +238,7 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
             {/* Subtle top label */}
             <div className="flex items-center gap-2 mb-3">
               <div className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
-              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-accent">Places to discover</span>
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-accent">Cities on the map</span>
             </div>
             <div className="lg:max-h-none max-h-[260px] overflow-hidden">
               <WorldMap
