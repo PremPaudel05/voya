@@ -52,11 +52,20 @@ export function MapSection({ mapData }: { mapData: CountryData['mapData'] }) {
         tiles: ['https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_CityLights_2012/default/2012-01-01/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpg'],
         attribution: '<a href="https://science.nasa.gov/earth/earth-observatory/night-lights-2012-the-black-marble-79803/" target="_blank" rel="noreferrer">NASA / NOAA VIIRS city lights (2012)</a>',
       });
-      instance.addLayer({ id: 'city-lights', type: 'raster', source: 'city-lights', paint: { 'raster-fade-duration': 300 } });
+      instance.addLayer({
+        id: 'city-lights', type: 'raster', source: 'city-lights', maxzoom: 11,
+        paint: {
+          'raster-fade-duration': 300,
+          // Satellite lights are regional imagery; reveal streets as visitors zoom in.
+          'raster-opacity': ['interpolate', ['linear'], ['zoom'], 8, 1, 10, 0],
+        },
+      });
     }
     if (instance.getLayer('city-lights')) instance.setLayoutProperty('city-lights', 'visibility', night ? 'visible' : 'none');
-    // Satellite imagery has regional detail, so avoid stretching it to street zoom.
-    instance.setMaxZoom(night ? 8 : 18);
+    instance.setPaintProperty('base', 'raster-brightness-max', night ? 0.6 : 1);
+    instance.setPaintProperty('base', 'raster-saturation', night ? -0.6 : 0);
+    // Keep place-level navigation available in both views.
+    instance.setMaxZoom(18);
   }, [night, ready]);
   useEffect(() => {
     setCategory('cities'); setSelected(''); setQuery(mapData.countryQuery);
@@ -105,7 +114,7 @@ export function MapSection({ mapData }: { mapData: CountryData['mapData'] }) {
       </div>
       <div className="min-w-0"><div className="relative rounded-xl overflow-hidden border border-line"><div ref={container} className="map-space h-[360px] sm:h-[480px]" aria-label="Interactive world map" />
       <div className="flex flex-wrap gap-2 p-3 bg-surface border-t border-line"><button className="bg-surface text-ink border border-line rounded-full px-3 py-2 text-xs" aria-pressed={night} onClick={() => setNight(value => !value)}>{night ? '☀ Day view' : '☾ Night view'}</button><button className="bg-surface text-ink border border-line rounded-full px-3 py-2 text-xs" onClick={() => { const next = !tilted; setTilted(next); map.current?.easeTo({ pitch: next ? 50 : 0, duration: 0 }); }} aria-pressed={tilted}>3D tilt</button><button className="bg-surface text-ink border border-line rounded-full px-3 py-2 text-xs" onClick={() => { setTilted(false); map.current?.flyTo({ center: [0, 20], zoom: 0, pitch: 0, bearing: 0, duration: 0 }); }}>World view</button><button className="bg-surface text-ink border border-line rounded-full px-3 py-2 text-xs" onClick={() => { setQuery(mapData.countryQuery); setSelected(''); setResetCount(n => n + 1); }}>Country view</button></div></div>
-      <p className="text-xs text-muted mt-2">{night ? 'City lights from NASA satellite imagery (2012), not live. Switch to Day view for street detail.' : ''}</p><p role="status" className="text-xs text-muted mt-2">{status}</p><p className="text-xs text-subtle mt-1">Place suggestions come from the country guide. Location search by Photon / OpenStreetMap.</p></div>
+      <p className="text-xs text-muted mt-2">{night ? 'City lights from NASA satellite imagery (2012), not live. Zoom in to see streets and places.' : ''}</p><p role="status" className="text-xs text-muted mt-2">{status}</p><p className="text-xs text-subtle mt-1">Place suggestions come from the country guide. Location search by Photon / OpenStreetMap.</p></div>
     </div>
   </section>;
 }
