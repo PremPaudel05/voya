@@ -235,6 +235,23 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.937Z"
   },
+  "AG|halfmoonbay": {
+    "name": "Half Moon Bay",
+    "countryCode": "AG",
+    "articleTitle": "Mill Reef–Half Moon Bay",
+    "entityId": "Q16218775",
+    "articleUrl": "https://en.wikipedia.org/wiki/Mill%20Reef%E2%80%93Half%20Moon%20Bay",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d7/Unnamed_Road%2C_Antigua_and_Barbuda_-_panoramio_%282%29.jpg/960px-Unnamed_Road%2C_Antigua_and_Barbuda_-_panoramio_%282%29.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d7/Unnamed_Road%2C_Antigua_and_Barbuda_-_panoramio_%282%29.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AUnnamed_Road%2C_Antigua_and_Barbuda_-_panoramio_(2).jpg",
+        "author": "Андрей Бобровский",
+        "license": "CC BY 3.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.677Z"
+  },
   "AL|accursedmountains": {
     "name": "Accursed Mountains",
     "countryCode": "AL",
@@ -1080,6 +1097,30 @@
     ],
     "checkedAt": "2026-09-06T18:56:41.290Z"
   },
+  "BE|brugesmedievalcity": {
+    "name": "Bruges Medieval City",
+    "countryCode": "BE",
+    "articleTitle": "Bruges",
+    "entityId": "Q12994",
+    "articleUrl": "https://en.wikipedia.org/wiki/Bruges",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Br%C3%BCgge_Blick_vom_Belfried_4.jpg/960px-Br%C3%BCgge_Blick_vom_Belfried_4.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Br%C3%BCgge_Blick_vom_Belfried_4.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ABr%C3%BCgge_Blick_vom_Belfried_4.jpg",
+        "author": "Zairon",
+        "license": "CC BY-SA 4.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ca/Brugge-CanalRozenhoedkaai.JPG/960px-Brugge-CanalRozenhoedkaai.JPG",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ca/Brugge-CanalRozenhoedkaai.JPG",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ABrugge-CanalRozenhoedkaai.JPG",
+        "author": "Jean-Christophe BENOIST",
+        "license": "CC BY 2.5"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.683Z"
+  },
   "BF|arlinationalpark": {
     "name": "Arli National Park",
     "countryCode": "BF",
@@ -1695,6 +1736,23 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.939Z"
+  },
+  "BS|thunderballgrotto": {
+    "name": "Thunderball Grotto",
+    "countryCode": "BS",
+    "articleTitle": "Staniel Cay",
+    "entityId": "Q14220885",
+    "articleUrl": "https://en.wikipedia.org/wiki/Staniel%20Cay",
+    "images": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/8/83/View_of_the_Island_taken_from_a_ship.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/8/83/View_of_the_Island_taken_from_a_ship.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AView%20of%20the%20Island%20taken%20from%20a%20ship.jpg",
+        "author": "Asbl1996",
+        "license": "CC BY-SA 4.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.684Z"
   },
   "BT|drukgyeldzong": {
     "name": "Drukgyel Dzong",
@@ -3435,6 +3493,23 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.941Z"
   },
+  "DJ|ardoukobavolcano": {
+    "name": "Ardoukoba Volcano",
+    "countryCode": "DJ",
+    "articleTitle": "Ardoukoba",
+    "entityId": "Q639993",
+    "articleUrl": "https://en.wikipedia.org/wiki/Ardoukoba",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Ardoukoba.jpg/960px-Ardoukoba.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Ardoukoba.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AArdoukoba.jpg",
+        "author": "Rolfcosar",
+        "license": "CC BY-SA 3.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.684Z"
+  },
   "DJ|lakeassal": {
     "name": "Lake Assal",
     "countryCode": "DJ",
@@ -3808,6 +3883,30 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.941Z"
   },
+  "EC|cotopaxivolcano": {
+    "name": "Cotopaxi Volcano",
+    "countryCode": "EC",
+    "articleTitle": "Cotopaxi",
+    "entityId": "Q181476",
+    "articleUrl": "https://en.wikipedia.org/wiki/Cotopaxi",
+    "images": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/2/20/Cotopaxi_volcano_2008-06-27T1322.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/2/20/Cotopaxi_volcano_2008-06-27T1322.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ACotopaxi_volcano_2008-06-27T1322.jpg",
+        "author": "Gerard Prins",
+        "license": "CC BY-SA 3.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/74/V%C3%B3lcan_Cotopaxi.jpg/960px-V%C3%B3lcan_Cotopaxi.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/7/74/V%C3%B3lcan_Cotopaxi.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AV%C3%B3lcan%20Cotopaxi.jpg",
+        "author": "camilogaleano.com",
+        "license": "CC BY-SA 4.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.684Z"
+  },
   "EC|galapagosislands": {
     "name": "Galápagos Islands",
     "countryCode": "EC",
@@ -3831,6 +3930,23 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.941Z"
+  },
+  "EC|otavalomarket": {
+    "name": "Otavalo Market",
+    "countryCode": "EC",
+    "articleTitle": "Otavalo (city)",
+    "entityId": "Q1020794",
+    "articleUrl": "https://en.wikipedia.org/wiki/Otavalo%20(city)",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Otavalo_Imbabura_nina_urkuwan.jpg/960px-Otavalo_Imbabura_nina_urkuwan.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Otavalo_Imbabura_nina_urkuwan.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AOtavalo%20Imbabura%20nina%20urkuwan.jpg",
+        "author": "Bcasterline at English Wikipedia",
+        "license": "Public domain"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.684Z"
   },
   "EE|lahemaanationalpark": {
     "name": "Lahemaa National Park",
@@ -3872,6 +3988,30 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.941Z"
+  },
+  "EE|tallinnoldcity": {
+    "name": "Tallinn Old City",
+    "countryCode": "EE",
+    "articleTitle": "Tallinn",
+    "entityId": "Q1770",
+    "articleUrl": "https://en.wikipedia.org/wiki/Tallinn",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/Raekoja_plats_at_night.jpg/960px-Raekoja_plats_at_night.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/7/70/Raekoja_plats_at_night.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ARaekoja_plats_at_night.jpg",
+        "author": "Jorge Franganillo",
+        "license": "CC BY 2.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/Tallinna_vanalinn_2015.jpg/960px-Tallinna_vanalinn_2015.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/9/92/Tallinna_vanalinn_2015.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ATallinna%20vanalinn%202015.jpg",
+        "author": "Hiiumaamudeliklubi",
+        "license": "CC BY-SA 4.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.685Z"
   },
   "EG|abusimbel": {
     "name": "Abu Simbel",
@@ -4294,6 +4434,47 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.942Z"
   },
+  "FI|suomenlinnafortress": {
+    "name": "Suomenlinna Fortress",
+    "countryCode": "FI",
+    "articleTitle": "Suomenlinna",
+    "entityId": "Q1292442",
+    "articleUrl": "https://en.wikipedia.org/wiki/Suomenlinna",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/Suomenlinna_aerial.JPG/960px-Suomenlinna_aerial.JPG",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/a/af/Suomenlinna_aerial.JPG",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ASuomenlinna_aerial.JPG",
+        "author": "Migro",
+        "license": "Public domain"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/da/Suomenlinna.jpg/960px-Suomenlinna.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/d/da/Suomenlinna.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ASuomenlinna.jpg",
+        "author": "Michal Pise, Michal.Pise",
+        "license": "CC BY 2.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.685Z"
+  },
+  "FJ|coralcoast": {
+    "name": "Coral Coast",
+    "countryCode": "FJ",
+    "articleTitle": "Coral Coast, Fiji",
+    "entityId": "Q5169452",
+    "articleUrl": "https://en.wikipedia.org/wiki/Coral%20Coast%2C%20Fiji",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Sigatoka_fiji.jpg/960px-Sigatoka_fiji.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/9/90/Sigatoka_fiji.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ASigatoka_fiji.jpg",
+        "author": "Fijiisparadise",
+        "license": "CC BY 3.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.685Z"
+  },
   "FJ|savusavu": {
     "name": "Savusavu",
     "countryCode": "FJ",
@@ -4368,6 +4549,23 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.942Z"
+  },
+  "FM|nanmadolruins": {
+    "name": "Nan Madol Ruins",
+    "countryCode": "FM",
+    "articleTitle": "Nan Madol",
+    "entityId": "Q846967",
+    "articleUrl": "https://en.wikipedia.org/wiki/Nan%20Madol",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c3/Nan_madol.jpg/960px-Nan_madol.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Nan_madol.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ANan%20madol.jpg",
+        "author": "NOAA",
+        "license": "Public domain"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.685Z"
   },
   "FM|pohnpeiisland": {
     "name": "Pohnpei Island",
@@ -5171,6 +5369,54 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.943Z"
   },
+  "GT|antigua": {
+    "name": "Antigua",
+    "countryCode": "GT",
+    "articleTitle": "Antigua Guatemala",
+    "entityId": "Q212773",
+    "articleUrl": "https://en.wikipedia.org/wiki/Antigua%20Guatemala",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b6/Antigua_-_Arco.jpg/960px-Antigua_-_Arco.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b6/Antigua_-_Arco.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AAntigua_-_Arco.jpg",
+        "author": "Juan Francisco",
+        "license": "CC BY-SA 2.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/Santa_Catalina_Arch_-_Antigua_Guatemala_Feb_2020.jpg/960px-Santa_Catalina_Arch_-_Antigua_Guatemala_Feb_2020.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/6/61/Santa_Catalina_Arch_-_Antigua_Guatemala_Feb_2020.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ASanta%20Catalina%20Arch%20-%20Antigua%20Guatemala%20Feb%202020.jpg",
+        "author": "Chad Davis",
+        "license": "CC BY-SA 2.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.686Z"
+  },
+  "GT|chichicastenangomarket": {
+    "name": "Chichicastenango Market",
+    "countryCode": "GT",
+    "articleTitle": "Chichicastenango",
+    "entityId": "Q603423",
+    "articleUrl": "https://en.wikipedia.org/wiki/Chichicastenango",
+    "images": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/7/7c/Santo_Tomas_Church%2C_Chichicastenango.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7c/Santo_Tomas_Church%2C_Chichicastenango.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ASanto_Tomas_Church%2C_Chichicastenango.jpg",
+        "author": "Manfredwinslow",
+        "license": "Public domain"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Chichicastenango_market.jpg/960px-Chichicastenango_market.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Chichicastenango_market.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AChichicastenango%20market.jpg",
+        "author": "Toby Argüelles",
+        "license": "CC BY-SA 2.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.686Z"
+  },
   "GT|lakeatitlan": {
     "name": "Lake Atitlán",
     "countryCode": "GT",
@@ -5187,6 +5433,40 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.943Z"
+  },
+  "GT|pacayavolcano": {
+    "name": "Pacaya Volcano",
+    "countryCode": "GT",
+    "articleTitle": "Pacaya",
+    "entityId": "Q753924",
+    "articleUrl": "https://en.wikipedia.org/wiki/Pacaya",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/Pacaya_erupting_in_1976.jpg/960px-Pacaya_erupting_in_1976.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/3/38/Pacaya_erupting_in_1976.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3APacaya%20erupting%20in%201976.jpg",
+        "author": "USGS",
+        "license": "Public domain"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.686Z"
+  },
+  "GT|tikalmayanruins": {
+    "name": "Tikal Mayan Ruins",
+    "countryCode": "GT",
+    "articleTitle": "Tikal",
+    "entityId": "Q181172",
+    "articleUrl": "https://en.wikipedia.org/wiki/Tikal",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/75/Tikal_3.jpg/960px-Tikal_3.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/7/75/Tikal_3.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ATikal%203.jpg",
+        "author": "Mundo Maya",
+        "license": "CC BY-SA 4.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.685Z"
   },
   "GW|bijagosarchipelago": {
     "name": "Bijagós Archipelago",
@@ -5263,6 +5543,40 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.943Z"
   },
+  "GY|shellbeach": {
+    "name": "Shell Beach",
+    "countryCode": "GY",
+    "articleTitle": "Shell Beach, Guyana",
+    "entityId": "Q7493646",
+    "articleUrl": "https://en.wikipedia.org/wiki/Shell%20Beach%2C%20Guyana",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Coconut_Trees_on_the_Shell_Beach_-_panoramio.jpg/960px-Coconut_Trees_on_the_Shell_Beach_-_panoramio.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Coconut_Trees_on_the_Shell_Beach_-_panoramio.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ACoconut%20Trees%20on%20the%20Shell%20Beach%20-%20panoramio.jpg",
+        "author": "Marco Farouk Basir",
+        "license": "CC BY-SA 3.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.686Z"
+  },
+  "HN|bayislands": {
+    "name": "Bay Islands",
+    "countryCode": "HN",
+    "articleTitle": "Bay Islands Department",
+    "entityId": "Q751725",
+    "articleUrl": "https://en.wikipedia.org/wiki/Bay%20Islands%20Department",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ca/Islas_de_la_bahia_001.jpg/960px-Islas_de_la_bahia_001.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ca/Islas_de_la_bahia_001.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AIslas%20de%20la%20bahia%20001.jpg",
+        "author": "See above. Compilation: JVC3ETA",
+        "license": "CC BY-SA 2.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.686Z"
+  },
   "HN|picobonitonationalpark": {
     "name": "Pico Bonito National Park",
     "countryCode": "HN",
@@ -5310,6 +5624,23 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.943Z"
+  },
+  "HR|dubrovnikoldtown": {
+    "name": "Dubrovnik Old Town",
+    "countryCode": "HR",
+    "articleTitle": "Dubrovnik",
+    "entityId": "Q1722",
+    "articleUrl": "https://en.wikipedia.org/wiki/Dubrovnik",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/The_walls_of_the_fortress_and_View_of_the_old_city._panorama.jpg/960px-The_walls_of_the_fortress_and_View_of_the_old_city._panorama.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/6/67/The_walls_of_the_fortress_and_View_of_the_old_city._panorama.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AThe%20walls%20of%20the%20fortress%20and%20View%20of%20the%20old%20city.%20panorama.jpg",
+        "author": "Zysko serhii",
+        "license": "CC BY-SA 4.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.686Z"
   },
   "HR|hvarisland": {
     "name": "Hvar Island",
@@ -5396,6 +5727,30 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.943Z"
+  },
+  "HT|citadellelaferrierefortress": {
+    "name": "Citadelle Laferrière Fortress",
+    "countryCode": "HT",
+    "articleTitle": "Citadelle Laferrière",
+    "entityId": "Q206194",
+    "articleUrl": "https://en.wikipedia.org/wiki/Citadelle%20Laferri%C3%A8re",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/76/Citadelle_Laferri%C3%A8re.jpg/960px-Citadelle_Laferri%C3%A8re.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/7/76/Citadelle_Laferri%C3%A8re.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ACitadelle_Laferri%C3%A8re.jpg",
+        "author": "Rémi Kaupp",
+        "license": "CC BY-SA 3.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Citadelle_Laferri%C3%A8re_Aerial_View.jpg/960px-Citadelle_Laferri%C3%A8re_Aerial_View.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Citadelle_Laferri%C3%A8re_Aerial_View.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ACitadelle%20Laferri%C3%A8re%20Aerial%20View.jpg",
+        "author": "SPC Gibran Torres, United States Army",
+        "license": "Public domain"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.687Z"
   },
   "HT|hispaniolaisland": {
     "name": "Hispaniola Island",
@@ -6661,6 +7016,23 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.944Z"
   },
+  "KG|peaklenin": {
+    "name": "Peak Lenin",
+    "countryCode": "KG",
+    "articleTitle": "Lenin Peak",
+    "entityId": "Q838587",
+    "articleUrl": "https://en.wikipedia.org/wiki/Lenin%20Peak",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/Lenin_peak_from_Sary-mogol.jpg/960px-Lenin_peak_from_Sary-mogol.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Lenin_peak_from_Sary-mogol.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ALenin%20peak%20from%20Sary-mogol.jpg",
+        "author": "Nihongarden",
+        "license": "CC BY-SA 3.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:19:03.416Z"
+  },
   "KG|sonkullake": {
     "name": "Son-Kul Lake",
     "countryCode": "KG",
@@ -6976,6 +7348,30 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.945Z"
   },
+  "KN|mountliamuigavolcano": {
+    "name": "Mount Liamuiga Volcano",
+    "countryCode": "KN",
+    "articleTitle": "Mount Liamuiga",
+    "entityId": "Q1269774",
+    "articleUrl": "https://en.wikipedia.org/wiki/Mount%20Liamuiga",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/Mt_Liamuiga_St_Kitts.jpg/960px-Mt_Liamuiga_St_Kitts.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Mt_Liamuiga_St_Kitts.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AMt_Liamuiga_St_Kitts.jpg",
+        "author": "JialiangGao",
+        "license": "CC BY-SA 4.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/ISS022-E-39042_-_View_of_the_Lesser_Antilles.jpg/960px-ISS022-E-39042_-_View_of_the_Lesser_Antilles.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/3/34/ISS022-E-39042_-_View_of_the_Lesser_Antilles.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AISS022-E-39042%20-%20View%20of%20the%20Lesser%20Antilles.jpg",
+        "author": "Earth Science and Remote Sensing Unit, Lyndon B. Johnson Space Center",
+        "license": "Public domain"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.687Z"
+  },
   "KN|nevispeak": {
     "name": "Nevis Peak",
     "countryCode": "KN",
@@ -7081,6 +7477,32 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.945Z"
+  },
+  "KR|nseoultower": {
+    "name": "N Seoul Tower",
+    "countryCode": "KR",
+    "articleTitle": "Seoul",
+    "entityId": "Q8684",
+    "articleUrl": "https://en.wikipedia.org/wiki/Seoul",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/30/%EC%A4%91%ED%99%94%EC%A0%84%EC%9D%98_%EB%82%AE.jpg/960px-%EC%A4%91%ED%99%94%EC%A0%84%EC%9D%98_%EB%82%AE.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/3/30/%EC%A4%91%ED%99%94%EC%A0%84%EC%9D%98_%EB%82%AE.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3A%EC%A4%91%ED%99%94%EC%A0%84%EC%9D%98_%EB%82%AE.jpg",
+        "author": "Eunmi Park",
+        "license": "CC BY-SA 4.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/%EB%8D%95%EC%88%98%EA%B6%81%EC%9D%98_%EA%B0%80%EC%9D%84.jpg/960px-%EB%8D%95%EC%88%98%EA%B6%81%EC%9D%98_%EA%B0%80%EC%9D%84.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/8/88/%EB%8D%95%EC%88%98%EA%B6%81%EC%9D%98_%EA%B0%80%EC%9D%84.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3A%EB%8D%95%EC%88%98%EA%B6%81%EC%9D%98%20%EA%B0%80%EC%9D%84.jpg",
+        "author": "라성민",
+        "license": "CC BY-SA 3.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:11:03.185Z",
+    "subject": "Seoul",
+    "approximate": true
   },
   "KW|failakaisland": {
     "name": "Failaka Island",
@@ -7205,6 +7627,23 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.945Z"
   },
+  "LA|4000islands": {
+    "name": "4000 Islands",
+    "countryCode": "LA",
+    "articleTitle": "Si Phan Don",
+    "entityId": "Q1319369",
+    "articleUrl": "https://en.wikipedia.org/wiki/Si%20Phan%20Don",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/Champasak_DonKhone_LiPhi1_tango7174.jpg/960px-Champasak_DonKhone_LiPhi1_tango7174.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/2/23/Champasak_DonKhone_LiPhi1_tango7174.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AChampasak%20DonKhone%20LiPhi1%20tango7174.jpg",
+        "author": "Tango7174",
+        "license": "CC BY-SA 4.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:11:11.944Z"
+  },
   "LA|kuangsifalls": {
     "name": "Kuang Si Falls",
     "countryCode": "LA",
@@ -7277,6 +7716,30 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.945Z"
   },
+  "LB|baalbekruins": {
+    "name": "Baalbek Ruins",
+    "countryCode": "LB",
+    "articleTitle": "Baalbek",
+    "entityId": "Q178835",
+    "articleUrl": "https://en.wikipedia.org/wiki/Baalbek",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c9/Temple_of_Bacchus%2C_Baalbek%2C_Lebanon_%2849890013476%29.jpg/960px-Temple_of_Bacchus%2C_Baalbek%2C_Lebanon_%2849890013476%29.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c9/Temple_of_Bacchus%2C_Baalbek%2C_Lebanon_%2849890013476%29.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ATemple_of_Bacchus%2C_Baalbek%2C_Lebanon_(49890013476).jpg",
+        "author": "Lodo from Moscow, Russia",
+        "license": "CC BY-SA 2.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/Temple_of_Bacchus.jpg/960px-Temple_of_Bacchus.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Temple_of_Bacchus.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ATemple%20of%20Bacchus.jpg",
+        "author": "Saadedine AL SAIDI",
+        "license": "CC BY-SA 4.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.687Z"
+  },
   "LB|jeitagrotto": {
     "name": "Jeita Grotto",
     "countryCode": "LB",
@@ -7293,6 +7756,30 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.945Z"
+  },
+  "LB|mountlebanonrange": {
+    "name": "Mount Lebanon range",
+    "countryCode": "LB",
+    "articleTitle": "Mount Lebanon",
+    "entityId": "Q333711",
+    "articleUrl": "https://en.wikipedia.org/wiki/Mount%20Lebanon",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/Bsharridistrictmountains.jpg/960px-Bsharridistrictmountains.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/4/45/Bsharridistrictmountains.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ABsharridistrictmountains.jpg",
+        "author": "Linaduliban at English Wikipedia",
+        "license": "Public domain"
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Satellite_image_of_Lebanon_in_March_2002.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Satellite_image_of_Lebanon_in_March_2002.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ASatellite%20image%20of%20Lebanon%20in%20March%202002.jpg",
+        "author": "Jacques Descloitres, MODIS Land Rapid Response Team, NASA/GSFC",
+        "license": "Public domain"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:11:16.554Z"
   },
   "LC|pitonsunescosite": {
     "name": "Pitons (UNESCO Site)",
@@ -7653,6 +8140,30 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.945Z"
   },
+  "LU|luxembourgcityoldtown": {
+    "name": "Luxembourg City Old Town",
+    "countryCode": "LU",
+    "articleTitle": "Luxembourg",
+    "entityId": "Q32",
+    "articleUrl": "https://en.wikipedia.org/wiki/Luxembourg",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/Greinskapell%2C_Luxembourg_City_6.JPG/960px-Greinskapell%2C_Luxembourg_City_6.JPG",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9f/Greinskapell%2C_Luxembourg_City_6.JPG",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AGreinskapell%2C%20Luxembourg%20City%206.JPG",
+        "author": "Aidaverri",
+        "license": "CC BY-SA 3.0 lu"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Luxemburg.jpg/960px-Luxemburg.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/1/18/Luxemburg.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ALuxemburg.jpg",
+        "author": "Streppel",
+        "license": "CC BY-SA 3.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.687Z"
+  },
   "LU|viandencastle": {
     "name": "Vianden Castle",
     "countryCode": "LU",
@@ -7775,6 +8286,23 @@
       }
     ],
     "checkedAt": "2026-09-06T19:00:30.455Z"
+  },
+  "LY|saharadesert": {
+    "name": "Sahara Desert",
+    "countryCode": "LY",
+    "articleTitle": "Sahara",
+    "entityId": "Q6583",
+    "articleUrl": "https://en.wikipedia.org/wiki/Sahara",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/Sahara_real_color.jpg/960px-Sahara_real_color.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Sahara_real_color.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ASahara%20real%20color.jpg",
+        "author": "Project Apollo Archive",
+        "license": "Public domain"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:11:43.522Z"
   },
   "LY|tadrartacacusdesert": {
     "name": "Tadrart Acacus Desert",
@@ -7937,6 +8465,30 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.946Z"
   },
+  "MC|jardinexotique": {
+    "name": "Jardin Exotique",
+    "countryCode": "MC",
+    "articleTitle": "Jardin Exotique, Monaco",
+    "entityId": "Q19286504",
+    "articleUrl": "https://en.wikipedia.org/wiki/Jardin%20Exotique%2C%20Monaco",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/50/Vue_de_Monaco_depuis_le_jardin_exotique.jpg/960px-Vue_de_Monaco_depuis_le_jardin_exotique.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/5/50/Vue_de_Monaco_depuis_le_jardin_exotique.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AVue_de_Monaco_depuis_le_jardin_exotique.jpg",
+        "author": "Tangopaso",
+        "license": "Public domain"
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/4/42/MONACO01.JPG",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/4/42/MONACO01.JPG",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AMONACO01.JPG",
+        "author": "No machine-readable author provided. Rado Bahna~commonswiki assumed (based on copyright claims).",
+        "license": "Public domain"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.688Z"
+  },
   "MC|oceanographicmuseum": {
     "name": "Oceanographic Museum",
     "countryCode": "MC",
@@ -7984,6 +8536,30 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.946Z"
+  },
+  "MD|oldtownchisinau": {
+    "name": "Old Town Chișinău",
+    "countryCode": "MD",
+    "articleTitle": "Chișinău",
+    "entityId": "Q21197",
+    "articleUrl": "https://en.wikipedia.org/wiki/Chi%C8%99in%C4%83u",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/Consiliul_Municipal_Chi%C8%99in%C4%83u_%28cropped%29.jpg/960px-Consiliul_Municipal_Chi%C8%99in%C4%83u_%28cropped%29.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Consiliul_Municipal_Chi%C8%99in%C4%83u_%28cropped%29.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AConsiliul_Municipal_Chi%C8%99in%C4%83u_(cropped).jpg",
+        "author": "Rodion Gavriloi",
+        "license": "CC BY-SA 4.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/Arch_of_Triumph%2C_Chisinau%2C_Republic_of_Moldova_%2851160304626_cropped%29.jpg/960px-Arch_of_Triumph%2C_Chisinau%2C_Republic_of_Moldova_%2851160304626_cropped%29.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/5/52/Arch_of_Triumph%2C_Chisinau%2C_Republic_of_Moldova_%2851160304626_cropped%29.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AArch%20of%20Triumph%2C%20Chisinau%2C%20Republic%20of%20Moldova%20(51160304626%20cropped).jpg",
+        "author": "Photobank MD from Chisinau, Moldova",
+        "license": "CC0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.688Z"
   },
   "MD|orheiulvechi": {
     "name": "Orheiul Vechi",
@@ -8571,6 +9147,30 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.946Z"
   },
+  "MR|atarregion": {
+    "name": "Atar Region",
+    "countryCode": "MR",
+    "articleTitle": "Atar, Mauritania",
+    "entityId": "Q735645",
+    "articleUrl": "https://en.wikipedia.org/wiki/Atar%2C%20Mauritania",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/ff/Atar%2Cmarket_street1.jpg/960px-Atar%2Cmarket_street1.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Atar%2Cmarket_street1.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AAtar%2Cmarket_street1.jpg",
+        "author": "Bertramz",
+        "license": "CC BY-SA 3.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/Atar_Market_%281%29.JPG/960px-Atar_Market_%281%29.JPG",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/a/af/Atar_Market_%281%29.JPG",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AAtar%20Market%20(1).JPG",
+        "author": "Ji-Elle",
+        "license": "CC BY-SA 3.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.688Z"
+  },
   "MR|bancdarguinnationalpark": {
     "name": "Banc d'Arguin National Park",
     "countryCode": "MR",
@@ -8677,6 +9277,30 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.946Z"
   },
+  "MT|vallettaoldcity": {
+    "name": "Valletta Old City",
+    "countryCode": "MT",
+    "articleTitle": "Valletta",
+    "entityId": "Q23800",
+    "articleUrl": "https://en.wikipedia.org/wiki/Valletta",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/St_Sebastian_Curtain_%28cropped%29.jpg/960px-St_Sebastian_Curtain_%28cropped%29.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b7/St_Sebastian_Curtain_%28cropped%29.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ASt_Sebastian_Curtain_(cropped).jpg",
+        "author": "Mandyy88",
+        "license": "CC BY-SA 4.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/29/Malta%2C_2010_-_panoramio_-_Bengt_Nyman_%2823%29.jpg/960px-Malta%2C_2010_-_panoramio_-_Bengt_Nyman_%2823%29.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/2/29/Malta%2C_2010_-_panoramio_-_Bengt_Nyman_%2823%29.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AMalta%2C%202010%20-%20panoramio%20-%20Bengt%20Nyman%20(23).jpg",
+        "author": "Bengt Nyman",
+        "license": "CC BY 3.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.689Z"
+  },
   "MU|blackrivergorgesnationalpark": {
     "name": "Black River Gorges National Park",
     "countryCode": "MU",
@@ -8758,6 +9382,32 @@
       }
     ],
     "checkedAt": "2026-09-06T19:00:30.455Z"
+  },
+  "MV|nationalmuseummaldives": {
+    "name": "National Museum (Maldives)",
+    "countryCode": "MV",
+    "articleTitle": "Malé",
+    "entityId": "Q9347",
+    "articleUrl": "https://en.wikipedia.org/wiki/Mal%C3%A9",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/Mal%C3%A9.jpg/960px-Mal%C3%A9.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/8/83/Mal%C3%A9.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AMal%C3%A9.jpg",
+        "author": "Shahee Ilyas",
+        "license": "CC BY-SA 3.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b4/Male-total.jpg/960px-Male-total.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Male-total.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AMale-total.jpg",
+        "author": "Shahee Ilyas",
+        "license": "CC BY-SA 3.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:12:18.321Z",
+    "subject": "Malé",
+    "approximate": true
   },
   "MW|capemaclear": {
     "name": "Cape Maclear",
@@ -8932,6 +9582,30 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.946Z"
+  },
+  "MX|tulumruins": {
+    "name": "Tulum Ruins",
+    "countryCode": "MX",
+    "articleTitle": "Tulum",
+    "entityId": "Q725883",
+    "articleUrl": "https://en.wikipedia.org/wiki/Tulum",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/85/Tulum_2.jpg/960px-Tulum_2.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/8/85/Tulum_2.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ATulum_2.jpg",
+        "author": "Popo le Chien",
+        "license": "CC BY-SA 3.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/76/Tulum_2006_2.jpg/960px-Tulum_2006_2.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/7/76/Tulum_2006_2.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ATulum%202006%202.jpg",
+        "author": "Gennaro Conte",
+        "license": "CC BY-SA 4.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.689Z"
   },
   "MY|batucaves": {
     "name": "Batu Caves",
@@ -10489,6 +11163,30 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.948Z"
   },
+  "PK|mohenjodaroruins": {
+    "name": "Mohenjo-daro Ruins",
+    "countryCode": "PK",
+    "articleTitle": "Mohenjo-daro",
+    "entityId": "Q5725",
+    "articleUrl": "https://en.wikipedia.org/wiki/Mohenjo-daro",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/Mohenjodaro_-_view_of_the_stupa_mound.JPG/960px-Mohenjodaro_-_view_of_the_stupa_mound.JPG",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/0/03/Mohenjodaro_-_view_of_the_stupa_mound.JPG",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AMohenjodaro_-_view_of_the_stupa_mound.JPG",
+        "author": "Saqib Qayyum",
+        "license": "CC BY-SA 3.0"
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Mohenjodaro_Sindh.jpeg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Mohenjodaro_Sindh.jpeg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AMohenjodaro%20Sindh.jpeg",
+        "author": "The original uploader was M.Imran at English Wikipedia.",
+        "license": "CC SA 1.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.689Z"
+  },
   "PL|auschwitzbirkenau": {
     "name": "Auschwitz-Birkenau",
     "countryCode": "PL",
@@ -10636,6 +11334,32 @@
     ],
     "checkedAt": "2026-09-06T19:00:30.455Z"
   },
+  "PT|algarvecaves": {
+    "name": "Algarve Caves",
+    "countryCode": "PT",
+    "articleTitle": "Algarve",
+    "entityId": "Q26831",
+    "articleUrl": "https://en.wikipedia.org/wiki/Algarve",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6e/Pal%C3%A1cio_de_Est%C3%B3i_-_Portugal_%288291585643%29_%28cropped%29.jpg/960px-Pal%C3%A1cio_de_Est%C3%B3i_-_Portugal_%288291585643%29_%28cropped%29.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Pal%C3%A1cio_de_Est%C3%B3i_-_Portugal_%288291585643%29_%28cropped%29.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3APal%C3%A1cio_de_Est%C3%B3i_-_Portugal_(8291585643)_(cropped).jpg",
+        "author": "Vitor Oliveira from Torres Vedras, PORTUGAL",
+        "license": "CC BY-SA 2.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b1/Praia_da_Dona_Ana_cliffs.jpg/960px-Praia_da_Dona_Ana_cliffs.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b1/Praia_da_Dona_Ana_cliffs.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3APraia%20da%20Dona%20Ana%20cliffs.jpg",
+        "author": "Steven Fruitsmaak",
+        "license": "CC BY-SA 3.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:12:45.817Z",
+    "subject": "Algarve",
+    "approximate": true
+  },
   "PT|belemtower": {
     "name": "Belém Tower",
     "countryCode": "PT",
@@ -10708,6 +11432,32 @@
     ],
     "checkedAt": "2026-09-06T18:56:41.291Z"
   },
+  "PT|ribeiradistrict": {
+    "name": "Ribeira District",
+    "countryCode": "PT",
+    "articleTitle": "Porto",
+    "entityId": "Q36433",
+    "articleUrl": "https://en.wikipedia.org/wiki/Porto",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/Puente_Don_Luis_I%2C_Oporto%2C_Portugal%2C_2012-05-09%2C_DD_13.JPG/960px-Puente_Don_Luis_I%2C_Oporto%2C_Portugal%2C_2012-05-09%2C_DD_13.JPG",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e5/Puente_Don_Luis_I%2C_Oporto%2C_Portugal%2C_2012-05-09%2C_DD_13.JPG",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3APuente_Don_Luis_I%2C_Oporto%2C_Portugal%2C_2012-05-09%2C_DD_13.JPG",
+        "author": "Diego Delso",
+        "license": "CC BY-SA 3.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/55/O_Porto_%28visto_da_Ponte_Dom_Luis_I%29.jpg/960px-O_Porto_%28visto_da_Ponte_Dom_Luis_I%29.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/5/55/O_Porto_%28visto_da_Ponte_Dom_Luis_I%29.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AO%20Porto%20(visto%20da%20Ponte%20Dom%20Luis%20I).jpg",
+        "author": "Rititaneves",
+        "license": "CC BY-SA 3.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:12:44.476Z",
+    "subject": "Porto",
+    "approximate": true
+  },
   "PW|jellyfishlake": {
     "name": "Jellyfish Lake",
     "countryCode": "PW",
@@ -10724,6 +11474,23 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.948Z"
+  },
+  "PY|pantanalregion": {
+    "name": "Pantanal region",
+    "countryCode": "PY",
+    "articleTitle": "Pantanal",
+    "entityId": "Q157603",
+    "articleUrl": "https://en.wikipedia.org/wiki/Pantanal",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6e/Pantanal%2C_south-central_South_America_5170.jpg/960px-Pantanal%2C_south-central_South_America_5170.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Pantanal%2C_south-central_South_America_5170.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3APantanal%2C%20south-central%20South%20America%205170.jpg",
+        "author": "Alicia Yo",
+        "license": "CC BY-SA 3.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.689Z"
   },
   "PY|yacyretadam": {
     "name": "Yacyretá Dam",
@@ -10773,6 +11540,23 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.948Z"
   },
+  "QA|museumofislamicart": {
+    "name": "Museum of Islamic Art",
+    "countryCode": "QA",
+    "articleTitle": "Museum of Islamic Art, Doha",
+    "entityId": "Q1148353",
+    "articleUrl": "https://en.wikipedia.org/wiki/Museum%20of%20Islamic%20Art%2C%20Doha",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8d/IslamicArtMuseumDohaSkyline.jpg/960px-IslamicArtMuseumDohaSkyline.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8d/IslamicArtMuseumDohaSkyline.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AIslamicArtMuseumDohaSkyline.jpg",
+        "author": "Mohamod Fasil",
+        "license": "CC BY 2.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:20:28.879Z"
+  },
   "RO|brancastle": {
     "name": "Bran Castle",
     "countryCode": "RO",
@@ -10796,6 +11580,37 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.948Z"
+  },
+  "RO|brasovmedievalcity": {
+    "name": "Brașov Medieval City",
+    "countryCode": "RO",
+    "articleTitle": "Brașov",
+    "entityId": "Q82174",
+    "articleUrl": "https://en.wikipedia.org/wiki/Bra%C8%99ov",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/Bra%C8%99ov%2C_Pia%C8%9Ba_Sfatului_-_Flickr_-_Jorge_Franganillo.jpg/960px-Bra%C8%99ov%2C_Pia%C8%9Ba_Sfatului_-_Flickr_-_Jorge_Franganillo.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Bra%C8%99ov%2C_Pia%C8%9Ba_Sfatului_-_Flickr_-_Jorge_Franganillo.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ABra%C8%99ov%2C_Pia%C8%9Ba_Sfatului_-_Flickr_-_Jorge_Franganillo.jpg",
+        "author": "Jorge Franganillo",
+        "license": "CC BY 2.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/Brasov%2C_Piata_Sfatului.jpg/960px-Brasov%2C_Piata_Sfatului.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4d/Brasov%2C_Piata_Sfatului.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ABrasov%2C%20Piata%20Sfatului.jpg",
+        "author": "Constantin Barbu",
+        "license": "CC BY 2.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/72/Brasov_collage.png/960px-Brasov_collage.png",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/7/72/Brasov_collage.png",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ABrasov%20collage.png",
+        "author": "Kr1st1deejay97  (for proper attribution one has to name the original authors as well)",
+        "license": "CC BY-SA 3.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.689Z"
   },
   "RO|carpathianmountains": {
     "name": "Carpathian Mountains",
@@ -11111,6 +11926,25 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.948Z"
+  },
+  "SA|edgeoftheworld": {
+    "name": "Edge of the World",
+    "countryCode": "SA",
+    "articleTitle": "Riyadh",
+    "entityId": "Q3692",
+    "articleUrl": "https://en.wikipedia.org/wiki/Riyadh",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/Riyadh_Skyline.jpg/960px-Riyadh_Skyline.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/2/20/Riyadh_Skyline.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ARiyadh%20Skyline.jpg",
+        "author": "B.alotaby",
+        "license": "CC BY-SA 4.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:13:08.998Z",
+    "subject": "Riyadh",
+    "approximate": true
   },
   "SA|jeddahcorniche": {
     "name": "Jeddah Corniche",
@@ -11639,6 +12473,23 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.949Z"
   },
+  "SK|liptovregion": {
+    "name": "Liptov Region",
+    "countryCode": "SK",
+    "articleTitle": "Liptov",
+    "entityId": "Q1521564",
+    "articleUrl": "https://en.wikipedia.org/wiki/Liptov",
+    "images": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/f/fc/Liptov_coatofarms.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fc/Liptov_coatofarms.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ALiptov_coatofarms.jpg",
+        "author": "Kristo, I have improved the contrast",
+        "license": "Public domain"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.689Z"
+  },
   "SK|lowtatras": {
     "name": "Low Tatras",
     "countryCode": "SK",
@@ -11720,6 +12571,30 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.949Z"
+  },
+  "SM|guaitafortress": {
+    "name": "Guaita Fortress",
+    "countryCode": "SM",
+    "articleTitle": "Guaita",
+    "entityId": "Q2711604",
+    "articleUrl": "https://en.wikipedia.org/wiki/Guaita",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Guaita_Fortress_-_San_Marino_-_2024_02_13_-_GT_02_%28details%29.jpg/960px-Guaita_Fortress_-_San_Marino_-_2024_02_13_-_GT_02_%28details%29.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/3/37/Guaita_Fortress_-_San_Marino_-_2024_02_13_-_GT_02_%28details%29.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AGuaita_Fortress_-_San_Marino_-_2024_02_13_-_GT_02_(details).jpg",
+        "author": "Terragio67",
+        "license": "CC BY-SA 4.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/56/Fortress_of_Guaita_-_First_Tower_%28San_Marino%29.jpg/960px-Fortress_of_Guaita_-_First_Tower_%28San_Marino%29.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/5/56/Fortress_of_Guaita_-_First_Tower_%28San_Marino%29.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AFortress%20of%20Guaita%20-%20First%20Tower%20(San%20Marino).jpg",
+        "author": "Commonists",
+        "license": "CC BY-SA 4.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.689Z"
   },
   "SM|mounttitano": {
     "name": "Mount Titano",
@@ -11826,6 +12701,32 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.949Z"
+  },
+  "SO|liidobeach": {
+    "name": "Liido Beach",
+    "countryCode": "SO",
+    "articleTitle": "Mogadishu",
+    "entityId": "Q2449",
+    "articleUrl": "https://en.wikipedia.org/wiki/Mogadishu",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/Lido_beach_from_the_sea_in_Mogadishu.jpg/960px-Lido_beach_from_the_sea_in_Mogadishu.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Lido_beach_from_the_sea_in_Mogadishu.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ALido_beach_from_the_sea_in_Mogadishu.jpg",
+        "author": "AMISOM",
+        "license": "CC0"
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/2/21/Pictures_from_an_armed_convoy_trip_in_Mogadishu.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/2/21/Pictures_from_an_armed_convoy_trip_in_Mogadishu.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3APictures%20from%20an%20armed%20convoy%20trip%20in%20Mogadishu.jpg",
+        "author": "CT Snow",
+        "license": "CC BY 2.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:13:37.145Z",
+    "subject": "Mogadishu",
+    "approximate": true
   },
   "SO|mogadishucathedral": {
     "name": "Mogadishu Cathedral",
@@ -12449,6 +13350,23 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.950Z"
+  },
+  "TJ|peaklenin": {
+    "name": "Peak Lenin",
+    "countryCode": "TJ",
+    "articleTitle": "Lenin Peak",
+    "entityId": "Q838587",
+    "articleUrl": "https://en.wikipedia.org/wiki/Lenin%20Peak",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/Lenin_peak_from_Sary-mogol.jpg/960px-Lenin_peak_from_Sary-mogol.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Lenin_peak_from_Sary-mogol.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ALenin%20peak%20from%20Sary-mogol.jpg",
+        "author": "Nihongarden",
+        "license": "CC BY-SA 3.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:14:09.624Z"
   },
   "TL|atauroisland": {
     "name": "Atauro Island",
@@ -13439,6 +14357,30 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.950Z"
   },
+  "UZ|samarkandcity": {
+    "name": "Samarkand City",
+    "countryCode": "UZ",
+    "articleTitle": "Samarkand",
+    "entityId": "Q5753",
+    "articleUrl": "https://en.wikipedia.org/wiki/Samarkand",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/RegistanSquare_Samarkand.jpg/960px-RegistanSquare_Samarkand.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8c/RegistanSquare_Samarkand.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ARegistanSquare_Samarkand.jpg",
+        "author": "Registan_-_Gusjer.jpg: Gustavo Jeronimo from Aranjuez, Spain\nderivative work: MrPanyGoff",
+        "license": "CC BY 2.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Sherdor_madrasah_3.jpg/960px-Sherdor_madrasah_3.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f1/Sherdor_madrasah_3.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ASherdor%20madrasah%203.jpg",
+        "author": "Adam Harangozó",
+        "license": "CC BY-SA 4.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.690Z"
+  },
   "UZ|tienshanmountains": {
     "name": "Tien Shan Mountains",
     "countryCode": "UZ",
@@ -13555,6 +14497,23 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.951Z"
   },
+  "VC|lasoufrierevolcano": {
+    "name": "La Soufrière Volcano",
+    "countryCode": "VC",
+    "articleTitle": "La Soufrière (Saint Vincent)",
+    "entityId": "Q26544",
+    "articleUrl": "https://en.wikipedia.org/wiki/La%20Soufri%C3%A8re%20(Saint%20Vincent)",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/Soufriere.jpg/960px-Soufriere.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/8/83/Soufriere.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3ASoufriere.jpg",
+        "author": "Wikimedia Commons contributor",
+        "license": "CC BY-SA 3.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:14:45.489Z"
+  },
   "VC|tobagocays": {
     "name": "Tobago Cays",
     "countryCode": "VC",
@@ -13571,6 +14530,30 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.951Z"
+  },
+  "VC|youngisland": {
+    "name": "Young Island",
+    "countryCode": "VC",
+    "articleTitle": "Young Island (Grenadines)",
+    "entityId": "Q1254282",
+    "articleUrl": "https://en.wikipedia.org/wiki/Young%20Island%20(Grenadines)",
+    "images": [
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/c/c9/Young_Island_St._Vincent_%28cropped%29.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c9/Young_Island_St._Vincent_%28cropped%29.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AYoung_Island_St._Vincent_(cropped).jpg",
+        "author": "madmack66",
+        "license": "CC BY 2.0"
+      },
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6e/Fort_Duvernette_and_Young%27s_Island_from_Calliaqua%2C_St._Vincent_1890s.jpg/960px-Fort_Duvernette_and_Young%27s_Island_from_Calliaqua%2C_St._Vincent_1890s.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Fort_Duvernette_and_Young%27s_Island_from_Calliaqua%2C_St._Vincent_1890s.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AFort%20Duvernette%20and%20Young's%20Island%20from%20Calliaqua%2C%20St.%20Vincent%201890s.jpg",
+        "author": "Wikimedia Commons contributor",
+        "license": "Public domain"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:14:48.413Z"
   },
   "VE|angelfalls": {
     "name": "Angel Falls",
@@ -13836,6 +14819,23 @@
     ],
     "checkedAt": "2026-09-06T18:52:26.951Z"
   },
+  "VU|mountyasurvolcano": {
+    "name": "Mount Yasur Volcano",
+    "countryCode": "VU",
+    "articleTitle": "Mount Yasur",
+    "entityId": "Q392766",
+    "articleUrl": "https://en.wikipedia.org/wiki/Mount%20Yasur",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/Mount_Yasur_eruption_2006%2C_Tanna_Island%2C_Vanuatu%2C_VAN_0516.jpg/960px-Mount_Yasur_eruption_2006%2C_Tanna_Island%2C_Vanuatu%2C_VAN_0516.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/0/06/Mount_Yasur_eruption_2006%2C_Tanna_Island%2C_Vanuatu%2C_VAN_0516.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AMount%20Yasur%20eruption%202006%2C%20Tanna%20Island%2C%20Vanuatu%2C%20VAN%200516.jpg",
+        "author": "Rolf Cosar",
+        "license": "CC BY 2.5"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.690Z"
+  },
   "VU|tannaisland": {
     "name": "Tanna Island",
     "countryCode": "VU",
@@ -13876,6 +14876,23 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.951Z"
+  },
+  "WS|olepupupuenationalpark": {
+    "name": "O le Pupu-Pue National Park",
+    "countryCode": "WS",
+    "articleTitle": "O Le Pupu-Puʿe National Park",
+    "entityId": "Q31979523",
+    "articleUrl": "https://en.wikipedia.org/wiki/O%20Le%20Pupu-Pu%CA%BFe%20National%20Park",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Aerial_view_of_the_O_Le_Pupu_Pue_National_Park%2C_Samoa%2C_IUCN_BIOPAMA_Photos.jpg/960px-Aerial_view_of_the_O_Le_Pupu_Pue_National_Park%2C_Samoa%2C_IUCN_BIOPAMA_Photos.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/1/11/Aerial_view_of_the_O_Le_Pupu_Pue_National_Park%2C_Samoa%2C_IUCN_BIOPAMA_Photos.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AAerial%20view%20of%20the%20O%20Le%20Pupu%20Pue%20National%20Park%2C%20Samoa%2C%20IUCN%20BIOPAMA%20Photos.jpg",
+        "author": "BIOPAMA",
+        "license": "Public domain"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:22:02.603Z"
   },
   "XK|gracanicamonastery": {
     "name": "Gračanica Monastery",
@@ -14212,6 +15229,30 @@
       }
     ],
     "checkedAt": "2026-09-06T18:52:26.951Z"
+  },
+  "ZW|greatzimbabweruins": {
+    "name": "Great Zimbabwe Ruins",
+    "countryCode": "ZW",
+    "articleTitle": "Great Zimbabwe",
+    "entityId": "Q209217",
+    "articleUrl": "https://en.wikipedia.org/wiki/Great%20Zimbabwe",
+    "images": [
+      {
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Conical_Tower_-_Great_Enclosure_III_%2833736918448%29.jpg/960px-Conical_Tower_-_Great_Enclosure_III_%2833736918448%29.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Conical_Tower_-_Great_Enclosure_III_%2833736918448%29.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AConical_Tower_-_Great_Enclosure_III_(33736918448).jpg",
+        "author": "Andrew Moore from Johannesburg, South Africa",
+        "license": "CC BY-SA 2.0"
+      },
+      {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/1/19/Great-Zimbabwe-6.jpg",
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/1/19/Great-Zimbabwe-6.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File%3AGreat-Zimbabwe-6.jpg",
+        "author": "Wikimedia Commons contributor",
+        "license": "CC BY-SA 3.0"
+      }
+    ],
+    "checkedAt": "2026-11-24T02:07:56.690Z"
   },
   "ZW|hwangenationalpark": {
     "name": "Hwange National Park",

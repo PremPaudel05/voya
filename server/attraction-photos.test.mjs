@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import sharp from 'sharp';
 import { randomBytes } from 'node:crypto';
-import { resolveAttractionPhoto, photoUrl } from './attractionImages.mjs';
-import { createPhotoService, photoRevision } from './photoService.mjs';
+import { resolveAttractionPhoto, photoUrl, looselyNamed } from './attractionImages.mjs';
+import { createPhotoService, photoRevision, publicPhoto } from './photoService.mjs';
 
 const thumb = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Sensoji_2023.jpg/960px-Sensoji_2023.jpg';
 const original = 'https://upload.wikimedia.org/wikipedia/commons/4/43/Sensoji_2023.jpg';
@@ -94,4 +94,48 @@ test('large originals are resized below the delivery limit when thumbnails fail'
 test('oversized source responses are rejected before image processing', async () => {
   const service = createPhotoService({ seeds: {}, resolve: async () => photo, fetcher: async () => new Response('too large', { headers: { 'content-type': 'image/jpeg', 'content-length': '32000001' } }) });
   await assert.rejects(service.getImage('Example', 'Japan'), /temporarily unavailable/);
+});
+
+test('descriptive words are ignored when matching, but distinctive words never are', () => {
+  assert.ok(looselyNamed('Suomenlinna', 'Suomenlinna Fortress'));
+  assert.ok(looselyNamed('Tallinn Old Town', 'Tallinn Old City'));
+  assert.ok(looselyNamed('Cotopaxi', 'Cotopaxi Volcano'));
+  assert.ok(!looselyNamed('Mud volcano', 'Mud Volcanoes'));
+  assert.ok(!looselyNamed('Caracol', 'Caracol Maya Ruins'));
+  assert.ok(!looselyNamed('Lake Bazega', 'Bazega'));
+  assert.ok(!looselyNamed('Old Town', 'Old Town'), 'a name made only of generic words never matches loosely');
+});
+test('a loosely named page still has to pass the country check', async () => {
+  assert.equal((await resolveAttractionPhoto('Suomenlinna Fortress', 'Finland', fixture({ title: 'Suomenlinna', iso: 'FI' }))).articleTitle, 'Suomenlinna');
+  assert.equal(await resolveAttractionPhoto('Suomenlinna Fortress', 'Finland', fixture({ title: 'Suomenlinna', iso: 'SE' })), null);
+});
+// Wikipedia knows the city but not the landmark.
+function cityOnly(city, iso = 'JP') {
+  return { fetcher: async input => {
+    const url = new URL(input);
+    let data;
+    if (url.hostname === 'en.wikipedia.org') {
+      const asked = `${url.searchParams.get('titles') || ''}|${url.searchParams.get('gsrsearch') || ''}`;
+      data = { query: { pages: asked.split('|').includes(city) ? { 1: { pageid: 1, title: city, pageimage: 'City.jpg', pageprops: { wikibase_item: 'Q1' } } } : {} } };
+    } else if (url.hostname === 'www.wikidata.org') data = { entities: { Q1: { claims: { P17: statement({ id: 'Q2' }) } }, Q2: { claims: { P297: statement(iso) } } } };
+    else data = { query: { pages: { 2: { title: 'File:City.jpg', imageinfo: [{ mime: 'image/jpeg', thumburl: thumb, url: original, extmetadata: {} }] } } } };
+    return { ok: true, json: async () => data };
+  } };
+}
+test('without a landmark match, a researched city photo is used and clearly flagged', async () => {
+  const result = await resolveAttractionPhoto('Unknown Shrine', 'Japan', { ...cityOnly('Kyoto'), city: 'Kyoto' });
+  assert.equal(result.approximate, true);
+  assert.equal(result.subject, 'Kyoto');
+  assert.equal(result.name, 'Unknown Shrine');
+  assert.equal(await resolveAttractionPhoto('Unknown Shrine', 'Japan', cityOnly('Kyoto')), null, 'no city given, no fallback');
+  assert.equal(await resolveAttractionPhoto('Unknown Shrine', 'Japan', { ...cityOnly('Kyoto', 'FR'), city: 'Kyoto' }), null, 'the city must be in the country too');
+});
+test('browser photos use the Wikimedia CDN for thumbnails and the proxy for originals', () => {
+  const shaped = publicPhoto('Example', 'Japan', { articleTitle: 'Example', approximate: true, subject: 'Kyoto', images: [photo.images[0], { url: original }] }, 'Kyoto');
+  assert.equal(shaped.approximate, true); assert.equal(shaped.subject, 'Kyoto');
+  assert.equal(shaped.images[0].directUrl, thumb);
+  assert.match(shaped.images[0].directSrcSet, /\/500px-Sensoji_2023\.jpg 500w, .*\/960px-Sensoji_2023\.jpg 960w$/);
+  assert.equal(shaped.images[1].directUrl, undefined);
+  const proxy = new URLSearchParams(shaped.images[1].imageUrl.split('?')[1]);
+  assert.equal(proxy.get('city'), 'Kyoto'); assert.equal(proxy.get('rev'), photoRevision({ url: original }));
 });

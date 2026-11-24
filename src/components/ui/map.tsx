@@ -1,6 +1,5 @@
-import { useRef, useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { motion } from "framer-motion";
-import DottedMap from "dotted-map";
 
 interface MapProps {
   dots?: Array<{
@@ -22,19 +21,8 @@ export function WorldMap({
 }: MapProps) {
   const svgRef = useRef<SVGSVGElement>(null);
 
-  const map = useMemo(() => new DottedMap({ height: 100, grid: "diagonal" }), []);
-
-  const svgMap = useMemo(
-    () =>
-      map.getSVG({
-        radius: 0.22,
-        color: "#000000",
-        shape: "circle",
-        backgroundColor: "transparent",
-      }),
-    [map]
-  );
-
+  // The dotted world is pre-rendered (public/world-dots.svg) instead of being
+  // computed from country outlines in the browser on every visit.
   const projectPoint = (lat: number, lng: number) => {
     const x = (lng + 180) * (800 / 360);
     const y = (90 - lat) * (400 / 180);
@@ -49,6 +37,13 @@ export function WorldMap({
     const midY = Math.min(start.y, end.y) - 50;
     return `M ${start.x} ${start.y} Q ${midX} ${midY} ${end.x} ${end.y}`;
   };
+
+  // Nearby cities (London, Paris, Moscow) would stack their labels, so each
+  // label takes the first free spot around its dot.
+  const labels = useMemo(() => layoutLabels(dots.flatMap((dot, i) => [
+    { key: `${i}-start`, point: dot.start, delay: 0.5 * i + 0.3 },
+    { key: `${i}-end`, point: dot.end, delay: 0.5 * i + 0.5 },
+  ]).map(item => ({ ...item, ...projectPoint(item.point.lat, item.point.lng), label: item.point.label }))), [dots]);
 
   const staggerDelay = 0.3;
   const totalAnimationTime = dots.length * staggerDelay + animationDuration;
@@ -71,8 +66,9 @@ export function WorldMap({
         <div role="img" aria-label="World map" className="h-full w-full"
           style={{
             backgroundColor: 'var(--map-dot)',
-            maskImage: `url("data:image/svg+xml;utf8,${encodeURIComponent(svgMap)}")`,
+            maskImage: 'url("/world-dots.svg")', WebkitMaskImage: 'url("/world-dots.svg")',
             maskSize: 'cover', maskRepeat: 'no-repeat', maskPosition: 'center',
+            WebkitMaskSize: 'cover', WebkitMaskRepeat: 'no-repeat', WebkitMaskPosition: 'center',
           }} />
       </div>
 
@@ -167,9 +163,6 @@ export function WorldMap({
                   <animate attributeName="opacity" from="0.6" to="0" dur="2s" begin="0s" repeatCount="indefinite" />
                 </circle>
               </motion.g>
-              {showLabels && dot.start.label && (
-                <CityLabel x={startPoint.x} y={startPoint.y} label={dot.start.label} delay={0.5 * i + 0.3} lineColor={lineColor} />
-              )}
 
               {/* End point */}
               <motion.g
@@ -183,23 +176,50 @@ export function WorldMap({
                   <animate attributeName="opacity" from="0.6" to="0" dur="2s" begin="0.5s" repeatCount="indefinite" />
                 </circle>
               </motion.g>
-              {showLabels && dot.end.label && (
-                <CityLabel x={endPoint.x} y={endPoint.y} label={dot.end.label} delay={0.5 * i + 0.5} lineColor={lineColor} />
-              )}
             </g>
           );
         })}
+        {showLabels && labels.map(({ key, x, y, label, rect, delay }) => <CityLabel key={key} x={x} y={y} label={label} rect={rect} delay={delay} lineColor={lineColor} />)}
       </svg>
     </div>
   );
 }
 
-function CityLabel({ x, y, label, delay, lineColor }: { x: number; y: number; label: string; delay: number; lineColor: string }) {
-  const w = 94;
-  const h = 26;
-  // push label above the dot with a small connector line
-  const lx = x - w / 2;
-  const ly = y - h - 10;
+const LABEL_H = 22;
+const GAP = 9;
+type Rect = { x: number; y: number; w: number; h: number };
+const overlaps = (a: Rect, b: Rect, pad = 3) =>
+  a.x < b.x + b.w + pad && b.x < a.x + a.w + pad && a.y < b.y + b.h + pad && b.y < a.y + a.h + pad;
+
+// Greedy placement: above, below, then the sides; the first spot that stays on
+// the visible map and clears every other label and city dot wins.
+function layoutLabels<T extends { x: number; y: number; label?: string }>(items: T[]) {
+  const dots: Rect[] = items.map(({ x, y }) => ({ x: x - 4, y: y - 4, w: 8, h: 8 }));
+  const placed: Rect[] = [];
+  return items.flatMap((item, index) => {
+    if (!item.label) return [];
+    const { x, y } = item;
+    const w = Math.round(item.label.length * 5.6 + 18);
+    const h = LABEL_H;
+    const options: Rect[] = [
+      { x: x - w / 2, y: y - h - GAP, w, h }, { x: x - w / 2, y: y + GAP, w, h },
+      { x: x + GAP, y: y - h / 2, w, h }, { x: x - GAP - w, y: y - h / 2, w, h },
+      { x: x + 2, y: y - h - GAP, w, h }, { x: x - w - 2, y: y - h - GAP, w, h },
+      { x: x + 2, y: y + GAP, w, h }, { x: x - w - 2, y: y + GAP, w, h },
+    ];
+    const free = options.find(rect => rect.x >= 24 && rect.x + rect.w <= 776 && rect.y >= 8 && rect.y + rect.h <= 392 &&
+      !placed.some(other => overlaps(rect, other)) && !dots.some((dot, i) => i !== index && overlaps(rect, dot, 1)));
+    const rect = free || options[0];
+    placed.push(rect);
+    return [{ ...item, label: item.label, rect }];
+  });
+}
+
+function CityLabel({ x, y, label, rect, delay, lineColor }: { x: number; y: number; label: string; rect: Rect; delay: number; lineColor: string }) {
+  // Connector from the dot to the nearest edge of its label.
+  const ex = Math.min(Math.max(x, rect.x), rect.x + rect.w);
+  const ey = Math.min(Math.max(y, rect.y), rect.y + rect.h);
+  const length = Math.hypot(ex - x, ey - y) || 1;
 
   return (
     <motion.g
@@ -208,17 +228,14 @@ function CityLabel({ x, y, label, delay, lineColor }: { x: number; y: number; la
       transition={{ delay, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       className="pointer-events-none"
     >
-      {/* Connector stem */}
-      <line x1={x} y1={y - 4} x2={x} y2={ly + h} stroke={lineColor} strokeWidth="0.8" strokeOpacity="0.5" />
-      {/* Pill background */}
-      <rect x={lx} y={ly} width={w} height={h} rx="5" ry="5"
+      <line x1={x + ((ex - x) / length) * 4} y1={y + ((ey - y) / length) * 4} x2={ex} y2={ey}
+        stroke={lineColor} strokeWidth="0.8" strokeOpacity="0.5" />
+      <rect x={rect.x} y={rect.y} width={rect.w} height={rect.h} rx="5" ry="5"
         fill="var(--map-label)" stroke="var(--line)" strokeWidth="0.75" />
-      {/* Amber left accent bar */}
-      <rect x={lx} y={ly + 5} width="2.5" height={h - 10} rx="1.5" fill={lineColor} />
-      {/* City name */}
+      <rect x={rect.x} y={rect.y + 5} width="2.5" height={rect.h - 10} rx="1.5" fill={lineColor} />
       <text
-        x={lx + 10}
-        y={ly + h / 2 + 0.5}
+        x={rect.x + 10}
+        y={rect.y + rect.h / 2 + 0.5}
         textAnchor="start"
         dominantBaseline="middle"
         fill="var(--map-label-ink)"

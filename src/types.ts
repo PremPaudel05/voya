@@ -1,3 +1,5 @@
+import type { AttractionPhoto } from './services/attractionPhotoService';
+
 export interface CountryData {
   isValidCountry: boolean;
   overview: {
@@ -58,6 +60,10 @@ export interface CountryData {
     interestingFact: string;
     imageSearchQuery: string;
     imageUrl?: string;
+    /** True when the city was filled in automatically rather than researched. */
+    cityGuessed?: boolean;
+    /** Verified photo metadata shipped with the guide, when already known. */
+    photo?: AttractionPhoto;
   }[];
   languageCode: string;
   phrases: {

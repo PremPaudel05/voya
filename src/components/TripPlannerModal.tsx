@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Download, MapPin, Calendar, Wallet, Heart, Users, ChevronDown, Loader2 } from 'lucide-react';
-import jsPDF from 'jspdf';
 import { useNavigate } from 'react-router-dom';
 import { useAccount } from '../account/AccountContext';
 import { AccountError, accountRequest } from '../services/accountService';
@@ -135,8 +134,10 @@ export function TripPlannerModal({ countryName }: TripPlannerModalProps) {
     }
   };
 
-  const downloadPDF = () => {
+  const downloadPDF = async () => {
     if (!plan) return;
+    // The PDF library is large, so it loads only when someone exports.
+    const { default: jsPDF } = await import('jspdf');
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const W = 210;
     const margin = 16;

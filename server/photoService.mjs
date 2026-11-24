@@ -15,7 +15,14 @@ export function createPhotoService({ fetcher = fetch, resolve = resolveAttractio
   const metadata = new Map();
   const pending = new Map();
   const images = new Map();
-  async function getPhoto(name, country, refresh = false) {
+  // Known photo metadata only, without any network request.
+  function peekPhoto(name, country) {
+    const key = photoKey(name, country);
+    const cached = metadata.get(key);
+    if (cached && now() - cached.time < DAY) return cached.photo;
+    return seeds[key] || null;
+  }
+  async function getPhoto(name, country, refresh = false, city = '') {
     const key = photoKey(name, country);
     const cached = metadata.get(key);
     if (!refresh && cached && now() - cached.time < DAY) return cached.photo;
@@ -26,7 +33,7 @@ export function createPhotoService({ fetcher = fetch, resolve = resolveAttractio
     if (pending.has(key)) return pending.get(key);
     const task = (async () => {
       try {
-        const photo = await resolve(name, country, { fetcher });
+        const photo = await resolve(name, country, { fetcher, city });
         if (photo) remember(metadata, key, { photo, time: now() }, 1500);
         return photo || cached?.photo || seeds[key] || null;
       } catch (error) {
@@ -91,9 +98,9 @@ export function createPhotoService({ fetcher = fetch, resolve = resolveAttractio
     remember(images, url, result, 24);
     return result;
   }
-  async function getImage(name, country, index = 0, revision = '') {
-    let photo = await getPhoto(name, country);
-    if (revision && !photo?.images.some(image => photoRevision(image) === revision)) photo = await getPhoto(name, country, true);
+  async function getImage(name, country, index = 0, revision = '', city = '') {
+    let photo = await getPhoto(name, country, false, city);
+    if (revision && !photo?.images.some(image => photoRevision(image) === revision)) photo = await getPhoto(name, country, true, city);
     const image = revision ? photo?.images.find(image => photoRevision(image) === revision) : photo?.images[index];
     if (!image) return null;
     let error;
@@ -103,6 +110,26 @@ export function createPhotoService({ fetcher = fetch, resolve = resolveAttractio
     }
     throw error || new Error('Image temporarily unavailable');
   }
-  return { getPhoto, getImage };
+  return { getPhoto, getImage, peekPhoto };
 }
 export const photoService = createPhotoService();
+
+// Wikimedia serves a fixed ladder of thumbnail widths from its CDN.
+const directUrl = (url, width) => url.replace(/\/\d+px-([^/]+)$/, `/${width}px-$1`);
+// The browser-facing shape of a photo. Thumbnails load straight from
+// Wikimedia's CDN; the same-origin proxy URL is the fallback, and the only
+// option for full-size originals, which it resizes first.
+export function publicPhoto(name, country, photo, city = '') {
+  return {
+    articleTitle: photo.articleTitle,
+    ...(photo.approximate ? { approximate: true, subject: photo.subject } : {}),
+    images: photo.images.map((image, i) => {
+      const thumb = /\/thumb\/.+\/\d+px-[^/]+$/.test(image.url);
+      return {
+        imageUrl: `/api/image?${new URLSearchParams({ name, country, photo: String(i), rev: photoRevision(image), v: '2', ...(city ? { city } : {}) })}`,
+        ...(thumb ? { directUrl: directUrl(image.url, 960), directSrcSet: `${directUrl(image.url, 500)} 500w, ${directUrl(image.url, 960)} 960w` } : {}),
+        sourceUrl: image.sourceUrl, author: image.author, license: image.license,
+      };
+    }),
+  };
+}

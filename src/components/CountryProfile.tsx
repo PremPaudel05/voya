@@ -356,7 +356,7 @@ export function CountryProfile({ data }: CountryProfileProps) {
             <div className="grid md:grid-cols-2 gap-5">
               {data.attractions.map((a, i) => (
                 <motion.div key={i} whileHover={{ y: -3 }} transition={{ type: 'spring', stiffness: 300 }}>
-                  <AttractionCard attraction={a} countryName={data.mapData.countryQuery} />
+                  <AttractionCard attraction={a} countryName={data.mapData.countryQuery} eager={i < 2} />
                 </motion.div>
               ))}
             </div>
@@ -368,7 +368,7 @@ export function CountryProfile({ data }: CountryProfileProps) {
         {/* MAP */}
         <Section id="map" refs={sectionRefs} title="Interactive Map" icon={<Map size={17} />}>
           <div className="rounded-2xl overflow-hidden border border-line shadow-sm">
-            <MapSection mapData={data.mapData} />
+            <MapSection key={data.overview.countryCode} mapData={data.mapData} countryCode={data.overview.countryCode} attractions={data.attractions} />
           </div>
         </Section>
 

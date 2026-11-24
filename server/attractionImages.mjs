@@ -52,9 +52,28 @@ export function photoUrl(value) {
   } catch { return null; }
 }
 
+// Descriptive words travel guides add to a landmark's proper name. Dropping
+// them finds the real article ("Suomenlinna Fortress" -> "Suomenlinna");
+// every match is still country-checked before its photo is used.
+const GENERIC_WORDS = new Set(['old', 'city', 'town', 'medieval', 'historic', 'historical', 'center', 'centre',
+  'ruins', 'fortress', 'volcano', 'market', 'region', 'district', 'quarter', 'the']);
+const words = value => String(value).split(/[\s\-–—,/]+/).filter(word => normalize(word));
+const coreName = name => words(baseTitle(name)).filter(word => !GENERIC_WORDS.has(normalize(word))).join(' ');
+
 export function titlesFor(name, country) {
+  const core = coreName(name);
   return [...new Set([canonicalTitles[photoKey(name, country)], name,
-    baseTitle(name), name.replace(/\s+(Temple|Shrine)$/i, ''), `${name} (${country})`].filter(Boolean))];
+    baseTitle(name), name.replace(/\s+(Temple|Shrine)$/i, ''), `${name} (${country})`,
+    core.length >= 4 ? core : '', core.length >= 4 ? `${core}, ${country}` : ''].filter(Boolean))];
+}
+// A page also matches when its title holds every distinctive word of the name
+// and adds nothing but generic words ("Tallinn Old City" ~ "Tallinn Old Town").
+export function looselyNamed(title, name) {
+  const target = new Set(words(baseTitle(name)).map(normalize));
+  const core = [...target].filter(word => !GENERIC_WORDS.has(word));
+  const page = words(baseTitle(title).replace(/,.*$/, '')).map(normalize);
+  return core.join('').length >= 4 && core.every(word => page.includes(word)) &&
+    page.every(word => target.has(word) || GENERIC_WORDS.has(word));
 }
 export function matchingPages(data, name, country) {
   const titles = titlesFor(name, country);
@@ -66,6 +85,7 @@ export function matchingPages(data, name, country) {
   return Object.values(data?.query?.pages || {}).filter(page => page.pageid > 0 &&
     !Object.hasOwn(page.pageprops || {}, 'disambiguation') &&
     (allowed.has(normalize(page.title)) || titles.some(title => normalize(baseTitle(page.title)) === normalize(baseTitle(title))) ||
+      looselyNamed(page.title, name) ||
       (page.redirects || []).some(alias => allowed.has(normalize(alias.title)))));
 }
 
@@ -77,7 +97,20 @@ export function selectAttractionImage(pages, name) {
   return page ? photoUrl(page.thumbnail.source) : null;
 }
 
-export async function resolveAttractionPhoto(name, country, { fetcher = fetch, timeout = 18_000 } = {}) {
+// When no photo of the landmark itself can be verified, a photo of the city it
+// is in is the next most honest picture. It is flagged so the card can say so.
+export async function resolveAttractionPhoto(name, country, { fetcher = fetch, timeout = 18_000, city = '' } = {}) {
+  const started = Date.now();
+  const photo = await resolveExactPhoto(name, country, { fetcher, timeout });
+  const place = String(city || '').trim();
+  if (photo || !place || place.length > 100 || normalize(place) === normalize(name) || normalize(place) === normalize(country)) return photo;
+  const remaining = timeout - (Date.now() - started);
+  if (remaining < 2000) return null;
+  const cityPhoto = await resolveExactPhoto(place, country, { fetcher, timeout: remaining });
+  return cityPhoto ? { ...cityPhoto, name, subject: place, approximate: true } : null;
+}
+
+async function resolveExactPhoto(name, country, { fetcher = fetch, timeout = 18_000 } = {}) {
   const code = resolveCountryCode(country);
   if (!code || !name || name.length > 200) return null;
   const deadline = Date.now() + timeout;

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, ArrowRight, Lightbulb } from 'lucide-react';
+import { Search, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WorldMap } from './ui/map';
 import { SiteHeader } from './SiteHeader';
@@ -10,19 +10,6 @@ interface HeroProps {
   onSearch: (country: string) => void;
   isLoading: boolean;
 }
-
-const funFacts = [
-  { flag: "🇯🇵", fact: "Japan consists of over 6,800 islands." },
-  { flag: "🇨🇦", fact: "Canada has more lakes than the rest of the world combined." },
-  { flag: "🇦🇺", fact: "Australia is wider than the moon." },
-  { flag: "🇧🇷", fact: "Brazil has the greatest biodiversity of any country on Earth." },
-  { flag: "🇮🇸", fact: "Iceland is growing by about 5 centimeters per year." },
-  { flag: "🇲🇬", fact: "Over 90% of Madagascar's wildlife is found nowhere else on Earth." },
-  { flag: "🇳🇿", fact: "New Zealand has a hill with an 85-letter name." },
-  { flag: "🇨🇭", fact: "Switzerland has enough nuclear shelters to fit its entire population." },
-  { flag: "🇮🇳", fact: "India has a spa just for elephants." },
-  { flag: "🇪🇬", fact: "The Great Pyramid was the tallest structure for over 3,800 years." },
-];
 
 const topDestinations = [
   { name: "Nepal",         code: "np" },
@@ -35,6 +22,19 @@ const topDestinations = [
   { name: "Peru",          code: "pe" },
   { name: "New Zealand",   code: "nz" },
 ];
+
+// Nepal's double pennant is the only national flag that isn't a rectangle, so
+// flags keep their own shape: fixed height, natural width, never cropped.
+function ChipFlag({ code }: { code: string }) {
+  const pennant = code === 'np';
+  return <img
+    src={`https://flagcdn.com/${code}.svg`}
+    alt="" aria-hidden="true" decoding="async"
+    height={pennant ? 18 : 13}
+    className={pennant
+      ? 'h-[18px] w-auto shrink-0 -my-0.5 drop-shadow-[0_0.5px_0.5px_rgba(0,0,0,0.25)]'
+      : 'h-[13px] w-auto shrink-0 rounded-[2px] shadow-[0_0_0_1px_rgba(0,0,0,0.08)]'} />;
+}
 
 const placeholderCountries = [
   { prefix: "Curious about", country: "Nepal" },
@@ -51,18 +51,8 @@ const placeholderCountries = [
 export function Hero({ onSearch, isLoading }: HeroProps) {
   const { t } = usePreferences();
   const [query, setQuery] = useState('');
-  const [factIndex, setFactIndex] = useState(0);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval>;
-    if (isLoading) {
-      setFactIndex(Math.floor(Math.random() * funFacts.length));
-      interval = setInterval(() => setFactIndex(p => (p + 1) % funFacts.length), 3500);
-    }
-    return () => clearInterval(interval);
-  }, [isLoading]);
 
   useEffect(() => {
     const t = setInterval(() => setPlaceholderIndex(i => (i + 1) % placeholderCountries.length), 3800);
@@ -190,42 +180,11 @@ export function Hero({ onSearch, isLoading }: HeroProps) {
                   disabled={isLoading}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-surface border border-line text-muted hover:bg-surface-alt hover:text-ink hover:border-accent transition-all duration-200 shadow-sm disabled:opacity-40"
                 >
-                  <img src={`https://flagcdn.com/w20/${dest.code}.png`} alt={dest.name} className="w-4 h-3 object-cover rounded-sm shrink-0" />
+                  <ChipFlag code={dest.code} />
                   {dest.name}
                 </button>
               ))}
             </div>
-
-            {/* Loading fact */}
-            <AnimatePresence>
-              {isLoading && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, height: 0 }}
-                  animate={{ opacity: 1, y: 0, height: 'auto' }}
-                  exit={{ opacity: 0, y: 10, height: 0 }}
-                  className="mt-5 overflow-hidden"
-                >
-                  <div className="bg-brand/10 border border-accent/25 rounded-2xl p-4 flex items-start gap-3">
-                    <Lightbulb className="w-4 h-4 text-accent shrink-0 mt-0.5" />
-                    <div className="flex-1">
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-accent mb-1">Did you know?</div>
-                      <div className="relative h-10">
-                        <AnimatePresence mode="wait">
-                          <motion.p key={factIndex}
-                            initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
-                            transition={{ duration: 0.3 }}
-                            className="absolute inset-0 text-muted text-sm line-clamp-2"
-                          >
-                            <span className="mr-1.5" style={{ fontFamily: '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Twemoji Mozilla",sans-serif' }}>{funFacts[factIndex].flag}</span>
-                            {funFacts[factIndex].fact}
-                          </motion.p>
-                        </AnimatePresence>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </motion.div>
 
           {/* Right column — map (blended, no card) */}

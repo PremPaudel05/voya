@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { resolveCountry, resolveCountryCode } from './countryIdentity.mjs';
-import { photoRevision, photoService } from './photoService.mjs';
+import { photoService, publicPhoto } from './photoService.mjs';
 import { additionalAttractions, correctAttraction } from './attractionCorrections.mjs';
 import {
   knownAttractionsData,
@@ -69,21 +69,24 @@ app.get(['/api/image', '/api/attraction-photo'], async (req, res) => {
     return res.status(400).send('Invalid attraction or country');
   }
   const refresh = req.query.refresh === '1';
+  const city = String(req.query.city || '').trim();
+  if (city.length > 100) return res.status(400).send('Invalid city');
   const index = Number(req.query.photo || 0);
   const revision = String(req.query.rev || '');
   if (!Number.isInteger(index) || index < 0 || index > 2) return res.status(400).send('Invalid photo');
   if (revision && !/^[a-f0-9]{16}$/.test(revision)) return res.status(400).send('Invalid photo version');
   try {
     if (req.path === '/api/attraction-photo') {
-      const photo = await photoService.getPhoto(name, country, refresh);
-      if (!photo) return res.status(404).json({ error: 'A matching landmark photo could not be found.' });
+      const photo = await photoService.getPhoto(name, country, refresh, city);
+      if (!photo) {
+        // A confirmed "no photo" can be cached briefly so cards stop retrying it.
+        res.set('Cache-Control', 'public, max-age=600, s-maxage=3600');
+        return res.status(404).json({ error: 'A matching landmark photo could not be found.' });
+      }
       if (!refresh) res.set('Cache-Control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800');
-      return res.json({ articleTitle: photo.articleTitle, images: photo.images.map((image, i) => ({
-        imageUrl: `/api/image?${new URLSearchParams({ name, country, photo: String(i), rev: photoRevision(image), v: '2' })}`,
-        sourceUrl: image.sourceUrl, author: image.author, license: image.license,
-      })) });
+      return res.json(publicPhoto(name, country, photo, city));
     }
-    const image = await photoService.getImage(name, country, index, revision);
+    const image = await photoService.getImage(name, country, index, revision, city);
     if (!image) return res.status(404).send('Matching landmark photo unavailable');
     res.set('Cache-Control', 'public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000');
     return res.type(image.type).send(image.body);
@@ -1348,6 +1351,9 @@ export function getAttractionsData(countryName, capital) {
       famousFor: `One of ${countryName}'s most celebrated landmarks and destinations`,
       interestingFact: `A must-visit attraction when traveling through ${countryName}`,
       imageSearchQuery: `${landmark} ${countryName}`,
+      // The city is assigned by list position, not known, so it must never be
+      // used to stand in for the landmark's photo.
+      cityGuessed: true,
     }));
   }
 
@@ -1988,11 +1994,59 @@ function getMapCategoryData(countryName) {
   return knownMapCategoryData[keyedName] || null;
 }
 
+// Third-party lookups only enrich a guide. Each one gets a short deadline so a
+// slow provider can never hold the whole country page hostage.
+const PROVIDER_TIMEOUT_MS = 3500;
+function fetchQuick(url, options = {}, timeout = PROVIDER_TIMEOUT_MS) {
+  return fetch(url, { ...options, signal: AbortSignal.timeout(timeout) });
+}
+// Small in-memory memo for provider results that change slowly. Warm serverless
+// instances and the local server reuse it; failures are never cached.
+const providerCache = new Map();
+async function memo(key, ttl, load) {
+  const hit = providerCache.get(key);
+  if (hit && Date.now() - hit.time < ttl) return hit.value;
+  if (hit?.pending) return hit.pending;
+  const pending = load().then(value => {
+    if (value === undefined || value === null || value === 0 || value === '' || (Array.isArray(value) && !value.length)) {
+      providerCache.delete(key);
+    } else {
+      if (providerCache.size >= 600) providerCache.delete(providerCache.keys().next().value);
+      providerCache.set(key, { value, time: Date.now() });
+    }
+    return value;
+  }, error => { providerCache.delete(key); throw error; });
+  providerCache.set(key, { ...hit, pending });
+  return pending;
+}
+const HOUR = 3_600_000;
+// Wait at most `ms` for an optional value. The lookup keeps running, so its
+// result still lands in the memo for the next visitor.
+function within(promise, ms, fallback) {
+  let timer;
+  return Promise.race([
+    promise.catch(() => fallback),
+    new Promise(resolve => { timer = setTimeout(() => resolve(fallback), ms); }),
+  ]).finally(() => clearTimeout(timer));
+}
+
+// After a failed lookup, skip the World Bank briefly instead of waiting on it again.
+let worldBankRetryAt = 0;
 async function getPopulationFromWorldBank(iso2) {
   if (!iso2 || typeof iso2 !== 'string' || iso2.length !== 2) return 0;
+  const key = `population:${iso2.toLowerCase()}`;
+  if (Date.now() < worldBankRetryAt && !providerCache.get(key)?.value) return 0;
+  return memo(key, 24 * HOUR, async () => {
+    const value = await loadPopulationFromWorldBank(iso2);
+    if (!value) worldBankRetryAt = Date.now() + 10 * 60_000;
+    return value;
+  });
+}
+async function loadPopulationFromWorldBank(iso2) {
   const code = iso2.toLowerCase();
   try {
-    const res = await fetch(`https://api.worldbank.org/v2/country/${code}/indicator/SP.POP.TOTL?date=2023&format=json&per_page=1`);
+    // The World Bank API is often slow; this runs in the background (see within()).
+    const res = await fetchQuick(`https://api.worldbank.org/v2/country/${code}/indicator/SP.POP.TOTL?date=2023&format=json&per_page=1`, {}, 10_000);
     if (!res.ok) return 0;
     const data = await res.json();
     const value = Number(data?.[1]?.[0]?.value);
@@ -2008,16 +2062,17 @@ async function resolveExchangeRate(currencyCode) {
   const up = currencyCode.toUpperCase();
   if (up === 'USD') return 1;
 
-  const endpoint = `https://open.er-api.com/v6/latest/USD`;
   let fetchedRate = null;
 
   try {
-    const res = await fetch(endpoint, { cache: 'no-store' });
-    if (res.ok) {
-      const json = await res.json();
-      const rate = Number(json.rates?.[up]);
-      if (!Number.isNaN(rate) && rate > 0) fetchedRate = rate;
-    }
+    // One table holds every currency, so it is fetched at most once an hour.
+    const rates = await memo('usd-rates', HOUR, async () => {
+      const res = await fetchQuick('https://open.er-api.com/v6/latest/USD', { cache: 'no-store' });
+      if (!res.ok) return null;
+      return (await res.json()).rates || null;
+    });
+    const rate = Number(rates?.[up]);
+    if (!Number.isNaN(rate) && rate > 0) fetchedRate = rate;
   } catch (err) {
     console.warn('resolveExchangeRate primary open.er-api.com fetch failed', err?.message || err);
   }
@@ -2026,7 +2081,7 @@ async function resolveExchangeRate(currencyCode) {
     // exchangerate.host now requires API key; attempt fallback endpoint if available
     const fallbackEndpoint = `https://api.exchangerate.host/convert?from=USD&to=${up}&amount=1`;
     try {
-      const fallback = await fetch(fallbackEndpoint, { cache: 'no-store' });
+      const fallback = await fetchQuick(fallbackEndpoint, { cache: 'no-store' });
       if (fallback.ok) {
         const data = await fallback.json();
         const rate = Number(data.result);
@@ -2050,14 +2105,14 @@ async function lookupCitiesFromWikipedia(countryName) {
   try {
     const query = encodeURIComponent(`major cities in ${countryName}`);
     const searchUrl = `https://en.wikipedia.org/w/api.php?origin=*&action=query&format=json&list=search&srsearch=${query}`;
-    const searchRes = await fetch(searchUrl);
+    const searchRes = await fetchQuick(searchUrl);
     if (!searchRes.ok) return [];
 
     const searchData = await searchRes.json();
     const title = searchData?.query?.search?.[0]?.title;
     if (!title) return [];
 
-    const summaryRes = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
+    const summaryRes = await fetchQuick(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
     if (!summaryRes.ok) return [];
 
     const summaryJson = await summaryRes.json();
@@ -2104,7 +2159,7 @@ async function getMajorCities(countryName, capital, countryCode = '') {
   if (geonamesUser && countryCode) {
     const cc = countryCode.slice(0, 2).toUpperCase();
     try {
-      const geoRes = await fetch(
+      const geoRes = await fetchQuick(
         `https://secure.geonames.org/searchJSON?country=${cc}&featureClass=P&orderby=population&maxRows=8&username=${encodeURIComponent(geonamesUser)}`
       );
       if (geoRes.ok) {
@@ -2123,7 +2178,7 @@ async function getMajorCities(countryName, capital, countryCode = '') {
   if (wikiCities.length > 0) return wikiCities;
 
   try {
-    const cityRes = await fetch('https://countriesnow.space/api/v0.1/countries/cities', {
+    const cityRes = await fetchQuick('https://countriesnow.space/api/v0.1/countries/cities', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ country: countryName }),
@@ -2184,7 +2239,7 @@ async function getNaturalLandmarks(countryName, wikiSummary = '') {
   }
 
   try {
-    const searchRes = await fetch(
+    const searchRes = await fetchQuick(
       `https://en.wikipedia.org/w/api.php?origin=*&action=query&format=json&list=search&srsearch=${encodeURIComponent(
         `${countryName} landmarks`
       )}`
@@ -2194,7 +2249,7 @@ async function getNaturalLandmarks(countryName, wikiSummary = '') {
       const searchData = await searchRes.json();
       const title = searchData?.query?.search?.[0]?.title;
       if (title) {
-        const pageRes = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
+        const pageRes = await fetchQuick(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
         if (pageRes.ok) {
           const pageData = await pageRes.json();
           const extract = String(pageData.extract || '');
@@ -2310,32 +2365,30 @@ app.get('/api/country', async (req, res) => {
     const primaryLangKey = Object.keys(primary.languages || {})[0] || '';
     const languageCode = iso639ToBcp47[primaryLangKey] || `${primaryLangKey.slice(0, 2)}-${iso}`;
     let population = Number(primary.population || 0);
-    const worldBankPopulation = await getPopulationFromWorldBank(iso.slice(0, 2));
-    if (worldBankPopulation > 0) {
-      population = worldBankPopulation;
-    }
     const currencies = primary.currencies || {};
     const currencyCode = Object.keys(currencies)[0] || '';
     const currencyName = currencies[currencyCode]?.name || '';
     const timezones = Array.isArray(primary.timezones) ? primary.timezones[0] : primary.timezones || '';
-
-    // 2) Exchange rate
-    const conversionRate = await resolveExchangeRate(currencyCode);
-
-    // 3) Wikipedia summary for geography fallback
-    let wikiSummary = '';
-    try {
-      const wp = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(countryName)}`);
-      if (wp.ok) {
-        const wpj = await wp.json();
-        wikiSummary = wpj.extract || '';
-      }
-    } catch (_e) {
-      // ignore
-    }
-
-    // 4) Build deterministic response from static data
     const knownGeoData = getGeographyData(countryName);
+
+    // Population, exchange rate, and the Wikipedia summary are independent, so
+    // they load side by side instead of one after another.
+    const [worldBankPopulation, conversionRate, wikiSummary] = await Promise.all([
+      // Bundled population is shown if the World Bank is slow to answer.
+      within(getPopulationFromWorldBank(iso.slice(0, 2)), 1200, 0),
+      within(resolveExchangeRate(currencyCode), 3000, knownCurrencyExchangeRates[currencyCode.toUpperCase()] || 1),
+      // Curated geography never reads the summary, so skip the request there.
+      knownGeoData?.climate && knownGeoData?.landscape && knownGeoData?.naturalLandmarks ? '' :
+        within(memo(`summary:${iso}`, 24 * HOUR, async () => {
+          try {
+            const wp = await fetchQuick(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(countryName)}`);
+            return wp.ok ? (await wp.json()).extract || '' : '';
+          } catch { return ''; }
+        }), 2500, ''),
+    ]);
+    if (worldBankPopulation > 0) population = worldBankPopulation;
+
+    // Build deterministic response from static data
     const climateText = getClimateDescription(countryName, wikiSummary);
     const landscapeText = getLandscapeDescription(countryName, wikiSummary);
     const countryContent = getCountryContent(iso);
@@ -2359,7 +2412,10 @@ app.get('/api/country', async (req, res) => {
     // Country guides use bundled data; browsing never consumes the AI allowance.
     const ai = null;
 
-    const majorCities = knownGeoData?.majorCities || await getMajorCities(countryName, capital, iso);
+    const [majorCities, naturalLandmarks] = await Promise.all([
+      knownGeoData?.majorCities || memo(`cities:${iso}`, 24 * HOUR, () => getMajorCities(countryName, capital, iso)),
+      knownGeoData?.naturalLandmarks || memo(`landmarks:${iso}`, 24 * HOUR, () => getNaturalLandmarks(countryName, wikiSummary)),
+    ]);
 
     const response = {
       isValidCountry: true,
@@ -2379,7 +2435,7 @@ app.get('/api/country', async (req, res) => {
         climate: knownGeoData?.climate || (climateText.length > 1 ? climateText : 'Climate varies by region; check local conditions.'),
         landscape: knownGeoData?.landscape || (landscapeText.length > 1 ? landscapeText : 'Diverse landscapes including mountains, plains, and coastlines.'),
         majorCities,
-        naturalLandmarks: knownGeoData?.naturalLandmarks || await getNaturalLandmarks(countryName, wikiSummary),
+        naturalLandmarks,
       },
       culture: countryContent.culture,
       foods: countryContent.foods,
@@ -2387,7 +2443,12 @@ app.get('/api/country', async (req, res) => {
       foodsNote: countryContent.foodsNote,
       contentSources: countryContent.contentSources,
       contentVersion: countryContent.contentVersion,
-      attractions: hasRealAttractions ? staticAttractions : (ai?.attractions || staticAttractions),
+      // Photos already verified for this country ship with the guide, so cards
+      // can start downloading them without a second request.
+      attractions: (hasRealAttractions ? staticAttractions : (ai?.attractions || staticAttractions)).map(attraction => {
+        const known = photoService.peekPhoto(attraction.name, countryName);
+        return known ? { ...attraction, photo: publicPhoto(attraction.name, countryName, known, attraction.cityGuessed ? '' : attraction.city) } : attraction;
+      }),
       languageCode,
       // Prefer handcrafted phrases → AI phrases → generic language-group fallback
       // Strip slash-alternatives (e.g. "Hello / Hi" → "Hello") so TTS reads cleanly
@@ -2413,6 +2474,9 @@ app.get('/api/country', async (req, res) => {
       },
     };
 
+    // Guides change rarely; let the CDN serve repeat visits instantly and
+    // refresh in the background. Exchange rates stay at most an hour old.
+    res.set('Cache-Control', 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400');
     return res.json(response);
   } catch (err) {
     console.error(err);

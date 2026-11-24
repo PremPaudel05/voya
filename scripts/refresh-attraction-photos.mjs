@@ -2,7 +2,7 @@
 // Failed lookups remain eligible for the live resolver; no random image fallback.
 import fs from 'node:fs/promises';
 import { getAllCountries } from 'country-info-pro';
-import { matchingPages, titlesFor, photoKey, photoUrl } from '../server/attractionImages.mjs';
+import { matchingPages, titlesFor, photoKey, photoUrl, resolveAttractionPhoto } from '../server/attractionImages.mjs';
 process.env.VERCEL = '1';
 const { getAttractionsData } = await import('../server/index.mjs');
 const destination = new URL('../server/attractionPhotoManifest.json', import.meta.url);
@@ -13,7 +13,7 @@ for (const country of getAllCountries()) {
   for (const attraction of attractions) {
     if (process.argv.includes('--missing') && existing[photoKey(attraction.name, country.name.common)]) continue;
     if (attraction.name.startsWith(`${country.name.common} `) && /National Museum|Historic Center|Nature Reserve|Central Market|Cultural Site/.test(attraction.name)) continue;
-    entries.push({ name: attraction.name, country: country.name.common, code: country.cca2 });
+    entries.push({ name: attraction.name, city: attraction.cityGuessed ? '' : attraction.city, country: country.name.common, code: country.cca2 });
   }
 }
 const values = (entity, prop) => (entity?.claims?.[prop] || []).filter(c => c.rank !== 'deprecated').map(c => c.mainsnak?.datavalue?.value).filter(Boolean);
@@ -66,6 +66,26 @@ for (const entry of matched) {
     return [{ url, originalUrl: photoUrl(info.url), sourceUrl: `https://commons.wikimedia.org/wiki/${encodeURIComponent(`File:${file}`)}`, author: plain(info.extmetadata?.Artist?.value) || 'Wikimedia Commons contributor', license: plain(info.extmetadata?.LicenseShortName?.value) || 'See source for license' }];
   });
   if (images.length) output[photoKey(entry.name,entry.country)] = { name: entry.name, countryCode: entry.code, articleTitle: entry.page.title, entityId: entry.page.pageprops.wikibase_item, articleUrl: `https://en.wikipedia.org/wiki/${encodeURIComponent(entry.page.title)}`, images, checkedAt: new Date().toISOString() };
+}
+// Second pass: the live resolver adds loose name matching and, as a last
+// resort, a country-checked photo of the attraction's city (flagged approximate).
+if (process.argv.includes('--live')) {
+  const pending = entries.filter(e => !output[photoKey(e.name, e.country)]);
+  console.log(`Live lookups: ${pending.length}`);
+  let done = 0;
+  const worker = async () => {
+    while (pending.length) {
+      const entry = pending.shift();
+      try {
+        const photo = await resolveAttractionPhoto(entry.name, entry.country, { city: entry.city, timeout: 40_000 });
+        if (photo) output[photoKey(entry.name, entry.country)] = photo;
+      } catch (e) { console.log(`Deferred ${entry.name}: ${e.message}`); }
+      if (++done % 20 === 0) console.log(`Live ${done}`);
+      // Wikimedia rate-limits bursts; one paced lookup at a time avoids HTTP 429.
+      await new Promise(resolve => setTimeout(resolve, 700));
+    }
+  };
+  await worker();
 }
 await fs.writeFile(destination, JSON.stringify(Object.fromEntries(Object.entries(output).sort()), null, 2) + '\n');
 const missing = entries.filter(e => !output[photoKey(e.name,e.country)]).map(({name,country}) => ({name,country}));

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Download, X, FileText, Check } from 'lucide-react';
-import jsPDF from 'jspdf';
 import type { CountryData } from '../types';
 
 interface DownloadModalProps {
@@ -40,6 +39,8 @@ export function DownloadModal({ data, countryName }: DownloadModalProps) {
   const generatePDF = async () => {
     setGenerating(true);
     try {
+      // The PDF library is large, so it loads only when someone exports.
+      const { default: jsPDF } = await import('jspdf');
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       const W = 210;
       const margin = 16;
